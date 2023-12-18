@@ -38,6 +38,7 @@ To use/call the Employee component we can either use ```"<Employee/>"``` or ```"
 # #########################################################################################
 # P1
 So to begin with we need to delete some useless files, and we need to keep only those files:
+```
 ^node_modules (do not touch)
 ^Public
     favicon.ico
@@ -52,7 +53,7 @@ So to begin with we need to delete some useless files, and we need to keep only 
 package-lock.json
 package.json
 README.md
-
+```
 The commands we used in the terminal till now:
 - npm create-react-app hello (This creates a react app build files)
 - npm run start (This will open the localhost website and it will refresh everytime we save)
