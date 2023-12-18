@@ -31,6 +31,14 @@ module.exports = {
 - Then we should start our project in command by using ```npm run start```.
 - Then we can start using Tailwind in our project by using Tailwind's utility classes to style our content.
 
+An example we can set the background to red with intensity of 300 by add this code to our div:
+```
+<div className="App bg-red-300">
+```
+Note: we changed the naming of the css file from App.css to index.css!
+
+Check tailwindcss.com for any css element that you may want to use.
+
 # #########################################################################################
 # P4
 We are not supposed to change the value of the props in the child instead we will change it
