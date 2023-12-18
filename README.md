@@ -1,4 +1,37 @@
 # #########################################################################################
+# P5
+We are going to use Tailwind CSS.
+- To install it we write in the command:
+```
+npm install -D tailwindcss postcss autoprefixer
+```
+- To initialize it:
+```
+npx tailwindcss init -p
+```
+- Then we will have a new file in our project directory called tailwind.config.js and we need to change it to this code:
+```
+/** @type {import('tailwindcss').config} */
+module.exports = {
+    content: [
+        "./src/**/*.{js,jsx,ts,tsx}",
+    ],
+    theme: {
+        extend: {},
+    }, 
+    plugins: [],
+};
+```
+- Then we need to add Tailwind directives to our CSS (App.css) by using these essential imports:
+```
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+```
+- Then we should start our project in command by using ```npm run start```.
+- Then we can start using Tailwind in our project by using Tailwind's utility classes to style our content.
+
+# #########################################################################################
 # P4
 We are not supposed to change the value of the props in the child instead we will change it
 in the parent, and the way we are going to change this value is with the use of state,
