@@ -1,4 +1,29 @@
 # #########################################################################################
+# P4
+We are not supposed to change the value of the props in the child instead we will change it
+in the parent, and the way we are going to change this value is with the use of state,
+state will allows us to keep track of values but it is a little bit different than just a 
+variable, because the state can be tied to the user interface, so when the state changes 
+the user interface will automatically update. (without a page refresh)
+
+So in the App.js we have first initialized a variable called role:
+```
+let role = "dev";
+```
+Then we took an input from the user (in App.js) that should supposedly change what is on the screen automatically:
+```
+<input type="text" onChange={(e) => {
+        console.log(e.target.value);
+        role = e.target.value;
+}}
+```
+Then we assiged inside the element a prop value of ```<Employee name="Abby" role={role}/>``` that should change the value automatically as soon as it is written in the input, however, we are not achieving this yet, and here comes the use of state!
+
+To use state we need to import it by writing ```import {useState} from 'react';```
+
+
+
+# #########################################################################################
 # P3
 Props is how you pass data from the parent down to a child component.
 
