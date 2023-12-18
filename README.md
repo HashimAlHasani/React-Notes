@@ -1,3 +1,4 @@
+```
 # #########################################################################################
 # P3
 Props is how you pass data from the parent down to a child component.
@@ -62,3 +63,4 @@ The commands we used in the terminal till now:
 - On the source control we can see changes and commit them to the repository
 - After we do so, we can check by using the command: 
     - git log
+```
