@@ -9,18 +9,15 @@ function Employee(props){
 }
 ```
 - then we can assign the name in the App.js as follows:
-```
-<Employee name="Hashim"/>
-```
+`<Employee name="Hashim"/>`
+
 - We can use the following to avoid having an empty role string:
 - So if props.role is true then return props.role if not return the string "No role"
-```
-<p>{props.role ? props.role : "No role"}</p>
-```
+```<p>{props.role ? props.role : "No role"}</p>```
+
 - We can also use this syntax which will do exactly as what is above but can make us more specific:
-```
-{props.role ? <p class="role">{props.role}</p> : <p class="norole">No role</p>}
-```
+```{props.role ? <p class="role">{props.role}</p> : <p class="norole">No role</p>}```
+
 Don't try to assign a value for props inside a component instead do it from the component call in the App.js
 
 # #########################################################################################
@@ -30,10 +27,10 @@ HTML, specifically they are going to return what is known as JSX.
 
 In src we create a components folder, and inside it we created a Employee.js component file.
 
-In the Employee.js we need to "export default Employee;" and when we want to use it in other
-files such as the App.js we need to "import Employee from './components/Employee';"
+In the Employee.js we need to ```export default Employee;``` and when we want to use it in other
+files such as the App.js we need to ```import Employee from './components/Employee';```
 
-To use/call the Employee component we can either use ```"<Employee/>"``` or ```"<Employee></Employee>"```
+To use/call the Employee component we can either use ```<Employee/>``` or ```<Employee></Employee>```
 
 # #########################################################################################
 # P1
