@@ -1,23 +1,26 @@
-```
 # #########################################################################################
 # P3
 Props is how you pass data from the parent down to a child component.
 
 - We can pass down props and use it like below,
+```
 function Employee(props){
     return <h3>Employee {props.name}</h3>;
 }
-
+```
 - then we can assign the name in the App.js as follows:
+```
 <Employee name="Hashim"/>
-
+```
 - We can use the following to avoid having an empty role string:
 - So if props.role is true then return props.role if not return the string "No role"
+```
 <p>{props.role ? props.role : "No role"}</p>
-
+```
 - We can also use this syntax which will do exactly as what is above but can make us more specific:
+```
 {props.role ? <p class="role">{props.role}</p> : <p class="norole">No role</p>}
-
+```
 Don't try to assign a value for props inside a component instead do it from the component call in the App.js
 
 # #########################################################################################
@@ -30,7 +33,7 @@ In src we create a components folder, and inside it we created a Employee.js com
 In the Employee.js we need to "export default Employee;" and when we want to use it in other
 files such as the App.js we need to "import Employee from './components/Employee';"
 
-To use/call the Employee component we can either use "<Employee/>" or "<Employee></Employee>"
+To use/call the Employee component we can either use ```"<Employee/>"``` or ```"<Employee></Employee>"```
 
 # #########################################################################################
 # P1
@@ -63,4 +66,3 @@ The commands we used in the terminal till now:
 - On the source control we can see changes and commit them to the repository
 - After we do so, we can check by using the command: 
     - git log
-```
