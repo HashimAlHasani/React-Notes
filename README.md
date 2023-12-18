@@ -26,6 +26,19 @@ It is by convention people will have the variable ```role``` and the next variba
 
 To insert any default values we can add an argument to the ```useState()``` for example, ```const [role, setRole] = useState("dev");```
 
+Important rule is that we never assign a value to a variable directly we always assign it using the set method such as ```setRole``` like below:
+```
+<input type="text" onChange={(e) => {
+    console.log(e.target.value);
+    setRole(e.target.value);
+}}
+```
+The component does not do anything to change the value all it does is display the value, the parent is the one that controls what is passed to the component.
+
+useState is an example of a hook, and usually hooks start with the word "use".
+
+Hooks allows you to use other react features without writing a class.
+
 # #########################################################################################
 # P3
 Props is how you pass data from the parent down to a child component.
