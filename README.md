@@ -21,7 +21,10 @@ Then we assiged inside the element a prop value of ```<Employee name="Abby" role
 
 To use state we need to import it by writing ```import {useState} from 'react';```
 
+And to use it we write ```const [role, setRole] = useState();``` and delete the ```let role = "dev";```
+It is by convention people will have the variable ```role``` and it the varibale prefixed with set hence, ```setRole```
 
+To insert any default values we can add an argument to the ```useState()``` for example, ```const [role, setRole] = useState("dev");```
 
 # #########################################################################################
 # P3
