@@ -39,6 +39,7 @@ We add some css design to our employee components in App.js:
         <Employee name="John"/>
 </div>
 ```
+We added an image by using the css attribute ```img```, then in the Employee.Js we set the src to `{props.img}`
 
 # #########################################################################################
 # P5
@@ -79,7 +80,7 @@ An example we can set the background to red with intensity of 300 by add this co
 ```
 Note: we changed the naming of the css file from App.css to index.css!
 
-Check tailwindcss.com for any css element that you may want to use.
+Check tailwindcss.com for any css attribute that you may want to use.
 
 # #########################################################################################
 # P4
