@@ -39,7 +39,7 @@ Map through State Array (Loop)
         img: "https://images.pexels.com/photos/19564637/pexels-photo-19564637/free-photo-of-levi.jpeg",
       },
       {
-        name: "Eren Yaeger", 
+        name: "Eren Jaeger", 
         role: "Commander", 
         img: "https://images.pexels.com/photos/19564649/pexels-photo-19564649.jpeg",
       },
