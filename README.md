@@ -1,5 +1,5 @@
 # #########################################################################################
-# P8
+# Part-8
 Create a Popup Modal with React Bootstrap.
 
 We need to install react bootstrap by using:
@@ -21,7 +21,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 4. Hitting that update button and having that data changed on the homepage of our application
 
 # #########################################################################################
-# P7
+# Part-7
 Map through State Array (Loop)
 1. Take all of our data move it to the top in a single variable.
 ```
@@ -94,7 +94,7 @@ Then to use it we can do:
 ```
 
 # #########################################################################################
-# P6
+# Part-6
 We are going to use some already written design from tailwind.css by opening it and going into docs, then choosing Utility-First Fundamentals, and getting the code for our chosen design, now our Employee.js (Employee component) code looks like this:
 Note: it should always be named `className` instead of `class` in react!
 ```
@@ -138,7 +138,7 @@ We add some css design to our employee components in App.js:
 We added an image by using the css attribute ```img```, then in the Employee.Js we set the src to `{props.img}`
 
 # #########################################################################################
-# P5
+# Part-5
 We are going to use Tailwind CSS.
 - To install it we write in the command:
 ```
@@ -179,7 +179,7 @@ Note: we changed the naming of the css file from App.css to index.css!
 Check tailwindcss.com for any css attribute that you may want to use.
 
 # #########################################################################################
-# P4
+# Part-4
 We are not supposed to change the value of the props in the child instead we will change it
 in the parent, and the way we are going to change this value is with the use of state,
 state will allows us to keep track of values but it is a little bit different than just a 
@@ -220,7 +220,7 @@ useState is an example of a hook, and usually hooks start with the word "use".
 Hooks allows you to use other react features without writing a class.
 
 # #########################################################################################
-# P3
+# Part-3
 Props is how you pass data from the parent down to a child component.
 
 - We can pass down props and use it like below,
@@ -245,7 +245,7 @@ function Employee(props){
 Don't try to assign a value for props inside a component instead do it from the component call in the App.js
 
 # #########################################################################################
-# P2
+# Part-2
 Components work in a very similar way to functions, the only difference is they are going to return
 HTML, specifically they are going to return what is known as JSX.
 
@@ -257,7 +257,7 @@ files such as the App.js we need to ```import Employee from './components/Employ
 To use/call the Employee component we can either use ```<Employee/>``` or ```<Employee></Employee>```
 
 # #########################################################################################
-# P1
+# Part-1
 So to begin with we need to delete some useless files, and we need to keep only those files:
 ```
 ^node_modules (do not touch)
