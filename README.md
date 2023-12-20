@@ -41,16 +41,16 @@ Map through State Array (Loop)
 2. Replace displaying those components with a loop using map.
 ```
 <div className='flex flex-wrap justify-center'>
-          {employees.map((employee) => {
-            return (
-              <Employee 
-              name={employee.name} 
-              role={employee.role} 
-              img={employee.img}
-              />
-            );
-          })}
-      </div>
+    {employees.map((employee) => {
+        return (
+            <Employee 
+            name={employee.name} 
+            role={employee.role} 
+            img={employee.img}
+            />
+        );
+    })}
+</div>
 ```
 
 
