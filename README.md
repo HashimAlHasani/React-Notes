@@ -52,7 +52,24 @@ Map through State Array (Loop)
     })}
 </div>
 ```
-
+We might need to have an id to each component in order to differentiate or might be usefull in the future,
+to do so we need to use something called a "uuid", in order to use it we need to install:
+```
+npm install uuid
+```
+Then we need to import it by writing:
+```
+import {v4 as uuidv4} from 'uuid';
+```
+Then to use it we can do:
+```
+<Employee 
+    key={uuidv4()}
+    name={employee.name} 
+    role={employee.role} 
+    img={employee.img}
+/>
+```
 
 # #########################################################################################
 # P6
