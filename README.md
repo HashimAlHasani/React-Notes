@@ -33,10 +33,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
     - Then we need to pass props when we call the `EditEmployee` in the `Employee.js` as follows:
         - `<EditEmployee name={props.name} role={props.role}/>`
     - We added 2 variables in `EditEmployee.js` in order to pass them through the `value` attribute:
-        - ```
-        const [name, setName] = useState(props.name);
-        const [role, setRole] = useState(props.role);
-        ```
+        - `const [name, setName] = useState(props.name);` / `const [role, setRole] = useState(props.role);`
 4. Hitting that update button and having that data changed on the homepage of our application
 
 # #########################################################################################
