@@ -52,8 +52,27 @@ import 'bootstrap/dist/css/bootstrap.min.css';
         updateEmployee={updateEmployee}
     />
     ```
-    - 
-
+    - We also need to add it inside the `Employee.js`:
+    ```
+    <EditEmployee 
+        name={props.name} 
+        role={props.role} 
+        updateEmployee={props.EditEmployee}
+    />
+    ```
+    - We also need to add a function property in the `<form>...</form>` in the `EditEmployee.js` file:
+    ```
+    <form onSubmit={()=>{
+        props.updateEmployee()
+    }} 
+    ```
+    - In order to prevent a page refresh we can also edit the function property:
+    ```
+    <form onSubmit={(e)=>{
+        e.preventDefault();
+        props.updateEmployee()
+    }}
+    ```
 # #########################################################################################
 # Part-7
 Map through State Array (Loop)
