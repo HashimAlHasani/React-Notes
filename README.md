@@ -34,6 +34,11 @@ import 'bootstrap/dist/css/bootstrap.min.css';
         - `<EditEmployee name={props.name} role={props.role}/>`
     - We added 2 variables in `EditEmployee.js` in order to pass them through the `value` attribute:
         - `const [name, setName] = useState(props.name);` / `const [role, setRole] = useState(props.role);`
+    - We pass the 2 variables we just added into the `value` attribute:
+        - `value={name}` / `value={role}`
+    - We added the `onChange` property to both the inputs and passed an arrow function as an argument that would use the `setName` and `setRole` in order to update the text boxes:
+        - `onChange={(e) => {setName(e.target.value)}}`
+        - `onChange={(e) => {setRole(e.target.value)}}`
 4. Hitting that update button and having that data changed on the homepage of our application
 
 # #########################################################################################
