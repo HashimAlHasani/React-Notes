@@ -1,4 +1,12 @@
 # #########################################################################################
+# P8
+Create a Popup Modal with React Bootstrap
+1. Learn how to create the modal with react bootstrap, how to open it and how to close it.
+2. Styling and submitting with a button
+3. Passing props from an employee to the new modal component that will basically autofill the user data into that modal
+4. Hitting that update button and having that data changed on the homepage of our application
+
+# #########################################################################################
 # P7
 Map through State Array (Loop)
 1. Take all of our data move it to the top in a single variable.
@@ -74,26 +82,27 @@ Then to use it we can do:
 # #########################################################################################
 # P6
 We are going to use some already written design from tailwind.css by opening it and going into docs, then choosing Utility-First Fundamentals, and getting the code for our chosen design, now our Employee.js (Employee component) code looks like this:
+Note: it should always be named `className` instead of `class` in react!
 ```
 function Employee(props){
     return (
-        <div class="m-2 py-8 px-8 max-w-sm bg-white rounded-xl shadow-lg space-y-2 sm:py-4 sm:flex sm:items-center sm:space-y-0 sm:space-x-6">
+        <div className="m-2 py-8 px-8 max-w-sm bg-white rounded-xl shadow-lg space-y-2 sm:py-4 sm:flex sm:items-center sm:space-y-0 sm:space-x-6">
             <img 
-            class="object-cover rounded-full h-[100px] w-[100px] block mx-auto h-24 rounded-full sm:mx-0 sm:shrink-0" 
+            className="object-cover rounded-full h-[100px] w-[100px] block mx-auto h-24 rounded-full sm:mx-0 sm:shrink-0" 
             src={props.img}
             alt="Commander Erwin Smith" 
             />
-            <div class="text-center space-y-2 sm:text-left">
-                <div class="space-y-0.5">
-                <p class="text-lg text-black font-semibold">
+            <div className="text-center space-y-2 sm:text-left">
+                <div className="space-y-0.5">
+                <p className="text-lg text-black font-semibold">
                     {props.name}
                 </p>
-                <p class="text-slate-500 font-medium">
+                <p className="text-slate-500 font-medium">
                     {props.role}
                 </p>
                 </div>
-                <button class="px-4 py-1 text-sm text-purple-600 font-semibold rounded-full border border-purple-200 hover:text-white hover:bg-purple-600 hover:border-transparent focus:outline-none focus:ring-2 focus:ring-purple-600 focus:ring-offset-2">
-                    Message
+                <button className="px-4 py-1 text-sm text-purple-600 font-semibold rounded-full border border-purple-200 hover:text-white hover:bg-purple-600 hover:border-transparent focus:outline-none focus:ring-2 focus:ring-purple-600 focus:ring-offset-2">
+                    Update
                 </button>
             </div>
         </div>
