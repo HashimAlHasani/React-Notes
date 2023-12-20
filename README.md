@@ -1,4 +1,60 @@
 # #########################################################################################
+# P7
+Map through State Array (Loop)
+1. Take all of our data move it to the top in a single variable.
+```
+  const [employees, setEmployees] = useState(
+    [
+      {
+        name: "Erwin", 
+        role: "Commander", 
+        img: "https://images.pexels.com/photos/19554075/pexels-photo-19554075.jpeg",
+      },
+      {
+        name: "Levi", 
+        role: "Commander", 
+        img: "https://images.pexels.com/photos/19564637/pexels-photo-19564637/free-photo-of-levi.jpeg",
+      },
+      {
+        name: "Eren", 
+        role: "Commander", 
+        img: "https://images.pexels.com/photos/19564649/pexels-photo-19564649.jpeg",
+      },
+      {
+        name: "Mikasa", 
+        role: "Survey Corps", 
+        img: "https://images.pexels.com/photos/19564661/pexels-photo-19564661/free-photo-of-mikasa.jpeg",
+      },
+      {
+        name: "Armin", 
+        role: "Survey Corps", 
+        img: "https://images.pexels.com/photos/19564668/pexels-photo-19564668/free-photo-of-armin.jpeg",
+      },
+      {
+        name: "Hange", 
+        role: "Survey Corps", 
+        img: "https://images.pexels.com/photos/19564675/pexels-photo-19564675/free-photo-of-hange.jpeg",
+      },
+    ]
+  );
+```
+2. Replace displaying those components with a loop using map.
+```
+<div className='flex flex-wrap justify-center'>
+          {employees.map((employee) => {
+            return (
+              <Employee 
+              name={employee.name} 
+              role={employee.role} 
+              img={employee.img}
+              />
+            );
+          })}
+      </div>
+```
+
+
+# #########################################################################################
 # P6
 We are going to use some already written design from tailwind.css by opening it and going into docs, then choosing Utility-First Fundamentals, and getting the code for our chosen design, now our Employee.js (Employee component) code looks like this:
 ```
