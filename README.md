@@ -6,32 +6,32 @@ Map through State Array (Loop)
   const [employees, setEmployees] = useState(
     [
       {
-        name: "Erwin", 
+        name: "Erwin Smith", 
         role: "Commander", 
         img: "https://images.pexels.com/photos/19554075/pexels-photo-19554075.jpeg",
       },
       {
-        name: "Levi", 
+        name: "Levi Ackerman", 
         role: "Commander", 
         img: "https://images.pexels.com/photos/19564637/pexels-photo-19564637/free-photo-of-levi.jpeg",
       },
       {
-        name: "Eren", 
+        name: "Eren Yaeger", 
         role: "Commander", 
         img: "https://images.pexels.com/photos/19564649/pexels-photo-19564649.jpeg",
       },
       {
-        name: "Mikasa", 
+        name: "Mikasa Ackerman", 
         role: "Survey Corps", 
         img: "https://images.pexels.com/photos/19564661/pexels-photo-19564661/free-photo-of-mikasa.jpeg",
       },
       {
-        name: "Armin", 
+        name: "Armin Arlert", 
         role: "Survey Corps", 
         img: "https://images.pexels.com/photos/19564668/pexels-photo-19564668/free-photo-of-armin.jpeg",
       },
       {
-        name: "Hange", 
+        name: "Hange  Zoë", 
         role: "Survey Corps", 
         img: "https://images.pexels.com/photos/19564675/pexels-photo-19564675/free-photo-of-hange.jpeg",
       },
