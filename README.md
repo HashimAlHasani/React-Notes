@@ -40,6 +40,19 @@ import 'bootstrap/dist/css/bootstrap.min.css';
         - `onChange={(e) => {setName(e.target.value)}}`
         - `onChange={(e) => {setRole(e.target.value)}}`
 4. Hitting that update button and having that data changed on the homepage of our application
+    - We created a new function inside `App.js` that should handle the change of data:
+        - `function updateEmployee(id, newName, newRole){}`
+    - We also added a new property in the `<Employee/>` inside of `App.js`:
+    ```
+    <Employee 
+        key={uuidv4()}
+        name={employee.name} 
+        role={employee.role} 
+        img={employee.img}
+        updateEmployee={updateEmployee}
+    />
+    ```
+    - 
 
 # #########################################################################################
 # Part-7
@@ -113,7 +126,6 @@ Then to use it we can do:
     img={employee.img}
 />
 ```
-
 # #########################################################################################
 # Part-6
 We are going to use some already written design from tailwind.css by opening it and going into docs, then choosing Utility-First Fundamentals, and getting the code for our chosen design, now our Employee.js (Employee component) code looks like this:
