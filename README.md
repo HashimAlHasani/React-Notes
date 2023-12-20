@@ -53,7 +53,7 @@ Map through State Array (Loop)
 </div>
 ```
 We might need to have an id to each component in order to differentiate or might be usefull in the future,
-to do so we need to use something called a "uuid", in order to use it we need to install:
+to do so we need to use something called a "guid", in order to use it we need to install:
 ```
 npm install uuid
 ```
