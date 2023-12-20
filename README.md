@@ -18,6 +18,14 @@ import 'bootstrap/dist/css/bootstrap.min.css';
     - Then we call `<EditEmployee/>` in our `Employee.js`.
     - We also replaced the button in the copied modal in `EditEmployee.js` with the button that we already have in `Employee.js`, but we need to add the attribute `onClick={handleShow}`, as this is the function that will allow the modal to popup.
 2. Styling and submitting with a button
+    - We got our form that we will style the popup modal with from tailwind css:
+        - `https://v1.tailwindcss.com/components/forms`
+    - We changed some of the text that would show on the popup from the `EditEmployee.js` file.
+    - We pasted our form inside the `<Modal.Body> </Modal.Body>` tag in `EditEmployee.js`.
+    - Remember to change the keyword `class` to `className`.
+    - We did some cutting in the form we copied in order to customize it to our requirements
+    - We added our own button style and we got the style from: (We only took the inline style not all of the button code)
+        - `https://v1.tailwindcss.com/components/buttons`
 3. Passing props from an employee to the new modal component that will basically autofill the user data into that modal
 4. Hitting that update button and having that data changed on the homepage of our application
 
