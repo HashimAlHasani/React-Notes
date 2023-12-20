@@ -27,6 +27,16 @@ import 'bootstrap/dist/css/bootstrap.min.css';
     - We added our own button style and we got the style from: (We only took the inline style not all of the button code)
         - `https://v1.tailwindcss.com/components/buttons`
 3. Passing props from an employee to the new modal component that will basically autofill the user data into that modal
+    - So what we have done is that we set the value of the `value` attribute in the inputs of the form created in the `EditEmployee.js` to `value={props.name}` and `value={props.role}`.
+    - We need to also set props as a parameter in the Edit Employee function:
+        - `function EditEmployee(props) {...}`
+    - Then we need to pass props when we call the `EditEmployee` in the `Employee.js` as follows:
+        - `<EditEmployee name={props.name} role={props.role}/>`
+    - We added 2 variables in `EditEmployee.js` in order to pass them through the `value` attribute:
+        - ```
+        const [name, setName] = useState(props.name);
+        const [role, setRole] = useState(props.role);
+        ```
 4. Hitting that update button and having that data changed on the homepage of our application
 
 # #########################################################################################
