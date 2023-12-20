@@ -12,10 +12,10 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 ```
 
 1. Learn how to create the modal with react bootstrap, how to open it and how to close it.
-- We created another component in the src/components folder called `EditEmployee.js`.
-- Then we copy our modal from the example modals given in react https://react-bootstrap.netlify.app/ and paste it into our `EditEmployee.js`.
-- We also edited the name of the functions so instead of `function Example()` we named it `function EditEmployee()` and we also `export default EditEmployee;` at the end of the `EditEmployee.js` file.
-- Then we call `<EditEmployee/>` in our `Employee.js`.
+    - We created another component in the src/components folder called `EditEmployee.js`.
+    - Then we copy our modal from the example modals given in react https://react-bootstrap.netlify.app/ and paste it into our `EditEmployee.js`.
+    - We also edited the name of the functions so instead of `function Example()` we named it `function EditEmployee()` and we also `export default EditEmployee;` at the end of the `EditEmployee.js` file.
+    - Then we call `<EditEmployee/>` in our `Employee.js`.
 2. Styling and submitting with a button
 3. Passing props from an employee to the new modal component that will basically autofill the user data into that modal
 4. Hitting that update button and having that data changed on the homepage of our application
