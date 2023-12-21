@@ -86,7 +86,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
     },
     ```
     ```
-    <Employee 
+    <Employee
         key={employee.id}
         id={employee.id}
         name={employee.name} 
