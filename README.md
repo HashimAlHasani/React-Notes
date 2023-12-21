@@ -57,20 +57,56 @@ import 'bootstrap/dist/css/bootstrap.min.css';
     <EditEmployee 
         name={props.name} 
         role={props.role} 
-        updateEmployee={props.EditEmployee}
+        updateEmployee={props.updateEmployee}
     />
     ```
     - We also need to add a function property in the `<form>...</form>` in the `EditEmployee.js` file:
     ```
     <form onSubmit={()=>{
-        props.updateEmployee()
+        props.updateEmployee(id, name, role)
     }} 
     ```
     - In order to prevent a page refresh we can also edit the function property:
     ```
     <form onSubmit={(e)=>{
         e.preventDefault();
-        props.updateEmployee()
+        props.updateEmployee(id, name, role)
+    }}
+    ```
+    - We need to add the id in the:
+    1. `App.js`:  (We removed the usage of guid)
+    ```
+    {
+        id: 1,
+        name: "Erwin Smith", 
+        role: "Commander", 
+        img: "https://images.pexels.com/photos/19554075/pexels-photo-19554075.jpeg",
+    },
+    ```
+    ```
+    <Employee 
+        key={employee.id}
+        id={employee.id}
+        name={employee.name} 
+        role={employee.role} 
+        img={employee.img}
+        updateEmployee={updateEmployee}
+    />
+    ```
+    2. `Employee.js`:
+    ```
+    <EditEmployee 
+        id={props.id}
+        name={props.name} 
+        role={props.role} 
+        updateEmployee={props.updateEmployee}
+    />
+    ```
+    3. `EditEmployee.js`: (We don't need a state variable for the id so we use props.id)
+    ```
+    <form onSubmit={(e)=>{
+        e.preventDefault();
+        props.updateEmployee(props.id, name, role)
     }}
     ```
 # #########################################################################################
