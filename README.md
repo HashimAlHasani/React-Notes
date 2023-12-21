@@ -63,12 +63,14 @@ import 'bootstrap/dist/css/bootstrap.min.css';
     - We also need to add a function property in the `<form>...</form>` in the `EditEmployee.js` file:
     ```
     <form onSubmit={()=>{
+        handleClose();
         props.updateEmployee(id, name, role)
     }} 
     ```
     - In order to prevent a page refresh we can also edit the function property:
     ```
     <form onSubmit={(e)=>{
+        handleClose();
         e.preventDefault();
         props.updateEmployee(id, name, role)
     }}
@@ -105,6 +107,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
     3. `EditEmployee.js`: (We don't need a state variable for the id so we use props.id)
     ```
     <form onSubmit={(e)=>{
+        handleClose();
         e.preventDefault();
         props.updateEmployee(props.id, name, role)
     }}
