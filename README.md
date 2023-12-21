@@ -109,6 +109,31 @@ import 'bootstrap/dist/css/bootstrap.min.css';
         props.updateEmployee(props.id, name, role)
     }}
     ```
+    - The last thing we need to do is to actually code the updateEmployee Function that we created in the `App.js`:
+    ```
+    function updateEmployee(id, newName, newRole){
+        const updatedEmployees = employees.map((employee) => {
+        if(id == employee.id){
+            return {...employee, name: newName, role: newRole};
+        }
+
+        return employee;
+        });
+        setEmployees(updatedEmployees);
+    }
+    ```
+    - Breakdown of the function above:
+        - ```const updateEmployess = employees.map()``` the map method will call the callback function for each employee in the `employees` array.
+        - We then pass the arrow function as an argument `(employee) => {}`
+        - We add the logic in the arrow function: (if the id match we return the new values, if not we return the normal values)
+        - the `...employee` just means all of the employee elements (img, id, etc.).
+        ```
+        if(id == employee.id){
+            return {...employee, name: newName, role: newRole};
+        }
+
+        return employee;
+        ```
 # #########################################################################################
 # Part-7
 Map through State Array (Loop)
