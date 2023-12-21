@@ -134,6 +134,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
         return employee;
         ```
+        - At the end, we need to use the `setEmployees(updatedEmployees)` with the `updatedEmployess` as an argument.
+        
 # #########################################################################################
 # Part-7
 Map through State Array (Loop)
