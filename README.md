@@ -1,6 +1,49 @@
 # #########################################################################################
+# Part.13 - Routing with React Router
+
+
+
+# #########################################################################################
 # Part.12 - Pages and props.children
 
+- We created a new folder in `src` called `pages`. Inside the `pages` folder we created a new file called `Employees.js`.
+- We copied all of the code in `App.js` to the `Employees.js` page, and deleted any unused variables/import/code.
+- We made also the directory of the imports to look one directory up by doing `../`:
+```
+import '../index.css';
+import Employee from '../components/Employee';
+import { useState } from 'react';
+import {v4 as uuidv4} from 'uuid';
+import AddEmployee from '../components/AddEmployee';
+import EditEmployee from '../components/EditEmployee';
+import Header from '../components/Header';
+```
+- Now our `App.js` looks like this:
+```
+import './index.css';
+import Employees from './pages/Employees';
+
+function App() {
+  return <Employees/>
+}
+
+export default App;
+
+```
+- Using pages will make our code more organized and we can better understand it.
+- To make sure that the `<Header/>` component persists throughout all of the pages we can delete it from `Employees.js` page and do the following in `App.js`:
+```
+function App() {
+  return (
+  <Header>
+    <Employees/>
+  </Header>
+  );
+}
+```
+- However, we are still missing one more thing to make everything to work and appear as intended:
+    - In `Header.js` add props as a parameter `export default function Header(props) {...}`.
+    - Before the end of the `Header` function add `{props.children}`. (before the `</>`)
 
 # #########################################################################################
 # Part.11 - Create a Navbar with Tailwind CSS
