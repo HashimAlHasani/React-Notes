@@ -6,9 +6,9 @@ How to Push to State Array
 2. Don't forget to change the function name and the export at the button of the code to `AddEmployee`.
 3. We added `<AddEmployee/>` in the `App.js` file.
 4. We added another input for the image url, and placed the attribute `placeholder=""` for all the inputs.
-5. We created a function `NewEmployee` in `App.js`:
+5. We created a function `newEmployee` in `App.js`:
 ```
-  function NewEmployee(name, role, img){
+  function newEmployee(name, role, img){
     const newEmployee = {
       id: uuidv4(),
       name: name,
@@ -20,11 +20,21 @@ How to Push to State Array
 ```
 6. We need to also need to pass this function in the `<AddEmployee/>` as a prop:
 ```
-<AddEmployee newEmployee={NewEmployee}/>
+<AddEmployee newEmployee={newEmployee}/>
 ```
 7. We also add a `handleClose` on the add `button` in `AddEmployee.js`:
 ```
 onClick={handleClose}
+```
+8. After we add the first Employee, and reclick the `+ Add Employee` `button`, the previous added employee data is now acting as a `placeholder` and we don't want to do that. To fix this issue we can do the follow:
+```
+<form onSubmit={(e)=>{
+    e.preventDefault();
+    setName('');
+    setRole('');
+    setImg('');
+    props.newEmployee(name, role, img)
+}}
 ```
 
 # #########################################################################################
