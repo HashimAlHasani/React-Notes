@@ -35,7 +35,45 @@ To:
     props.updateEmployee(props.id, name, role)
 }}
 ```
-
+So what we want to do instead is we want to define the `EditEmployee` component inside of `App.js` and pass that to `Employee`.
+1. In `App.js`:
+```
+<div className='flex flex-wrap justify-center'>
+          {employees.map((employee) => {
+            const editEmployee = (
+            <EditEmployee 
+              id={employee.id}
+              name={employee.name} 
+              role={employee.role} 
+              updateEmployee={updateEmployee}
+            />)
+            ;
+            return (
+              <Employee 
+                key={employee.id}
+                id={employee.id}
+                name={employee.name} 
+                role={employee.role} 
+                img={employee.img}
+                editEmployee={editEmployee}
+              />
+            );
+          })}
+      </div>
+```
+2. In `Employee.js` We replaced:
+```
+<EditEmployee 
+    id={props.id}
+    name={props.name} 
+    role={props.role} 
+    updateEmployee={props.updateEmployee}
+/>
+```
+with:
+```
+{props.editEmployee}
+```
 # #########################################################################################
 # Part-9
 How to Push to State Array
