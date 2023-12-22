@@ -1,5 +1,31 @@
 # #########################################################################################
 # Part-9
+How to Push to State Array
+
+1. In the Components folder we created a new file called `AddEmployee.js`, we copied and pasted `EditEmployee.js` as the code might be a bit similar.
+2. Don't forget to change the function name and the export at the button of the code to `AddEmployee`.
+3. We added `<AddEmployee/>` in the `App.js` file.
+4. We added another input for the image url, and placed the attribute `placeholder=""` for all the inputs.
+5. We created a function `NewEmployee` in `App.js`:
+```
+  function NewEmployee(name, role, img){
+    const newEmployee = {
+      id: uuidv4(),
+      name: name,
+      role: role,
+      img: img,
+    }
+    setEmployees([...employees, newEmployee]);
+  }
+```
+6. We need to also need to pass this function in the `<AddEmployee/>` as a prop:
+```
+<AddEmployee newEmployee={NewEmployee}/>
+```
+7. We also add a `handleClose` on the add `button` in `AddEmployee.js`:
+```
+onClick={handleClose}
+```
 
 # #########################################################################################
 # Part-8
