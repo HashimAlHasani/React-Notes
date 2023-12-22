@@ -36,7 +36,6 @@ onClick={handleClose}
     props.newEmployee(name, role, img)
 }}
 ```
-
 # #########################################################################################
 # Part-8
 Create a Popup Modal with React Bootstrap.
