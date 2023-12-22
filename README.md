@@ -1,9 +1,9 @@
 # #########################################################################################
-# Part#12 - Pages and props.children
+# Part.12 - Pages and props.children
 
 
 # #########################################################################################
-# Part#11 - Create a Navbar with Tailwind CSS
+# Part.11 - Create a Navbar with Tailwind CSS
 
 We will get the Navbar from this website:
 ```
@@ -27,7 +27,7 @@ As we can see we might have an error because we need to install some modules in 
 We can do some css editing to the `className` attribute that we have in `Header.js`, maybe change some images or such.
 
 # #########################################################################################
-# Part#10 - Pass a Component to Props
+# Part.10 - Pass a Component to Props
 
 What we have right now is that we are passing the `updateEmployee` function from:
 1. `App.js`:
@@ -102,7 +102,7 @@ with:
 {props.editEmployee}
 ```
 # #########################################################################################
-# Part#9 - How to Push to State Array
+# Part.9 - How to Push to State Array
 
 1. In the Components folder we created a new file called `AddEmployee.js`, we copied and pasted `EditEmployee.js` as the code might be a bit similar.
 2. Don't forget to change the function name and the export at the button of the code to `AddEmployee`.
@@ -279,7 +279,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
         - At the end, we need to use the `setEmployees(updatedEmployees)` with the `updatedEmployess` as an argument.
         
 # #########################################################################################
-# Part#7 - Map through State Array (Loop)
+# Part.7 - Map through State Array (Loop)
 
 1. Take all of our data move it to the top in a single variable.
 ```
@@ -351,7 +351,7 @@ Then to use it we can do:
 />
 ```
 # #########################################################################################
-# Part#6 - More Tailwind CSS
+# Part.6 - More Tailwind CSS
 
 We are going to use some already written design from tailwind.css by opening it and going into docs, then choosing Utility-First Fundamentals, and getting the code for our chosen design, now our Employee.js (Employee component) code looks like this:
 Note: it should always be named `className` instead of `class` in react!
@@ -396,7 +396,7 @@ We add some css design to our employee components in App.js:
 We added an image by using the css attribute ```img```, then in the Employee.Js we set the src to `{props.img}`
 
 # #########################################################################################
-# Part#5 - Tailwind CSS
+# Part.5 - Tailwind CSS
 
 - To install it we write in the command:
 ```
@@ -437,7 +437,7 @@ Note: we changed the naming of the css file from App.css to index.css!
 Check tailwindcss.com for any css attribute that you may want to use.
 
 # #########################################################################################
-# Part#4 - useState Hook
+# Part.4 - useState Hook
 
 We are not supposed to change the value of the props in the child instead we will change it
 in the parent, and the way we are going to change this value is with the use of state,
@@ -479,7 +479,7 @@ useState is an example of a hook, and usually hooks start with the word "use".
 Hooks allows you to use other react features without writing a class.
 
 # #########################################################################################
-# Part#3 - Props
+# Part.3 - Props
 
 Props is how you pass data from the parent down to a child component.
 
@@ -505,7 +505,7 @@ function Employee(props){
 Don't try to assign a value for props inside a component instead do it from the component call in the App.js
 
 # #########################################################################################
-# Part#2 - Components
+# Part.2 - Components
 
 Components work in a very similar way to functions, the only difference is they are going to return
 HTML, specifically they are going to return what is known as JSX.
@@ -518,7 +518,7 @@ files such as the App.js we need to ```import Employee from './components/Employ
 To use/call the Employee component we can either use ```<Employee/>``` or ```<Employee></Employee>```
 
 # #########################################################################################
-# Part#1 - Setup
+# Part.1 - Setup
 
 So to begin with we need to delete some useless files, and we need to keep only those files:
 ```
