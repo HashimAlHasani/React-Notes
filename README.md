@@ -5,7 +5,7 @@ Pages and props.children
 
 
 # #########################################################################################
-# Part-11
+# Part-11 Create a Navbar with Tailwind CSS
 Create a Navbar with Tailwind CSS
 
 We will get the Navbar from this website:
