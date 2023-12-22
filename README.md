@@ -1,4 +1,10 @@
 # #########################################################################################
+# Part-12
+Pages and props.children
+
+
+
+# #########################################################################################
 # Part-11
 Create a Navbar with Tailwind CSS
 
@@ -21,7 +27,7 @@ As we can see we might have an error because we need to install some modules in 
 1. `npm install @headlessui/react`
 2. `npm install @heroicons/react`
 
-We can do some css editing to the `className` attribute that we hav in `Header.js`, maybe change some images or such.
+We can do some css editing to the `className` attribute that we have in `Header.js`, maybe change some images or such.
 
 # #########################################################################################
 # Part-10
