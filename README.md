@@ -1,4 +1,29 @@
 # #########################################################################################
+# Part-11
+Create a Navbar with Tailwind CSS
+
+We will get the Navbar from this website:
+```
+https://tailwindui.com/components/application-ui/navigation/navbars
+```
+We chose the first Navbar (Be sure to copy the code in react by selecting react in the drop down menu) because it is free.
+
+We added a new file in the components folder called `Header.js` and pasted the header code we just copied.
+
+Also be sure to change the function name from `Example` to `Header`
+
+Now, in `App.js` we add the `<Header/>` component at the top.
+```
+<div className="App">
+    <Header/>
+```
+As we can see we might have an error because we need to install some modules in our command such as:
+1. `npm install @headlessui/react`
+2. `npm install @heroicons/react`
+
+We can do some css editing to the `className` attribute that we hav in `Header.js`, maybe change some images or such.
+
+# #########################################################################################
 # Part-10
 Pass a Component to Props
 
