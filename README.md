@@ -1,4 +1,42 @@
 # #########################################################################################
+# Part-10
+Pass a Component to Props
+
+What we have right now is that we are passing the `updateEmployee` function from:
+1. `App.js`:
+```
+return (
+    <Employee 
+    key={employee.id}
+    id={employee.id}
+    name={employee.name} 
+    role={employee.role} 
+    img={employee.img}
+    updateEmployee={updateEmployee}
+    />
+);
+```
+To:
+2. `Employee.js`:
+```
+<EditEmployee 
+    id={props.id}
+    name={props.name} 
+    role={props.role} 
+    updateEmployee={props.updateEmployee}
+/>
+```
+To:
+3. `EditEmployee.js`:
+```
+<form onSubmit={(e)=>{
+    handleClose();
+    e.preventDefault();
+    props.updateEmployee(props.id, name, role)
+}}
+```
+
+# #########################################################################################
 # Part-9
 How to Push to State Array
 
