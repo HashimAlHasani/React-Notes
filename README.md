@@ -237,7 +237,7 @@ onClick={handleClose}
 }}
 ```
 # #########################################################################################
-# Part#8 - Create a Popup Modal with React Bootstrap
+# Part.8 - Create a Popup Modal with React Bootstrap
 
 We need to install react bootstrap by using:
 ```
