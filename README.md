@@ -1,8 +1,63 @@
 # #########################################################################################
+# Part.13 - Create an Active Page Link in Navbar
+
+
+
+# #########################################################################################
 # Part.13 - Routing with React Router
 
-
-
+- We need to install react router dom by typing in the command:
+```
+npm install react-router-dom
+```
+- This will require us to import 3 things into our application in `App.js`:
+```
+import {BrowserRouter, Routes, Route} from 'react-router-dom';
+```
+- And the structure to create a url path is as follows:
+```
+function App() {
+  return (
+  <BrowserRouter>
+    <Header>
+      <Routes>
+        <Route path='/employees' element={<Employees/>} />
+      </Routes>
+    </Header>
+  </BrowserRouter>
+  );
+}
+```
+- We created another page just to show how this might work to visit a separate page. The new `Customers.js` page looks like:
+```
+export default function Customers(){
+    return <h1>Hello There!</h1>;
+}
+```
+- Now we can add another `<Route/>` like so:
+```
+function App() {
+  return (
+  <BrowserRouter>
+    <Header>
+      <Routes>
+        <Route path='/employees' element={<Employees/>} />
+        <Route path='/customers' element={<Customers/>} />
+      </Routes>
+    </Header>
+  </BrowserRouter>
+  );
+}
+```
+Then we can change the `href` in `Header.js` to the following:
+```
+const navigation = [
+  { name: 'Employees', href: '/Employees', current: true },
+  { name: 'Customers', href: '/Customers', current: false },
+  { name: 'Projects', href: '#', current: false },
+  { name: 'Calendar', href: '#', current: false },
+]
+```
 # #########################################################################################
 # Part.12 - Pages and props.children
 
