@@ -1,4 +1,16 @@
 # #########################################################################################
+# Part.15 - Finishing up Our Header
+
+In this part we are just doing some clean up, fixing some minor tailwind css issues, check for both mobile and desktop css compatibality, remove irrelevant code and etc.
+- We moved the `{props.children}` to outside the `<Disclosure>..</Disclosure>`, but we surrounded everything with a `<>..</>`, so after the return `<>` and after the `{props.children}` we `</>`.
+- We also moved the styling from `Employee.js` to the `Header.js` -> `<div className='bg-gray-300 min-h-screen'>{props.children}</div>`.
+- We did some more tailwind css styling down below: (this will center the website nicely when zoomed out and set the bg correctly) 
+```
+<div className='bg-gray-300'>
+    <div className='max-w-7xl mx-auto min-h-screen px-2 py-2'>{props.children}</div>
+</div>
+```
+# #########################################################################################
 # Part.14 - Create an Active Page Link in Navbar
 
 There are better react components that we can use for links than `<a>..</a>`.
