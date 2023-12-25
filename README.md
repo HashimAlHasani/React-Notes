@@ -1,7 +1,17 @@
 # #########################################################################################
 # Part.14 - Create an Active Page Link in Navbar
 
-
+There are better react components that we can use for links than `<a>..</a>`.
+- We will replace the `<a>..</a>` with `<NavLink>..</NavLink>`.
+- Instead of `href={item.href}` we changed it to `to={item.href}`.
+- We changed the className to:
+```
+className={({isActive}) => {
+  return `px-3 py-2 rounded-md text-sm font-medium no-underline ` + 
+  (isActive ? ' text-white bg-gray-900 ' : `hover:text-white text-gray-300 hover:bg-gray-700 `);
+}}
+```
+- The code above will check which NavLink is active and will then go to the ternary operation and highlight the background if `isActive` returns true. (Note leave a single space before the end of the string so that the css gets passed correctly without conflict)
 
 # #########################################################################################
 # Part.13 - Routing with React Router
