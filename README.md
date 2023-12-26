@@ -1,4 +1,58 @@
 # #########################################################################################
+# Part.18 - Fetch an API to Display on Page
+
+- We moved the `Dictionary.js` to the pages folder.
+
+- We created a new page called `Definition.js`.
+
+- Often times for very good API we will need a key (gives us access). 
+
+- To make the API secure we need to use the API on the backend of an application and then connect to the backend.
+
+- We are going to use a free API from the internet that will not require a key.
+
+- We will make a request to the API using `fetch`, and the syntax for fetch:
+```
+fetch('')
+  .then((response) => response.json())
+  .then((date)=>console.log(date));
+```
+- We put the link to the API inside the brackets `fetch('API URL')...`.
+
+- Our API link that we are going to use is `https://api.dictionaryapi.dev/api/v2/entries/en/hello` which we got from `https://dictionaryapi.dev/`
+
+```
+useEffect(() => {
+  fetch('https://api.dictionaryapi.dev/api/v2/entries/en/hello')
+    .then((response) => response.json())
+    .then((data) => {
+      setWord(data[0].meanings);
+      console.log(data[0].meanings);
+    });
+    }, []);
+```
+
+- We traversed the `data` array in order to get what we want, hence, the meanings only.
+
+- We can return and output the definition on the screen by doing the following:
+```
+return (
+  <>
+    <h1>Here is a definition:</h1>
+    {word ? word.map((meaning) => {
+      return (
+        <p key={uuidv4()}>
+          {meaning.partOfSpeech + ': '}
+          {meaning.definitions[0].definition}
+        </p>
+      )
+    }): null}
+  </>
+)
+```
+- What we basically did above is that we returned a code block `<>..</>` and inside it we have a ternary operator that will check if a `word` is available, if it is available we will `map` through `word` and pass a callback function to `map` that will return the definition as we traverse the parameter `meaning`, if it is not available we will just pass in `null`.
+
+# #########################################################################################
 # Part.17 - useEffect Dependency Array Explained
 
 - Dependency Array: It allows us to restrict what state we care about for `useEffect` to be triggered.
@@ -11,7 +65,6 @@ useEffect(() => {
   console.log("State Updated", word)
 });
 ```
-
 - There are three examples to study for what we pass on as the second argument for the `useEffect()`:
 1. No Dependency array --> update for any state change
 ```
