@@ -20,7 +20,6 @@ fetch('')
 - We put the link to the API inside the brackets `fetch('API URL')...`.
 
 - Our API link that we are going to use is `https://api.dictionaryapi.dev/api/v2/entries/en/hello` which we got from `https://dictionaryapi.dev/`
-
 ```
 useEffect(() => {
   fetch('https://api.dictionaryapi.dev/api/v2/entries/en/hello')
@@ -31,7 +30,6 @@ useEffect(() => {
     });
     }, []);
 ```
-
 - We traversed the `data` array in order to get what we want, hence, the meanings only.
 
 - We can return and output the definition on the screen by doing the following:
