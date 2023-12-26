@@ -41,7 +41,7 @@ useEffect(() => {
   console.log("State Updated", word)
 });
 ```
-2. 
+2. Optional - Will be discussed later on.
 
 # #########################################################################################
 # Part.15 - Finishing up Our Header
