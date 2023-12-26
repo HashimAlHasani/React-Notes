@@ -1,4 +1,27 @@
 # #########################################################################################
+# Part.20 - Redirect with useNavigate Hook
+
+
+
+# #########################################################################################
+# Part.19 - URL Parameters in Router
+
+- We will use another hook called `useParams`.
+
+- `useParams`: This is used to pass parameters through the URL.
+
+Now in order to use it we are going to do the following:
+1. Import and assign it to a variable like this in `Definition.js`: `let {search} = useParams();`
+2. We will also append this variable to the API url we have in our `fetch` in `Definition.js`:
+```
+fetch('https://api.dictionaryapi.dev/api/v2/entries/en/' + search)
+```
+3. We are going copy and paste the definition Route and add to the new one `/:search` in `App.js`:
+```
+<Route path='/definition' element={<Definition/>} />
+<Route path='/definition/:search' element={<Definition/>} />
+```
+# #########################################################################################
 # Part.18 - Fetch an API to Display on Page
 
 - We moved the `Dictionary.js` to the pages folder.
