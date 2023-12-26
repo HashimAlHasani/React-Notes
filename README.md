@@ -1,4 +1,39 @@
 # #########################################################################################
+# Part.17 - useEffect Dependency Array Explained
+
+- Dependency Array: It allows us to restrict what state we care about for `useEffect` to be triggered.
+
+- Dependency array is the second argument that can be passed into `useEffect()`.
+
+- This is without having the second argument: (it just tells us that the state is updated, and then displays the state variable)
+```
+useEffect(() => {
+  console.log("State Updated", word)
+});
+```
+
+- There are three examples to study for what we pass on as the second argument for the `useEffect()`:
+1. No Dependency array --> update for any state change
+```
+useEffect(() => {
+  console.log("State Updated", word + ' ' +  word2);
+});
+```
+2. Empty Dependency array --> execute once
+```
+useEffect(() => {
+  console.log("State Updated", word + ' ' +  word2);
+}, []);
+```
+3. Passing in data --> only execute when those state variables are changed
+```
+useEffect(() => {
+  console.log("State Updated", word + ' ' +  word2);
+}, [word]);
+```
+- For `3.` the state variable `word2` will only execute once, however, since `word` is passed in the array it will update for any state change.
+
+# #########################################################################################
 # Part.16 - Intro to useEffect Hook
 
 `useEffect`: This is something that happens when you change something else. So, when you changed the state of the application we have side-effects that are executed and to do that we use the `useEffect` hook.
@@ -20,7 +55,7 @@ By default, effects run after every completed render, but you can choose to fire
 import { useState } from "react";
 
 export default function Dictionary(){
-    const [word, setWord] = useState("");
+    const [word, setWord] = useState('');
 
     return (
         <>
@@ -41,7 +76,7 @@ useEffect(() => {
   console.log("State Updated", word)
 });
 ```
-2. Optional - Will be discussed later on.
+2. Dependency array - Will be discussed later on.
 
 # #########################################################################################
 # Part.15 - Finishing up Our Header
