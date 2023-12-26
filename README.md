@@ -28,7 +28,7 @@ useEffect(() => {
       setWord(data[0].meanings);
       console.log(data[0].meanings);
     });
-    }, []);
+}, []);
 ```
 - We traversed the `data` array in order to get what we want, hence, the meanings only.
 
