@@ -1,7 +1,49 @@
 # #########################################################################################
 # Part.20 - Redirect with useNavigate Hook
 
+- We will use another hook called `useNavigate`.
 
+- `useNavigate`: It allows us to force the user to visit a new page on our application, however, it is different than a link; a link the user actually has to click, whereas `useNavigate` we can put this inside event handlers.
+
+- We are going to create a search bar, user types something in, slaps the search button and force them to go to a new page.
+
+- We removed the Route `<Route path='/definition' element={<Definition/>} />`, and this means that we are required to pass in data.
+
+- We will make the `<Route path='/dictionary' element={<Dictionary/>} />` page directs us to the `<Route path='/definition/:search' element={<Definition/>} />` page.
+
+- We firstly modified the `Dictionary.js` to look like this:
+```
+import { useState, useEffect } from "react";
+
+export default function Dictionary(){
+    const [word, setWord] = useState('');
+
+    return (
+        <>
+            <input type="text" onChange={(e) => {
+                setWord(e.target.value);
+            }}/>
+        </>
+    )
+}
+```
+- We added after the `<input>...</input>` and html `<button>...</button>`:
+```
+<button onClick={() => {
+  console.log('click');
+}}>Search</button>
+```
+- We might need to install react router dom if we don't already have it by simply typing in the command:
+```
+npm install react-router-dom
+```
+- We need to assign `useNavigate()` to a variable: `const navigate = useNavigate();` and then pass it onto the onClick method:
+```
+<button onClick={() => {
+  navigate('/definition/' + word);
+}}>Search</button>
+```
+- Adding this `navigate('/definition/' + word, { replace: true });`, focus on `{replace: true}` as it will manage how the history of the application works by replacing our current spot in the history
 
 # #########################################################################################
 # Part.19 - URL Parameters in Router
