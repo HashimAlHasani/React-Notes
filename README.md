@@ -1,7 +1,47 @@
 # #########################################################################################
 # Part.16 - Intro to useEffect Hook
 
+`useEffect`: This is something that happens when you change something else. So, when you changed the state of the application we have side-effects that are executed and to do that we use the `useEffect` hook.
 
+Mutations, subscriptions, timers, logging and other side effects are not allowed inside the main body of a funciton component (referred to as React's render phase). Doing so will elad to confusing bugs and inconsistencies in the UI.
+
+Instead, use `useEffect`. The function passed to useEffect will run after the render is committed to the screen. Think of effects as an escape hatch from React's purely functional world into the imperative world.
+
+By default, effects run after every completed render, but you can choose to fire them only when certain values have changed.
+
+- Note: `<React.StrictMode>..</React.StrictMode>` will render our components twice, and we are using it in `index.js`.
+- Note: `setWord()` is asynchronous and it is not guaranteed to have that value immediately after.
+- Note: on the other hand `useEFfect()` will depend on all of the state currently and we can be sure that the state is updated as this executes after the state is updated
+- Note: make sure to define the `useEffect()` inside the `{ }` of our default function.
+- Note: make sure to define it after any state, and this has to do with the dependencies as well.
+
+- We created a new component called `Dictionary.js`, it is irrelevant to the employees/customers stuff.
+```
+import { useState } from "react";
+
+export default function Dictionary(){
+    const [word, setWord] = useState("");
+
+    return (
+        <>
+            <input type="text" onChange={(e) => {
+                setWord(e.target.value);
+            }}/>
+            <h1>Let's get the definition for {word}</h1>
+        </>
+    )
+}
+```
+- So what the code above basically do for now is just take an input and dynamically add it to the sentence in `<h1>..</h1>` tag.
+
+- `useEffect()` takes two parameters:
+1. A callback function (we use an arrow function and code our function inside it):
+```
+useEffect(() => {
+  console.log("State Updated", word)
+});
+```
+2. 
 
 # #########################################################################################
 # Part.15 - Finishing up Our Header
