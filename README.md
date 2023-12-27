@@ -1,4 +1,56 @@
 # #########################################################################################
+# Part.23 - Build and Style a Search Component
+
+- In `Dictionary.js` we removed the `{ replace: true }`, as we don't want to replace the history spot for us.
+- We also changed the `return` of the `defautl function Dictionary()` in order to make an `Enter` key-stroke press our button:
+```
+return (
+    <form onSubmit={() => {
+        navigate('/definition/' + word);
+    }}>
+        <input type="text" onChange={(e) => {
+            setWord(e.target.value);
+        }}/>
+        <button>Search</button>
+    </form>
+)
+```
+- We added the following CSS styling to our `<form>`/`<input>`/`<button>`
+```
+return (
+    <form className="flex space-between space-x-2 max-w-[300px]"
+    onSubmit={() => {
+        navigate('/definition/' + word);
+    }}>
+        <input
+        className="shrink min-w-0 px-2 py-1 rounded"
+        placeholder="Dinosaur"
+        type="text" onChange={(e) => {
+            setWord(e.target.value);
+        }}/>
+        <button
+        className="bg-purple-600 hover:bg-purple-700 text-white font-bold py-1 px-2 rounded">Search</button>
+    </form>
+)
+```
+- We also created a new component file called `DefinitionSearch.js`, we will copy all of the cut all the code of `Dictionary.js` and paste it inside the newly created component `DefinitonSearch.js` and our `Dictionary.js` will look like this:
+```
+import DefinitionSearch from "../components/DefinitionSearch";
+
+export default function Dictionary(){
+    return (
+        <div className="flex justify-center">
+            <DefinitionSearch/>
+        </div>
+    );
+}
+```
+- We did the step above in order to make the search a component that we can reuse, for example, if we want the user to search for another definiton inside the `Definition.js` page. We can achieve this by adding in our `default function Definition()` return:
+```
+<p>Search again:</p>
+<DefinitionSearch/>
+```
+# #########################################################################################
 # Part.22 - Fetch Response Status Codes and Errors
 
 - There are other Status codes other than `404`:
