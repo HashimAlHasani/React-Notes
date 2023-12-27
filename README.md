@@ -1,4 +1,54 @@
 # #########################################################################################
+# Part.22 - Fetch Response Status Codes and Errors
+
+- There are other Status codes other than `404`:
+1. Informational responses (`100` - `199`)
+2. Successful respones (`200` - `299`)
+3. Redirection messages (`300` - `399`)
+4. Client error responses (`400` - `499`)
+5. Server error responses (`500` - `599`)
+
+- We changed the `fetch` method we had and added a `throw and catch` method to it as well to handle all types of error and Status codes:
+```
+const url = 'https://api.dictionaryapi.dev/api/v2/entries/en/' + search;
+
+fetch(url)
+  .then((response) => {
+      //console.log(response.status);
+      if (response.status === 404) {
+          setNotFound(true);
+      } else if (response.status === 401) {
+          navigate('/login')
+      } else if (response.status === 500) {
+          setError(true);
+      }
+
+      if(!response.ok){
+          setError(true);
+
+          throw new Error('Something went wrong');
+      }
+      return response.json();
+  })
+  .then((data) => {
+      setWord(data[0].meanings);
+  })
+  .catch((e) => {
+      console.log(e.message);
+});
+```
+- We also added an `if` statement incase an error occured that is was not specially handled as above:
+```
+if (error === true) {
+    return (
+        <>
+            <p>Something went wrong, try again?</p>
+            <Link to="/dictionary">Search another</Link>
+        </>
+    );
+}
+```
+# #########################################################################################
 # Part.21 - Create 404 (Not Found) Page
 
 - Firstly we need to check for a redirect, and we can do so in our `fetch` method in `Definition.js`.
