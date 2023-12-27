@@ -1,4 +1,96 @@
 # #########################################################################################
+# Part.21 - Create 404 (Not Found) Page
+
+- Firstly we need to check for a redirect, and we can do so in our `fetch` method in `Definition.js`.
+```
+useEffect(() => {
+  fetch('https://api.dictionaryapi.dev/api/v2/entries/en/' + search)
+    .then((response) => {
+      if(response.status === 404){
+        console.log(response.status);
+      }
+    return response.json();
+    })
+    .then((data) => {
+      setWord(data[0].meanings);
+    });
+}, []);
+```
+- We check above if the status of our response in our `fetch` is equal to `404` which is the same as the `404 error page not found`.
+
+- What we actually want to do if a `404` error occurs is to redirct the user of this page to a different page, and we can do so by doing the following:
+```
+useEffect(() => {
+  fetch('https://api.dictionaryapi.dev/api/v2/entries/en/' + search)
+    .then((response) => {
+        if(response.status === 404){
+          navigate('/404');
+        }
+        return response.json()
+    })
+    .then((data) => {
+      setWord(data[0].meanings);
+    });
+    }, []);
+```
+- We also changed the return of our `default function Definition()` to:
+```    
+return (
+  <>
+    {word ? (
+      <>
+        <h1>Here is a definition:</h1>
+        {word.map((meaning) => {
+          return (
+            <p key={uuidv4()}>
+              {meaning.partOfSpeech + ': '}
+              {meaning.definitions[0].definition}
+            </p>
+          );
+        })} 
+      </>
+    ) : null}
+  </>
+);
+```
+- We did the changes to the return above in order to prevent having the `<h1>..</h1>` show on screen when we get redirected to `/404`.
+
+- We created a new component called `NotFound.js`:
+```
+export default function NotFound(){
+    return <p> The page you are looking for was not found</p>
+}
+```
+- We also added in `App.js` 2 extra routes: `<Route path='/404' element={<NotFound/>} />` and `<Route path='*' element={<NotFound/>} />`, the second route is if we manually entered a path that doesn't exist it will direct to `<NotFound/>` component.
+
+- If we want the error url to stay and not show a `/404` path we can do the following in `Definition.js`:
+```
+const [notFound, setNotFound] = useState(false);
+```
+- and:
+```
+if(response.status === 404){
+  setNotFound(true);
+}
+```
+- and before the `default function Definition()` return:
+```
+if(notFound === true) {
+        return <NotFound/>;
+    }
+```
+- We added a link button on the NotFound component inside `Definition.js` that will get us back to dictionary when we click it:
+```
+if(notFound === true) {
+  return (
+    <>
+      <NotFound/>
+      <Link to='/dictionary'>Search Another</Link>
+    </>
+  );
+}
+```
+# #########################################################################################
 # Part.20 - Redirect with useNavigate Hook
 
 - We will use another hook called `useNavigate`.
@@ -27,7 +119,7 @@ export default function Dictionary(){
     )
 }
 ```
-- We added after the `<input>...</input>` and html `<button>...</button>`:
+- We added after the `<input>...</input>` an html `<button>...</button>`:
 ```
 <button onClick={() => {
   console.log('click');
