@@ -1,4 +1,30 @@
 # #########################################################################################
+# Part.24 - Setup a Django Backend (Full Stack App)
+
+- The backend is responsible for storing information in a database, which is how our application remembers.
+
+- Connecting to the backend from the front-end is going to be similar across all backend technologies.
+
+- The interface is usually built using a `REST API`, which is a great way of communication which has the ability to: (CRUD)
+1. Create infromation
+2. Read infromation
+3. Update infromation
+4. Delete infromation
+
+- The CRUD can be done no matter what backend software (NodeJS, ASP.NET, etc.) we are writing.
+
+- I downloaded python from `python.org`. We are going to use some python in order to code for our backend `Django`.
+
+- We created a new directory called `backend`.
+
+- We wrote this command inside our `/backend` directory: 
+- `python3 -m venv .venv`, this will create a virtual environment called `.venv`.
+- If the command above produced an error you can also use `py -3.12 -m venv .venv`. Be sure to check your `py --version`.
+- Then we need to activate by typing: `.venv\Scripts\activate`. We will `(.venv)` at the beginning of the line.
+
+- The virtual environment is the lense we look at our project through and it will tell us what packages we have installed and what versions to use for our application, so typically we will have a virtual environment for every project we build in python.
+
+# #########################################################################################
 # Part.23 - Build and Style a Search Component
 
 - In `Dictionary.js` we removed the `{ replace: true }`, as we don't want to replace the history spot for us.
