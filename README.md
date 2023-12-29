@@ -24,6 +24,16 @@
 
 - The virtual environment is the lense we look at our project through and it will tell us what packages we have installed and what versions to use for our application, so typically we will have a virtual environment for every project we build in python.
 
+- Note: we have to `.venv\Scripts\activate` (activate it) before we install packages.
+
+- To install packages we type into the command: `python -m pip install django`. Django is the framework that we are going to us to build our backend.
+
+- After installing we will have the command `django-admin` available to us.
+- It will list a lot of things but we are interested in `startproject` so we will type into the command: `django-admin startproject customers .`.
+- If we list our files now using `dir` we will see `customers` and `manage.py`. 
+- For the rest of our commands we are going to use the `manage.py` file. So we are going to type in is `py manage.py runserver`.
+- we can now see this printed on our cmd: `... http://127.0.0.1:8000/`, so we can now visit `localhost:8000` on our web-browser.
+
 # #########################################################################################
 # Part.23 - Build and Style a Search Component
 
