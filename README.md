@@ -1,4 +1,24 @@
 # #########################################################################################
+# Part.25 - Create a REST API Backend
+
+- What we want to do now is to open it in VSC, and get it up in version control (github).
+- To open it we can type in the command `Code .`.
+- To get it up in version control:
+  - `git init`
+  - `touch .gitignore` or `echo. > .gitignore`
+  - (search on google gitignore for django (toptal is recommended)) - copy and paste the code in `.gitignore` code in your project.
+  - `git add .`
+  - `git commit -m "initial project"`
+  - We created a new repository on github named `react-backend-django`
+  - `git remote add origin https://github.com/HashimAlHasani/react-backend-django.git`
+  - `git branch -M main`
+  - `git push -u origin main`
+
+- Note: the link for the backend repository is - `https://github.com/HashimAlHasani/react-backend-django.git`.
+
+
+
+# #########################################################################################
 # Part.24 - Setup a Django Backend (Full Stack App)
 
 - The backend is responsible for storing information in a database, which is how our application remembers.
