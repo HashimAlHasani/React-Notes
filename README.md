@@ -60,7 +60,7 @@ from customers import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/customer/', views.customers, name='customers')
+    path('api/customers/', views.customers, name='customers')
 ]
 ```
 - We are going to create a file in the customers folder called `views.py`:
