@@ -2,7 +2,7 @@
 # Part.25 - Create a REST API Backend
 
 - What we want to do now is to open it in VSC, and get it up in version control (github).
-- To open it we can type in the command `Code .`.
+- To open it we can type in the command `Code .`
 - To get it up in version control:
   - `git init`
   - `touch .gitignore` or `echo. > .gitignore`
@@ -14,9 +14,10 @@
   - `git branch -M main`
   - `git push -u origin main`
 
-- Note: the link for the backend repository is - `https://github.com/HashimAlHasani/react-backend-django.git`.
+- Note: the link for the backend repository is - `https://github.com/HashimAlHasani/react-backend-django.git`
 
-
+- We want now to install the framework by typing: `pip install django-rest-framework`
+- We can also upgrade our pip if needed by typing: `python.exe -m pip install --upgrade pip`
 
 # #########################################################################################
 # Part.24 - Setup a Django Backend (Full Stack App)
@@ -33,13 +34,13 @@
 
 - The CRUD can be done no matter what backend software (NodeJS, ASP.NET, etc.) we are writing.
 
-- I downloaded python from `python.org`. We are going to use some python in order to code for our backend `Django`.
+- I downloaded python from `python.org`. We are going to use some python in order to code for our backend `Django`
 
-- We created a new directory called `backend`.
+- We created a new directory called `backend`
 
 - We wrote this command inside our `/backend` directory: 
-- `python3 -m venv .venv`, this will create a virtual environment called `.venv`.
-- If the command above produced an error you can also use `py -3.12 -m venv .venv`. Be sure to check your `py --version`.
+- `python3 -m venv .venv`, this will create a virtual environment called `.venv`
+- If the command above produced an error you can also use `py -3.12 -m venv .venv`. Be sure to check your `py --version`
 - Then we need to activate by typing: `.venv\Scripts\activate`. We will `(.venv)` at the beginning of the line.
 
 - The virtual environment is the lense we look at our project through and it will tell us what packages we have installed and what versions to use for our application, so typically we will have a virtual environment for every project we build in python.
@@ -49,9 +50,9 @@
 - To install packages we type into the command: `python -m pip install django`. Django is the framework that we are going to us to build our backend.
 
 - After installing we will have the command `django-admin` available to us.
-- It will list a lot of things but we are interested in `startproject` so we will type into the command: `django-admin startproject customers .`.
-- If we list our files now using `dir` we will see `customers` and `manage.py`. 
-- For the rest of our commands we are going to use the `manage.py` file. So we are going to type in is `py manage.py runserver`.
+- It will list a lot of things but we are interested in `startproject` so we will type into the command: `django-admin startproject customers .`
+- If we list our files now using `dir` we will see `customers` and `manage.py`
+- For the rest of our commands we are going to use the `manage.py` file. So we are going to type in is `py manage.py runserver`
 - we can now see this printed on our cmd: `... http://127.0.0.1:8000/`, so we can now visit `localhost:8000` on our web-browser.
 
 # #########################################################################################
