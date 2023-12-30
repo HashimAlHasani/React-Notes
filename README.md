@@ -52,6 +52,50 @@ class Customer(models.Model):
 - Next we apply this migration to actually make this change to the database.
 - So we can type in the command `py manage.py migrate`, this will create the change on the database.
 
+- Now to create the URL Path mentioned above, we are going to open the file `urls.py`, we add some code to this file in order to have a url path to our customers folder:
+```
+from django.contrib import admin
+from django.urls import path
+from customers import views
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('api/customer/', views.customers, name='customers')
+]
+```
+- We are going to create a file in the customers folder called `views.py`:
+```
+def customers(request):
+  #invoke serializer and return to client
+  pass
+```
+- We will go back to the `customers()` function in the `views.py` file later.
+
+- We will need to add in the `settings.py` file, in the `INSTALLED_APPS = [...]` array, add `rest_framework` to the array.
+
+- We created a new file inside the customers folder called `serializers.py`:
+```
+from rest_framework import serializers
+from customers.models import Customer
+
+class CustomerSerializer(serializers.ModelSerializer):
+  class Meta:
+    model = Customer
+    fields = '__all__'
+```
+- Now we just have to use the serializer in the `views.py`:
+```
+from customers.models import Customer
+from django.http import JsonResponse
+from customers.serializers import CustomerSerializer
+
+def customers(request):
+  data = customers.objects.all()
+  serializer = CustomerSerializer(data, many=True)
+  return JsonResponse({'cusotmers': serializer.data})
+```
+- So what we are doing above is that we are taking the data and pass it through the serializer and then we use `serializer.data` to get the serialized version.
+
 # #########################################################################################
 # Part.24 - Setup a Django Backend (Full Stack App)
 
