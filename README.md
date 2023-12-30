@@ -19,6 +19,13 @@
 - We want now to install the framework by typing: `pip install django-rest-framework`
 - We can also upgrade our pip if needed by typing: `python.exe -m pip install --upgrade pip`
 
+- There is no changes in our VSC source control, so we have to create a file manually in order to keep an updated list.
+  - `pip freeze > requirements.txt` - this is the file name that will keep track on what packages we have installed
+  - `pip install -r requirements.txt` - if we want to use this project later we will do the equivalent of `npm install`.
+  - The command above is going to go throughth the `requirements.txt` and install every single package.
+  - Friendly reminder, whenever you update your packages that you have installed you want to add to the `requirements.txt` by issuing the `freeze` command again.
+
+
 # #########################################################################################
 # Part.24 - Setup a Django Backend (Full Stack App)
 
