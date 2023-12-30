@@ -25,6 +25,32 @@
   - The command above is going to go throughth the `requirements.txt` and install every single package.
   - Friendly reminder, whenever you update your packages that you have installed you want to add to the `requirements.txt` by issuing the `freeze` command again.
 
+- REST API: is basically an agreed way of transferring data between applications. This will allow us to use (CRUD), and it will be going in a JSON format.
+
+- Now we are going to create a:
+  - Model: This is going to be representation of data. (another word for database table)
+  - URL Path: This is the location to access this data.
+  - Serializer: This is going to describe how we go from database object to JSON data.
+
+- We typed `py manage.py migrate` on the command, so when we create a model we will need to add that migration aswell.
+
+- We created a new file in `customers` called `models.py` that will describe any model that we need for this application.
+
+- inside `models.py` we wrote:
+```
+from django.db import models
+
+class Customer(models.Model):
+  name = models.CharField(max_length=200)
+  industry = models.CharField(max_length=100)
+```
+- Note make sure that there is an indent as it is important in python.
+
+- Then we need to make sure to add in the `settings.py` file, in the `INSTALLED_APPS = [...]` array, add `customers` to the array.
+- We then need to `python manage.py makemigrations customers` in our command.
+- We will then get a new `migrations` folder inside it a file called `0001_initial.py` that describes the changes to the database.
+- Next we apply this migration to actually make this change to the database.
+- So we can type in the command `py manage.py migrate`, this will create the change on the database.
 
 # #########################################################################################
 # Part.24 - Setup a Django Backend (Full Stack App)
