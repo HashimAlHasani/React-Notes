@@ -90,7 +90,7 @@ from django.http import JsonResponse
 from customers.serializers import CustomerSerializer
 
 def customers(request):
-  data = customers.objects.all()
+  data = Customer.objects.all()
   serializer = CustomerSerializer(data, many=True)
   return JsonResponse({'cusotmers': serializer.data})
 ```
