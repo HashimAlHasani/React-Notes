@@ -96,6 +96,10 @@ def customers(request):
 ```
 - So what we are doing above is that we are taking the data and pass it through the serializer and then we use `serializer.data` to get the serialized version.
 
+- In order to view our database we need to pass in `/api/customers/` to our `localhost:8000` url, so open on the browser:
+```
+http://localhost:8000/api/customers/
+```
 # #########################################################################################
 # Part.24 - Setup a Django Backend (Full Stack App)
 
