@@ -1,4 +1,9 @@
 # #########################################################################################
+# Part.26 - 
+
+
+
+# #########################################################################################
 # Part.25 - Create a REST API Backend
 
 - What we want to do now is to open it in VSC, and get it up in version control (github).
@@ -133,7 +138,7 @@ http://localhost:8000/api/customers/
 - After installing we will have the command `django-admin` available to us.
 - It will list a lot of things but we are interested in `startproject` so we will type into the command: `django-admin startproject customers .`
 - If we list our files now using `dir` we will see `customers` and `manage.py`
-- For the rest of our commands we are going to use the `manage.py` file. So we are going to type in is `py manage.py runserver`
+- For the rest of our commands we are going to use the `manage.py` file. So we are going to type in: `py manage.py runserver`
 - we can now see this printed on our cmd: `... http://127.0.0.1:8000/`, so we can now visit `localhost:8000` on our web-browser.
 
 # #########################################################################################
