@@ -1,4 +1,61 @@
 # #########################################################################################
+# Part.28 - Create a Details Page
+
+
+
+
+# #########################################################################################
+# Part.27 - Create a Details by ID API
+
+We want to be able to get a customer first by identifying the id in the link `http://localhost:8000/api/customers/`, so when we insert an url parameter like `http://localhost:8000/api/customers/1` we want to get the customer with ID = 1.
+
+To do so we will need to modify 2 files:
+1. First the `urls.py`: (we added the last path, and to parameterize the url we did `<int:id>`)
+```
+from django.contrib import admin
+from django.urls import path
+from customers import views
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('api/customers/', views.customers, name='customers'),
+    path('api/customers/<int:id>', views.customer, name='customer')
+]
+```
+2. Second the `views.py`: (we added the single customer function, that would take the `<int:id>` in the `urls.py` as a parameter, and return a single `customer`)
+```
+from customers.models import Customer
+from django.http import JsonResponse
+from customers.serializers import CustomerSerializer
+
+def customers(request):
+    data = Customer.objects.all()
+    serializer = CustomerSerializer(data, many=True)
+    return JsonResponse({'customers': serializer.data})
+
+def customer(request, id):
+    data = Customer.objects.get(pk=id)
+    serializer = CustomerSerializer(data)
+    return JsonResponse({'customer': serializer.data})
+```
+- Now, we can make requests to this endpoint and substitute some value whatever we want on the front-end.
+- Now in the `Customers.js` in our React application, we can link it.
+- We made some changes to the return in the `customers.js`: (upon clicking any of our customers it will redirect us to `"/customers/" + customer.id` which is not yet implemented)
+```
+return (
+    <>
+        <h1>Here are our customers:</h1>
+        {customers ? customers.map((customer) => {
+            return (
+            <p>
+                <Link to={"/customers/" + customer.id}>{customer.name}</Link>
+            </p>
+            );
+        }) : null}
+    </>
+);
+```
+# #########################################################################################
 # Part.26 - Consume Backend API
 
 What we will do:
