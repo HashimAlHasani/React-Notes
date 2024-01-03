@@ -1,9 +1,63 @@
 # #########################################################################################
+# Part.29 - Return 404 From Backend API (Django)
+
+
+
+# #########################################################################################
 # Part.28 - Create a Details Page
 
+- We are going to create a new page for an individual customer, in the `pages` folder, and we'll name it `Customer.js`, and it will be kind of similar to the `Definition.js` page, because in the `Definition.js` we passed in a search term in the url, and used it to get details on a specific element:
+```
+const url = 'https://api.dictionaryapi.dev/api/v2/entries/en/' + search;
+```
+- our `Customer.js`:
+```
+import { useParams } from "react-router-dom"
 
+export default function Customer(){
+    const { id } = useParams();
+    
+    return(
+        <>
+            <p>{id}</p>
+        </>
+    )
+}
+```
+- We need to deal with the routing now in our `App.js`: (added the `<Route/>` below)
+```
+<Route path='/customers/:id' element={<Customer/>} />
+```
+- Now, when we visit the page we will see the `id` only displayed on the page, so what we should do now is to take this `id` and make a request to the appropriate API endpoint and we can do this by appending the `id` to the `url` for the request. To do this we need it to happen immediately, one time so we are going to use the `useEffect()` hook in `Customer.js`:
+```
+import { useEffect, useState } from "react";
+import { Link, useParams } from "react-router-dom"
 
+export default function Customer(){
+    const { id } = useParams();
+    const [customer, setCustomer] = useState();
 
+    useEffect(() => {
+        const url = 'http://localhost:8000/api/customers/' + id;
+        fetch(url)
+        .then((response) => response.json())
+        .then((data) => {
+            setCustomer(data.customer);
+        });
+    }, []);
+    return (
+        <>
+            {customer ? 
+            <div>
+                <p>{customer.id}</p>
+                <p>{customer.name}</p>
+                <p>{customer.industry}</p>
+            </div> : null}
+            <Link to="/customers">Go Back</Link>
+        </>
+    )
+}
+```
 # #########################################################################################
 # Part.27 - Create a Details by ID API
 
