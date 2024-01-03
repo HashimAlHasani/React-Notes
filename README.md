@@ -1,7 +1,68 @@
 # #########################################################################################
-# Part.26 - 
+# Part.26 - Consume Backend API
 
+What we will do:
+1. How to put data in our database.
+2. Get that data to show up in our API.
+3. How to request for that data in our React Application.
 
+We created a new file inside `customers` folder and named it `admin.py`. This file we can describe an admin site that allows us to have CRUD access to the database without too much extra effort. 
+
+- So if we type in the browser `http://localhost:8000/admin` it will take us into an admin login page.
+- We need now to create an account from the terminal, by typing: `py manage.py createsuperuser`
+- We will then fill the username, email-address, password, confirm password.
+- go back to the `http://localhost:8000/admin` and log-in using the just created credentials.
+- We want the `admin.py` to configure the admin page by showing our table on the `http://localhost:8000/admin`
+- Our `admin.py` will look like:
+```
+from django.contrib import admin
+from customers.models import Customer
+
+admin.site.register(Customer) 
+```
+- We can access the Customers table from the `http://localhost:8000/admin` and we will see an add customer button, we then can add customers (we'll need to fill in their name and industry and then click save) to our customers table.
+- After adding an amount of customers we can view our API by typing `http://localhost:8000/api/customers/` into our browser.
+
+- Now we need to consume our API from our React Application (it will be something similar to `Definition.js` in our React application)
+- We'll use a `useEffect()` hook with `fetch()` inside in our `Customers.js`, and we have it set up in the `App.js` that when someone visits `/customers` it will render the `<Customers/>` component.
+- Our `Customers.js` will look like:
+```
+import { useEffect, useState } from "react";
+
+export default function Customers(){
+    const [customers, setCustomers] = useState();
+
+    useEffect(() => {
+        fetch('http://localhost:8000/api/customers/')
+        .then((response) => response.json())
+        .then((data) => {
+            console.log(data);
+            setCustomers(data.customers);
+        });
+    }, []);
+    return (
+        <>
+            <h1>Here are our customers:</h1>
+            {customers ? customers.map((customer) => {
+                return <p>{customer.name}</p>;
+            }) : null}
+        </>
+    );
+}
+```
+- This won't work because the fetch request comes from an origin that is not explicitly allowed, to fix it we need to install a package to configure cors.
+- So in our backend code, we need to type in the command: `pip install django-cors-headers`, then we'll need to type `pip freeze > requirements.txt`.
+- We'll then need to add in the `settings.py` in the `INSTALLED_APPS=[...]` array `"corsheaders",`
+- We'll also need to add in the `settings.py` in the `MIDDLEWARE=[...]` array:
+```
+`corsheaders.middleware.CorsMiddleware`,
+`django.middleware.common.CommonMiddleware`,
+```
+- Then we'll need to create an array in `settings.py`:
+```
+CORS_ALLOWED_ORIGINS = ['http://localhost:3000']
+```
+- We'll need to restart the django server by exiting and `py manage.py runserver` again.
 
 # #########################################################################################
 # Part.25 - Create a REST API Backend
@@ -97,7 +158,7 @@ from customers.serializers import CustomerSerializer
 def customers(request):
   data = Customer.objects.all()
   serializer = CustomerSerializer(data, many=True)
-  return JsonResponse({'cusotmers': serializer.data})
+  return JsonResponse({'customers': serializer.data})
 ```
 - So what we are doing above is that we are taking the data and pass it through the serializer and then we use `serializer.data` to get the serialized version.
 
