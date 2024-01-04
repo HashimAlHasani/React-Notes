@@ -1,8 +1,62 @@
 # #########################################################################################
 # Part.29 - Return 404 From Backend API (Django)
 
-
-
+- We will check for a `404` in the `Customer.js`
+- Firstly we need to edit the backend in the `views.py` file: (we'll try to get the data, if we fail, we'll go the django `Http404` with a message `Customer Does not exist`)
+```
+def customer(request, id):
+    try:
+        data = Customer.objects.get(pk=id)
+    except Customer.DoesNotExist:
+        raise Http404('Customer Does not exist')
+    serializer = CustomerSerializer(data)
+    return JsonResponse({'customer': serializer.data})
+```
+- We have 2 options to deal with the `404` error:
+1. Redirect to a 404 page (new URL): (in `Customer.js`)
+```
+.then((response) => {
+    if(response.status === 404){
+        //redirect to a 404 page (new URL)
+        navigate('/404');
+        //render a 404 component in this page
+    }
+    response.json()
+})
+```
+2. Render a 404 component in this page: (in `Customer.js`)
+```
+const [notFound, setNotFound] = useState();
+```
+in the `.then(response)`:
+```
+if(response.status === 404){
+    //render a 404 component in this page
+    setNotFound(true);
+}
+return response.json()
+```
+in the function `return(<>...</>)`:
+```
+{notFound ? <NotFound/> : null}
+```
+or
+```
+{notFound ? <p> The customer with id {id} was not found</p> : null}
+```
+- Now, we want to re-arrange our urls so that we don't have duplicate urls throughout our application.
+  - inside the `src` folder we'll create a file named `shared.js`:
+  ```
+  export const baseUrl = 'http://localhost:8000/';
+  ```
+  - inside `Customer.js` we change the `const url` to:
+  ```
+  const url = baseUrl + 'api/customers/' + id;
+  ```
+  - inside `Customers.js` we change the url to:
+  ```
+  fetch(baseUrl + 'api/customers/')
+  ```
 # #########################################################################################
 # Part.28 - Create a Details Page
 
