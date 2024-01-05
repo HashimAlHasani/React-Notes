@@ -1,4 +1,62 @@
 # #########################################################################################
+# Part.31 - DELETE Request with Fetch
+
+We need now to match our front-end with our back-end, so we will create a delete button on our webpage that when clicked it will redirect back to the list of customers without the customer we just deleted, and this will also delete on the backend too.
+
+- We had an error in the `Customers.js` so we did some re-arrangment and made the customers in an `<ul>..</ul>` and inside each `<li>` we added the key parameter.
+```
+return (
+    <>
+        <h1>Here are our customers:</h1>
+        <ul>
+            {customers ? customers.map((customer) => {
+                return (
+                <li key={customer.id}>
+                    <Link to={"/customers/" + customer.id}>
+                        {customer.name}
+                    </Link>
+                </li>
+                );
+            }) : null}
+        </ul>
+    </>
+);
+```
+- We also added the delete `<button>...</button>` inside `Customer.js`.
+- We also added the delete functionality too.
+- We also added that we are making a json request with using the key `headers:{...}` in `fetch()`.
+```
+return (
+    <>
+    {notFound ? <p> The customer with id {id} was not found</p> : null}
+        {customer ? 
+        <div>
+            <p>{customer.id}</p>
+            <p>{customer.name}</p>
+            <p>{customer.industry}</p>
+        </div> : null}
+        <button onClick={() => {
+            const url = baseUrl + '/api/customers/' + id;
+            fetch(url, {
+                method: 'DELETE', 
+                headers: {
+                    'Content-Type': 'application/json'
+            },
+        })
+            .then((response) => {
+                if(!response.ok){
+                    throw new Error('Something went wrong')
+                }
+                navigate('/customers');
+            })
+            .catch((e) => console.log(e));
+        }}>Delete</button>
+        <br/>
+        <Link to="/customers">Go Back</Link>
+    </>
+)
+```
+# #########################################################################################
 # Part.30 - Code a Full CRUD API (Create, Read, Update, Delete)
 
 - There is a better suggested way to do the `Http404` and `JsonResponse` in our `views.py` which is
