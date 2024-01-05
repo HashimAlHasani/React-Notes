@@ -1,9 +1,93 @@
 # #########################################################################################
 # Part.30 - Code a Full CRUD API (Create, Read, Update, Delete)
 
-
-
-
+- There is a better suggested way to do the `Http404` and `JsonResponse` in our `views.py` which is
+  - First we will need to do these imports inside the `views.py`:
+  ```
+  from rest_framework.decorators import api_view
+  from rest_framework.response import Response
+  from rest_framework import status
+  ```
+  - We can use the `Response` we just imported to do all of our different responses whether it is a `JsonResponse` or a `404` or even an `html`.
+  - The `api_view` says which methods are allowed.
+  - The `status` will give us bunch of options for status codes.
+  - Then, above our `def customer()` function, we will define an API that can take `["GET", "POST", "DELETE"]` requests, within an API decorator `@api_view()` that just describes functionality for this function: 
+  ```
+  @api_view(['GET', 'POST', 'DELETE'])
+  ```
+  - We changed the `def customer()` function in `views.py`:
+  ```
+  def customer(request, id):
+    try:
+        data = Customer.objects.get(pk=id)
+    except Customer.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    serializer = CustomerSerializer(data)
+    return Response({'customer': serializer.data})
+  ```
+- You will see the difference when you visit `http://localhost:8000/api/customers/3`.
+- We will see that we have different buttons such as `DELETE`, `OPTIONS`, `GET`, `POST`, however, we still didn't implement their functionality.
+- We already have `GET` method implemented, we just have to put it under a suitable if statement, and we will implement the `DELETE` method:
+```
+@api_view(['GET', 'POST', 'DELETE'])
+def customer(request, id):
+    try:
+        data = Customer.objects.get(pk=id)
+    except Customer.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    
+    if request.method == 'GET':        
+        serializer = CustomerSerializer(data)
+        return Response({'customer': serializer.data})
+    elif request.method == 'DELETE':
+        data.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+```
+- We also changed the `def customers()` function in `views.py`:
+```
+@api_view(['GET', 'POST'])
+def customers(request):
+    data = Customer.objects.all()
+    serializer = CustomerSerializer(data, many=True)
+    return Response({'customers': serializer.data})
+```
+- We will implement the `POST` method, which is used to edit/add the data of a specific customer:
+```
+@api_view(['GET', 'POST', 'DELETE'])
+def customer(request, id):
+    try:
+        data = Customer.objects.get(pk=id)
+    except Customer.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    
+    if request.method == 'GET':        
+        serializer = CustomerSerializer(data)
+        return Response({'customer': serializer.data})
+    elif request.method == 'DELETE':
+        data.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+    elif request.method == 'POST':
+        serializer = CustomerSerializer(data, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'customer': serializer.data})
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+```
+- Adding a new element to the list will refer to `def customers()` function since it is the list of our customers, and we need to implement the `POST` method for it:
+```
+@api_view(['GET', 'POST'])
+def customers(request):
+    if request.method == 'GET': 
+        data = Customer.objects.all()        
+        serializer = CustomerSerializer(data, many=True)
+        return Response({'customers': serializer.data})
+    elif request.method == 'POST':
+        serializer = CustomerSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'customer': serializer.data}, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+```
 # #########################################################################################
 # Part.29 - Return 404 From Backend API (Django)
 
