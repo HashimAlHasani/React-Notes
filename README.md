@@ -1,4 +1,42 @@
 # #########################################################################################
+# Part.32 - Popup Modal to Add Data (POST)
+
+- We want to do a similar thing to `AddEmployee.js` in the customers sections, so we'll be using some similar code of `AddEmployee.js`.
+- We created inside `components` folder a `AddCustomer.js` file, and copied `AddEmployee.js` code into it, but we did the necessary name changes.
+- We also called `AddCustomer.js` in `Customers.js` after the `</ul>` we wrote: 
+```
+<AddCustomer newCustomer={newCustomer}/>
+```
+- For the `AddCustomer.js`:
+  - We changed `full name` to `name`.
+  - We changed `role` to `industry`.
+  - We removed the `img` `div` since it is not needed in here.
+  - We changed `employee` to `customer`.
+
+- We also implemented the `function newCustomer()` in `Customers.js`:
+```
+function newCustomer(name, industry){
+    const data = {name: name, industry: industry};
+    const url = baseUrl + 'api/customers/';
+    fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    }).then((response) => {
+        if(!response.ok){
+            throw new Error('Something went wrong!')
+        }
+        return response.json();
+    }).then((data) => {
+        //assume the add successful
+        //hide the modal
+        //make sure the list is updated appropriately
+    }).catch((e) => console.log(e));
+}
+```
+# #########################################################################################
 # Part.31 - DELETE Request with Fetch
 
 We need now to match our front-end with our back-end, so we will create a delete button on our webpage that when clicked it will redirect back to the list of customers without the customer we just deleted, and this will also delete on the backend too.
