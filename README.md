@@ -1,4 +1,47 @@
 # #########################################################################################
+# Part.33 - Close Modal on POST Success (and Add Result to State)
+
+- We tracked the state of `show` (which shows/hides the modal) from the parent component by doing in `Customers.js`:
+```
+const [show, setShow] = useState(false);
+```
+and at the bottom:
+```
+<AddCustomer newCustomer={newCustomer} show={show}/>
+```
+and in `AddCustomer.js`:
+```
+const [show, setShow] = useState(props.show);
+```
+and in `AddCustomer.js` too:
+```
+show={props.show}
+```
+- We also manage the `handleShow` and `handleClose` from the parent component too (`Customers.js`), we added a function called `function toggleShow()` in `Customers.js`:
+```    
+function toggleShow(){
+    setShow(!show);
+}
+```
+we also passed it onto `<AddCustomer../>`:
+```
+<AddCustomer newCustomer={newCustomer} show={show} toggleShow={toggleShow}/>
+```
+and in `AddCustomer.js` we replaced `handleShow, handleClose` with 
+```
+props.toggleShow
+```
+- We removed the `onClick` from the add `<button>` because we need to close out of it only if the add is successful.
+- We called the `toggleShow()` function in the `Customers.js` file, in `.then(data)` section, so when we hit `Add` it will close the modal. 
+
+- Now what we want is that when we add a customer it will automatically update the list, instead of requiring a page refresh, to do so we needed to do some editing inside the `Customers.js` file in the `.then(data)` section:
+```
+.then((data) => {
+  toggleShow();
+  setCustomers([...customers, data.customer]);
+})
+```
+# #########################################################################################
 # Part.32 - Popup Modal to Add Data (POST)
 
 - We want to do a similar thing to `AddEmployee.js` in the customers sections, so we'll be using some similar code of `AddEmployee.js`.
