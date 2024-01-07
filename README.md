@@ -1,8 +1,92 @@
 # #########################################################################################
 # Part.34 - Dynamic Edit Form to Update API Data
 
+We want to create an input that would originally have old data, and we can type/delete in this input and when we click a save button the data in the database would be changed.
 
-
+- We are mainly going to work with `Customer.js` file, and the first thing we are going to do is change the customer
+`<p>` tags with `<input/>` tags like so:
+```
+<div>
+    <p className="m-2 block px-2">ID: {tempCustomer.id}</p> 
+    <input className="m-2 block px-2" type="text" value={customer.name}/>
+    <input className="m-2 block px-2" type="text" value={customer.industry}/>
+</div>
+```
+- Now we want to keep track of the old values and the new values, so to do this we need to have this setup in state:
+```
+const [tempCustomer, setTempCustomer] = useState();
+```
+- Also in the `.then(data)` section: (to keep track of the old value and have a copy of it)
+```
+setCustomer(data.customer);
+setTempCustomer(data.customer);
+```
+- We changed the `value` of the `<input/>`:
+```
+<div>
+    <p className="m-2 block px-2">ID: {tempCustomer.id}</p> 
+    <input className="m-2 block px-2" type="text" value={tempCustomer.name}/>
+    <input className="m-2 block px-2" type="text" value={tempCustomer.industry}/>
+</div>
+```
+- We added an `onChange` attribute to the name `<input/>`:
+```
+onChange={(e) => {
+    setTempCustomer({...tempCustomer, name: e.target.value});
+}}
+```
+- We can track the `customer` state and the `tempCustomer` state by `console.log(...)` them in a `useEffect()` hook:
+```
+useEffect(() => {
+    console.log('customer', customer);
+    console.log('tempCustomer', tempCustomer);
+});
+```
+- We also added the same `onChange` for the industry:
+```
+onChange={(e) => {
+    setTempCustomer({...tempCustomer, industry: e.target.value});
+}}
+```
+- Now, we want to have a save and cancel button to popup when someone makes a change, we'll create a state called `changed` to track if the `onChange` eventhandler is currently `true` or `false`:
+```
+const [changed, setchanged] = useState(false);
+```
+- We also added inside the `onChange`: `setChanged(true);`
+- So right after the industry `<input/>`:
+```
+{changed ? 
+<>
+    <button onClick={(e) => {
+        setTempCustomer({...customer});
+        setChanged(false);
+    }}>
+        Cancel
+    </button>
+    <button onClick={updateCustomer}>
+        Save
+    </button>
+</> : null}
+```
+- What we did in the code above is that we created 2 buttons, one for `Save` and one for `Cancel`, in the `Cancle` button we just set the temporary customar with the original customer data, and set changed to `false`, in the `Save` button, when clicked an `updateCustomer` function will triggered, where we coded the `updateCustomer` right above the function `return`:
+```
+function updateCustomer(){
+    const url = baseUrl + 'api/customers/' + id;
+    fetch(url, {
+        method: 'POST', 
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(tempCustomer)
+    }).then((response) => {
+        return response.json();
+    })
+    .then((data) => {
+        setCustomer(data.customer);
+        setChanged(false);
+    })
+    .catch()
+}
+```
+- the `function updateCustomer()` will perform a `POST` method which will save the customer with the new customer data into the database.
 
 # #########################################################################################
 # Part.33 - Close Modal on POST Success (and Add Result to State)
