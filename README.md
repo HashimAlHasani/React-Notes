@@ -1,8 +1,47 @@
 # #########################################################################################
 # Part.36 - Display Form Errors on Page
 
+- So when we face a `404` error while trying to search for a customer that is not in the our customers list, the delete button still persists.
+- In `Customer.js` we just moved the delete button to the `{customer ? ... : ...}` ternary operator, so that if the customer doesn't exist the delete button would not be shown.
 
-
+- We have another error, when we delete the text in one of the inputs (leave them empty) and press the save button, the form will randomly disappear.
+- To fix it in the `Customer.js` in the `updateCustomer()` function, in the `.then(response)`, we throw an error:
+```
+if (!response.ok) throw new Error("Something went wrong");
+```
+- We also need to catch the error in the `.catch()`:
+```
+(e) => {setError(e.message);}
+```
+- We want to display an error message so we made a state variable at the top:
+```
+const [error, setError] = useState();
+```
+- We also made another ternary operator right after the delete button:
+```
+{error ? <p>{error}</p> : null}
+```
+- However, it still doesn't go away when we correctly save, to fix it in `Customer.js` in `.then(data)` we would set the state of `error` to undefined:
+```
+setError(undefined);
+```
+- We can also check for all status errors that we might face other than `404`, so to do this we can in the `useEffect()` where we try to fetch the url, in the `.then(response)` we can add:
+```
+if (!response.ok){
+    throw new Error ('Something went wrong, try again later');
+}
+```
+- We will also need to `.catch()` the error we just threw:
+```
+.catch((e) => {
+    setError(e.message);
+})
+```
+- And we will need to also remove the error message when it is successful in the `.then(data)`:
+```
+setError(undefined);
+```
+- We also moved the error ternary operator outside the customer ternary operator, so it would show if no valid customer is there and there is a status error.
 
 # #########################################################################################
 # Part.35 - Comparing State Objects
