@@ -1,8 +1,67 @@
 # #########################################################################################
 # Part.38 - Intro to JWTs and Authentication (JSON Web Tokens)
 
+- JWTs - JSON Web Tokens (This will manage logging in with an API)
+- The log in process:
+    - Request to the server
+    - Give them username and a password
+    - The server will give us a token in response
+    - Will use the token in our API request
 
+- The tool we are going to use is called `Simple JWT` - `django-rest-framework-simplejwt.readthedocs.io`
+- To install it do the following:
+    - Navigate to the `backend` folder and activate `.venv` by typing `.venv\Scripts\activate`
+    - Type `pip install djangorestframework-simplejwt`
 
+- After you install, navigate to `settings.py`, and add an dictionary called `REST_FRAMEWORK`:
+```
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': ('rest_framework_simplejwt.authentication.JWTAuthentication',)
+}
+```
+- Now we can make a new path in the `urls.py` to get a token:
+```
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+
+urlpatterns = [
+    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    ...
+]
+```
+- Then open `http://localhost:8000/api/token/` on the browser, and you'll see that you have a username and password that you can input, write your credentials and click `POST` (these are the credentials you created your superuser with in part #26).
+- We will get a `refresh` and `access` tokens after clicking `POST`
+- We will include this `access` token with our requests to restricted API endpoints.
+- What is meant by restricted API endpoints, we want one so that users have to be authenticated to access.
+
+- Going back to our `views.py` we are going to use a new api decorator on top of both `customer()` and `customers()` functions:
+```
+@permission_classes([IsAuthenticated])
+```
+- We will need to import the following:
+```
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
+```
+- Important Note: the `@api_view` decorator needs to go above the `@permission_classes` decorator.
+
+- Now when we try to open `http://localhost:8000/api/customers/` we will get a `HTTP 401 Unauthorized` error, what we need to do now is to take the access token and include it in the request, and to do this we will need an API testing tool called `Postman`.
+
+- Download Postman from google.
+- After you download Postman, create an account and log in.
+- Press the `+` button, and change the request to `GET`
+- Write next to the `GET` the url which is `localhost:8000/api/customers` and press enter.
+    - you'll see at the terminal below, `detail": "Authentication credentials were not provided.`
+- Exactly as we expected, now we need to go the Authorization tab (under the url we just wrote)
+- Select from the `Type` drop down menu `Bearer Token`
+- On the right hand side you'll see an input for `Token`, insert the `access` token and press enter, or `Send`.
+    - You'll now access the API endpoint and see your data in the terminal below.
+
+- Now copy the `refresh` token, and go to `localhost:8000/api/token/refresh`, and you'll seen an input for the `refresh` token, copy and paste your `refresh` token in it and hit `POST`.
+    - This will give us a new `access` token
+    - So basically this `refresh` token allow us to get a new `access` token so our original `access` token expires frequently but we don't have to log in again with our username and password we can just keep track of that `refresh` token and use it as needed.
+    - This will basically give you access for a period of time (30min for example) but that 30 minutes will restart if you're still active because we're going to use that `refresh` token.
+    - So if you go away from your computer for 30 minutes, then you'll be kicked off, because at that point your `access` token and your `refresh` token will expire.
 
 # #########################################################################################
 # Part.37 - Tailwind CSS Form and Button Styling
