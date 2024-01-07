@@ -1,4 +1,26 @@
 # #########################################################################################
+# Part.35 - Comparing State Objects
+
+What we currently have is that when we add a letter then delete the letter we just added, we will still have the set changed state to equal to `true` and will have the Cancel and Save buttons shown.
+
+- What we will do is track if the strings are equal or not inside a `useEffect()` hook so that it would dynamically show the effect whenever a state change occurs:
+```
+useEffect(() => {
+    if (!customer) return;
+    if (!customer) return;
+
+    let equal = true;
+    if (customer.name !== tempCustomer.name) equal = false;
+    if (customer.industry !== tempCustomer.industry) equal = false;
+
+    if (equal) setChanged(false);
+});
+```
+- The `if (!customer) return` and `if (!customer) return` is a fix to a problem we would face which is that when we page refresh we won't get the initial values of `customer` because it is also coming from a `useEffect()`.
+
+- We also added some tailwind css to the buttons: `className="m-2"`
+
+# #########################################################################################
 # Part.34 - Dynamic Edit Form to Update API Data
 
 We want to create an input that would originally have old data, and we can type/delete in this input and when we click a save button the data in the database would be changed.
