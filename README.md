@@ -1,4 +1,10 @@
 # #########################################################################################
+# Part.38 - Intro to JWTs and Authentication (JSON Web Tokens)
+
+
+
+
+# #########################################################################################
 # Part.37 - Tailwind CSS Form and Button Styling
 
 - I'll push the new CSS styling to `https://github.com/HashimAlHasani/react` repository (it is public), so feel free to see what styling I have done.
