@@ -1,8 +1,58 @@
 # #########################################################################################
+# Part.44 - Auth Refresh Tokens
+
+
+
+
+# #########################################################################################
 # Part.43 - Create a Logout Button
 
+- Right now in `App.js` we have the `loggedIn` state set to `true` by default which doesn't really make sense.
+- What the fixes is actually going to do for us, is when we log in on 1 tab, and then open `localhost:3000/customers` on another tab, it should sustain our access and not ask us to log in again.
+- We can do 2 fixes:
+  - Check the localStorage for an `access` token, however, it may be expired.
+  ```
+  const [loggedIn, setLoggedIn] = useState(localStorage.access ? true : false);
+  ```
+  - Long term goal, use `refresh` token and if it works, stay logged in, otherwise, send to login page -> this will be implemented later on.
 
-
+- We changed the ternary operator for the `login` `logout` we previously had in `Header.js` and we created a new ternary operator that should work in a better way and allow us to actually log out:
+```
+{loggedIn ? (
+  <NavLink
+    to={"/login"}
+    onClick={() => {
+      setLoggedIn(false);
+      localStorage.clear();
+    }}
+    className="block rounded-md px-3 py-2 text-base font-medium no-underline text-gray-300 hover:bg-gray-700 hover:text-white "
+  >
+    Logout
+  </NavLink>
+) : (
+  <NavLink
+    to={"/login"}
+    onClick={() => {}}
+    className="block rounded-md px-3 py-2 text-base font-medium no-underline text-gray-300 hover:bg-gray-700 hover:text-white "
+  >
+    Login
+  </NavLink>
+)}
+```
+- What we also want to do is that anytime we set the `loggedIn` state to false, we'll also do `localStorage.clear()`.
+- In order to do this in `App.js` we created this function:
+```
+function changeLoggedIn(value) {
+  setLoggedIn(value);
+  if (value === false) {
+    localStorage.clear();
+  }
+}
+```
+- We also need to change what we passed in, from `setLoggedIn` to `changeLoggedIn`, in `App.js`:
+```
+<LoginContext.Provider value={[loggedIn, changeLoggedIn]}>
+```
 # #########################################################################################
 # Part.42 - useContext Hook Introduction
 
