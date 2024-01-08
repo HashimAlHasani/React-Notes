@@ -1,8 +1,92 @@
 # #########################################################################################
-# Part.42 - useContext Hook introduction
+# Part.42 - useContext Hook Introduction
 
+if we are working with some state, and we want the state to be used across the entire application, that is where `useContext()` can come in handy, this will prevent us from having to pass props down multiple layers, when we would want to us this:
+- A theme across the website.
+- Logging in.
+  - So instead of trying to figure out if the user is logged in/out on all of our different components of our website, we are going to create a context at the root level and surround our entire application with that code, so whether users are logged in or not will be accessible through the entire application.
 
+- We are going to change the `Calendar` in the dashboard to a log in/out button, and which value is shown depends on the current state of that user.
 
+- At first we need to create a state at the global level, and we will try to access it from one of our components.
+
+- in `App.js` we will firstly need to import:
+```
+import { createContext } from 'react';
+```
+- and then outside the `function App(){...}` we are going to write: (export will allow us to import this into other files)
+```
+export const LoginContext = createContext();
+```
+- we will also to include its tag arround our `<BrowserRouter>...</BrowserRouter>` and create a logged in state:
+```
+...
+import { createContext, useState } from "react";
+
+export const LoginContext = createContext();
+
+export default function App() {
+  const [loggedIn, setLoggedIn] = useState(true);
+
+  return (
+    <LoginContext.Provider value={loggedIn}>
+      <BrowserRouter>
+        <Header>
+          <Routes>
+            ...
+          </Routes>
+        </Header>
+      </BrowserRouter>
+    </LoginContext.Provider>
+  );
+}
+```
+- To apply this to one of our components for example the `Header.js`, we will go the `Header.js` import these:
+```
+import { useContext } from "react";
+import { LoginContext } from "../App";
+```
+- Then outside/above the `return(...)` we can:
+```
+const loggedIn = useContext(LoginContext);
+```
+- We want to add a functionality where we can toggle the `loggedIn` state value (we previously set it to default true), so in `App.js`:
+```
+<LoginContext.Provider value={[loggedIn, setLoggedIn]}>
+```
+and to use actually use it in the `Customers.js` page:
+```
+const [loggedIn, setLoggedIn] = useContext(LoginContext);
+```
+do not forget to do these imports in `Customers.js`:
+```
+import { useContext } from "react";
+import { LoginContext } from "../App";
+```
+also in `Customers.js`, we can add in the `fetch()` method in the `.then(data)` section if `response.status === 401` (which means unauthorized)
+```
+setLoggedIn(false);
+```
+- We are going to use this functionality in the `Header.js` to begin with we removed the Calendar from our navigation array:
+```
+const navigation = [
+  { name: "Employees", href: "/Employees" },
+  { name: "Customers", href: "/Customers" },
+  { name: "Dictionary", href: "/Dictionary" },
+];
+```
+- In `Login.js` we `setLoggedIn(true)`, if the log in is successful in `.then(data)` section.
+- In `Customers.js` we `setLoggedIn(false)` for every `if(response.status === 401)`.
+- In `Customer.js` we `setLoggedIn(false)` for every `if(response.status === 401)`.
+- In `Header.js` we added: (after the `navigation.map(...)` for both mobile and desktop design)
+```
+<NavLink
+  to={loggedIn ? "/logout" : "/login"}
+  className="block rounded-md px-3 py-2 text-base font-medium no-underline text-gray-300 hover:bg-gray-700 hover:text-white "
+>
+  {loggedIn ? "Logout" : "Login"}
+</NavLink>
+```
 # #########################################################################################
 # Part.41 - useLocation and useNavigate State (Redirect to Previous Page on Login)
 
