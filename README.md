@@ -1,9 +1,57 @@
 # #########################################################################################
+# Part.42 - useContext Hook introduction
+
+
+
+# #########################################################################################
 # Part.41 - useLocation and useNavigate State (Redirect to Previous Page on Login)
 
+- Our log-in form doesn't redirect to a new page after we log in.
+- We are going to send information to the login page to say where we came from, and this is going to be done by passing state with navigate.
+- our `useNavigate` hook takes another argument which will be an object, and inside the object we are going to have `state: {...}` in `Customers.js`:
+```
+navigate("/login", {
+  state: {
+    previousUrl: "/customers",
+  },
+});
+``` 
+- Now in the `Login.js` we are going to get the information, we'll be using a new hook called `useLocation()`, and it is imported from `react-router-dom`:
+```
+const location = useLocation();
+```
+- `console.log(location.state.previousUrl)` in a `useEffect()` hook would give us `/customers`, this is the value we want to use when we navigate, so now in the login event handler, in `Login.js` in the `fetch()` method in `.then(data)`
+we can type:
+```
+navigate(location.state.previousUrl);
+```
+- Don't forget to create a navigate variable at the top:
+```
+const navigate = useNavigate();
+```
+- Now, when we log in we will be directed to the `/customers` page.
 
+- Now, we want to generate the current url when we pass in the previous url, what we are doing now is that we are hard coding `/customers` in `Customers.js`, what we want to do is basically say the `previousUrl` is the `currentUrl`. How we can know that they are currently on the `customers` page, this can come from `location` as well, so `location.pathname` should give what we want:
+```
+navigate("/login", {
+  state: {
+    previousUrl: location.pathname,
+  },
+});
+```
+- Don't forget to write at the top `const location = useLocation();` to assign the hook to a variable.
 
+- Now, what we have to do is to copy this behaviour to any page that would redirect us to the login page, mostly in `Customer.js`.
+- So lets say we are not logged in and we tried to visit `localhost:3000/customers/13`, it would redirect us to the login page, when we log in successfully, it will redirect us to the `previousUrl` which is equal to `location.pathname` which is `localhost:3000/customers/13`
 
+- Now, we need to consider when we visit the `Login.js` directly, we don't have a `previousUrl`, so when we log in we might face an error, so to fix this issue we can do the following in the `.then(data)` section in `Login.js`:
+```
+navigate(
+  location?.state?.previousUrl
+    ? location.state.previousUrl
+    : "/customers"
+);
+```
 # #########################################################################################
 # Part.40 - localStorage and Bearer Auth Tokens
 
