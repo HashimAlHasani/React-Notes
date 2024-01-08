@@ -1,4 +1,116 @@
 # #########################################################################################
+# Part.40 - localStorage and Bearer Auth Tokens
+
+
+
+# #########################################################################################
+# Part.39 - Create a Login Page
+
+- We will focus now on the front-end authentication.
+
+- Now if we try to open `localhost:8000/api/customers`, since we are not authenticated we will get the error: `detail": "Authentication credentials were not provided.`
+- Also, on the front-end if we try to open the customers tab or `localhost:3000/customers` we will not be able to see the list of customers (`401 Unauthorized status code`).
+
+- Now, in the `Customers.js` what we need to do is add an if statement to handle the status code `401`, and we can do so in the `.then(response)` section in our `useEffect()` hook:
+```
+if (response.status === 401) {
+    navigate("/login");
+}
+```
+- We are also using the `useNavigate()` hook:
+```
+const navigate = useNavigate();
+```
+- So now whenever we are not logged in and try to open the customers tab it will redirect us to the `localhost:3000/login` or the login page.
+- We need to do the same in `Customer.js` when we try to access a specified customer such as `localhost:3000/customers/12`.
+
+- The next step is that we are going to make a log-in form then make a request to the backend to get the `access` token.
+
+- We are going to create in the `pages` folder a new page called `Login.js`.
+- We are also going to add the Routing in `App.js`: `<Route path="/login" element={<Login />} />`
+
+- We took the form we had in `Customer.js`, and pasted it in `Login.js`.
+- We changed `name` to `username`, and `industry` to `password`, and made proper edits for the form html.
+- We took some button designs from `Customers.js` and added a `Login` button and attached the button designs to it.
+- On submitting the form a function called `login` will be triggered.
+- The `login()` function will fetch the url, and the fetch will have a body parameter which will set the username and password, and this means we will need to use the `useState()` hook and assign 2 state variables one for username and one for password.
+- The `console.log(data);` we have will show us the `access` and `refresh` token if we log in using a valid account, if the credentials are wrong it will give us: `No active account found with the given credentials`
+- `Login.js`:
+```
+import { useState } from "react";
+import { baseUrl } from "../shared";
+
+export default function Login() {
+  const [username, setUsername] = useState();
+  const [password, setPassword] = useState();
+
+  function login(e) {
+    e.preventDefault();
+
+    const url = baseUrl + "api/token/";
+
+    fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        username: username,
+        password: password,
+      }),
+    })
+      .then((response) => {
+        return response.json();
+      })
+      .then((data) => {
+        console.log(data);
+      });
+  }
+
+  return (
+    <form className="m-2 w-full max-w-sm" id="customer" onSubmit={login}>
+      <div className="md:flex md:items-center mb-6">
+        <div className="md:w-1/4">
+          <label for="Username">Username</label>
+        </div>
+        <div className="md:w-3/4">
+          <input
+            className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
+            type="text"
+            id="username"
+            value={username}
+            onChange={(e) => {
+              setUsername(e.target.value);
+            }}
+          />
+        </div>
+      </div>
+      <div className="md:flex md:items-center mb-6">
+        <div className="md:w-1/4">
+          <label for="password">Password</label>
+        </div>
+        <div className="md:w-3/4">
+          <input
+            className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
+            id="password"
+            type="password"
+            value={password}
+            onChange={(e) => {
+              setPassword(e.target.value);
+            }}
+          />
+        </div>
+      </div>
+      <button className="bg-slate-800 hover:bg-slate-500 text-white font-bold py-2 px-4 rounded">
+        Login
+      </button>
+    </form>
+  );
+}
+```
+- We are now officially logged in, but we are not doing anything with the `access` token, so the page is not acting as we want, we now need to take the `access` token and include in any of our requests.
+
+# #########################################################################################
 # Part.38 - Intro to JWTs and Authentication (JSON Web Tokens)
 
 - JWTs - JSON Web Tokens (This will manage logging in with an API)
