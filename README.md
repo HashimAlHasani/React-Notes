@@ -29,7 +29,7 @@ export default function App() {
   const [loggedIn, setLoggedIn] = useState(true);
 
   return (
-    <LoginContext.Provider value={loggedIn}>
+    <LoginContext.Provider value={[loggedIn, setLoggedIn]}>
       <BrowserRouter>
         <Header>
           <Routes>
