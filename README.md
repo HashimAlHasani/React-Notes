@@ -1,8 +1,48 @@
 # #########################################################################################
 # Part.40 - localStorage and Bearer Auth Tokens
 
+- localStorage is a little database that stays on the browser of the client.
+- When we give an `access` token, so that people who log in can use our API, we want that `access` token to be used throughout our application, and that's going to be sent with every request.
+- So when I log in with a valid account I'll get an `access` token, so I want to take this value, save it somewhere (localStorage), and then use it for my future requests.
 
+- We added some code to set `access` and `refresh` tokens on the localStorage in `Customers.js` in the `.then(data)` section:
+```
+localStorage.setItem("access", data.access);
+localStorage.setItem("refresh", data.refresh);
+console.log(localStorage);
+```
+- Somethings you might see are whether the website is on light/dark mode, this can be stored on localStorage.
+- localStorage is saved temporarly, but is not guaranteed to be saved forever.
+- We can type on the browsers console:
+    - `localStorage.clear()`
+    - `localStorage`
+- We will see that the Storage length is 0, and this is similar to what we do when we log a user out (get rid of access and refresh properties).
 
+- Now since we have these values (`access` and `refresh` tokens) we can use them in another request to prove that we have access to the API.
+- For example to access the customers list, we can in `Customers.js` in the `fetch(url)` section, add an object parameter like so:
+```
+fetch(url, {
+    headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + localStorage.getItem("access"),
+    },
+})
+```
+- We will do the same for the `Customer.js` to access each individual customer.
+- We still have to do one more thing, the buttons we have (Cancel, Save, Delete) would give us `401 (Unauthorized)` errors.
+- To fix this add the if statement to each of the `fetch()` methods in the `.then(response)` section in `Customer.js`:
+```
+if (response.status === 401) {
+    navigate("/login");
+}
+```
+- Now, we just have to attach the access token, by adding the headers to each of the `fetch()` methods:
+```
+headers: {
+    "Content-Type": "application/json",
+    Authorization: "Bearer " + localStorage.getItem("access"),
+}
+```
 # #########################################################################################
 # Part.39 - Create a Login Page
 
@@ -41,8 +81,8 @@ import { useState } from "react";
 import { baseUrl } from "../shared";
 
 export default function Login() {
-  const [username, setUsername] = useState();
-  const [password, setPassword] = useState();
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
 
   function login(e) {
     e.preventDefault();
@@ -71,7 +111,7 @@ export default function Login() {
     <form className="m-2 w-full max-w-sm" id="customer" onSubmit={login}>
       <div className="md:flex md:items-center mb-6">
         <div className="md:w-1/4">
-          <label for="Username">Username</label>
+          <label htmlFor="username">Username</label>
         </div>
         <div className="md:w-3/4">
           <input
@@ -87,7 +127,7 @@ export default function Login() {
       </div>
       <div className="md:flex md:items-center mb-6">
         <div className="md:w-1/4">
-          <label for="password">Password</label>
+          <label htmlFor="password">Password</label>
         </div>
         <div className="md:w-3/4">
           <input
