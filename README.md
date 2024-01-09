@@ -1,8 +1,97 @@
 # #########################################################################################
-# Part.45 - 
+# Part.45 - User Register Form and API
 
+- In `urls.py` we added a new path:
+```
+path('api/register/', views.register, name='register'),
+```
+- In `views.py` we are going to create the register function:
+```
+def register():
+    pass
+```
+- In `serializers.py` we are going to define another serializer which is the user serializer:
+```
+from django.contrib.auth.models import User
 
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = '__all__'
+```
+- Also in `serializers.py` we are going to define a function called `create` inside the `UserSerializer` Class:
+```
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = '__all__'
 
+    def create(self, validated_data):
+        user = User.objects.create(
+            username=validated_data['username'],
+            email=validated_data['email']
+        )
+
+        user.set_password(validated_data['password'])
+        user.save()
+        return user
+```
+- In `views.py` make sure to import at first `UserSerializer` from `customers.serializers`, then in the register function:
+```
+@api_view(['POST'])
+def register(request):
+    serializer = UserSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(status=status.HTTP_201_CREATED)
+```
+- Now we can visit `localhost:8000/api/register`, and put in the Content text for example:
+```
+{
+"email": "hello@hello.com",
+"username": "Tomiisme",
+"password": "password"
+}
+```
+- Then we can hit post and see the `HTTP 201 Created`, then we can go to `localhost:8000/admin` go to the `Users` table and see that a new user is created.
+
+- In `pages` folder, we created a new file called `Register.js`, and copied `Login.js` code into it.
+  - We changed function name to `function Register()`
+  - Created a new state for email: `const [email, setEmail] = useState("");`
+  - Changed the url we are sending this to: `const url = baseUrl + 'api/register/';`
+  - In the fetch body attribute we added: `email: email,` in `JSON.stringify({...})`
+  - Added a new input in the form for the email. (copy paste username `div` and edit names)
+
+- We need now to return an `access` and `refresh` token on a successful register, so in `views.py`:
+```
+from rest_framework_simplejwt.tokens import RefreshToken
+```
+- We made changes to `def register()`:
+```
+@api_view(['POST'])
+def register(request):
+    serializer = UserSerializer(data=request.data)
+    if serializer.is_valid():
+        user = serializer.save()
+        refresh = RefreshToken.for_user(user)
+        tokens = {
+            'refresh': str(refresh),
+            'access': str(refresh.access_token)
+        }
+        return Response(tokens, status=status.HTTP_201_CREATED)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+```
+- In `App.js` we added a new Route for Register:
+```
+<Route path="/register/" element={<Register />} />
+```
+- In `Register.js` we added a `useEffect()` that will log users out if they visit this page:
+```
+useEffect(() => {
+  localStorage.clear();
+  setLoggedIn(false);
+}, []);
+```
 # #########################################################################################
 # Part.44 - Auth Refresh Tokens
 
