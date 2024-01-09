@@ -1,8 +1,95 @@
 # #########################################################################################
-# Part.46 - Create a Customer Hook (useFetch)
+# Part.47 - 
 
+# #########################################################################################
+# Part.46 - Create a Custom Hook (useFetch)
 
+If we ever have some functionality that we want to repeat throughout our application we create our own hook, on our case we are going to create a `useFetch()`, which is going to allow us to isolate all of the fetching logic in one location, and then anytime we need to get something from our API we can just use that hook and save a lot of lines of code.
 
+- To create the `useFetch()` custom hook, we are going to create a new folder inside the `src` folder called `hooks`.
+- Inside `hooks` folder we are going to create a file called `UseFetch.js`:
+```
+import { useState, useEffect } from "react";
+
+export default function useFetch(url) {
+  const [data, setData] = useState();
+  const [errorStatus, setErrorStatus] = useState();
+
+  useEffect(() => {
+    fetch(url)
+      .then((response) => {
+        if (!response.ok) {
+          throw response.status;
+        }
+        return response.json();
+      })
+      .then((data) => {
+        setData(data);
+      })
+      .catch((e) => {
+        setErrorStatus(e);
+      });
+  });
+
+  return [data, errorStatus];
+}
+```
+- The `UseFetch.js` will perform a basic fetch as we always do inside a `useEffect()` hook, and would use 2 state variables, one for the `data` and one for the `errorStatus`, and will return them as an array.
+
+- We will use our custom hook `useFetch()` in `Definition.js`, and after refactoring our code will look much cleaner and shorter:
+```
+import { useParams, Link } from "react-router-dom";
+import { v4 as uuidv4 } from "uuid";
+import NotFound from "../components/NotFound";
+import DefinitionSearch from "../components/DefinitionSearch";
+import useFetch from "../hooks/UseFetch";
+
+export default function Definition() {
+  let { search } = useParams();
+
+  const [word, errorStatus] = useFetch(
+    "https://api.dictionaryapi.dev/api/v2/entries/en/" + search
+  );
+
+  if (errorStatus === 404) {
+    return (
+      <>
+        <NotFound />
+        <Link to="/dictionary">Search another</Link>
+      </>
+    );
+  }
+
+  if (errorStatus) {
+    return (
+      <>
+        <p>Something went wrong, try again?</p>
+        <Link to="/dictionary">Search another</Link>
+      </>
+    );
+  }
+
+  return (
+    <>
+      {word?.[0]?.meanings ? (
+        <>
+          <h1>Here is a definition:</h1>
+          {word[0].meanings.map((meaning) => {
+            return (
+              <p key={uuidv4()}>
+                {meaning.partOfSpeech + ": "}
+                {meaning.definitions[0].definition}
+              </p>
+            );
+          })}
+          <p>Search again:</p>
+          <DefinitionSearch />
+        </>
+      ) : null}
+    </>
+  );
+}
+```
 # #########################################################################################
 # Part.45 - User Register Form and API
 
