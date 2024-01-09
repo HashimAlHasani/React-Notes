@@ -113,10 +113,9 @@ SIMPLE_JWT = {
 ```
 - In `settings.py` we can see `SECRET_KEY = '...'`, this is a Django SECRET_KEY, and it's important to keep this key confidential for security reasons. If it got leaked people will be able to generate their own tokens using the `SECRET_KEY` value.
 - One way we can make the `SECRET_KEY` more secure is by loading it from an environment variable: (we didn't implement this as this website is not for production but read more about it if you have a website for production)
+- This website will really help:
 ```
-import os
-
-SECRET_KEY = os.environ["SECRET_KEY"]
+https://dev.to/themfon/how-to-protect-your-django-projects-secret-key-2ac6
 ```
 - We are going to create a loop that will just execute every couple minutes to get a new `access` and `refresh` token. The loop executing time must be less than the `access` token expiration time.
 - In `App.js`, we are going to use a `useEffect()` hook, inside it we are going to use a `setIntervanl()` method on a function that will happen every 3 minutes (for testing purposes), the function will fetch the url and make a `POST` request, and will create a new refresh token every 3 minutes, then we store this in localStorage:
