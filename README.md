@@ -1,9 +1,66 @@
 # #########################################################################################
+# Part.45 - 
+
+
+
+# #########################################################################################
 # Part.44 - Auth Refresh Tokens
 
+- The `access` token will expire fairly quickly and nobodys want to log in every couple of minutes (that time can be configured from the backend).
+- The `refresh` token will give you a new `access` token every couple of minutes so you don't have to log in over and over.
+- The `refresh` token is going to have a longer lifetime (example a day).
+- Everytime you use your `refresh` token to get a new `access` token, it will give you also a new `refresh` token aswell.
+- We are going to create a loop that is going to execute every couple of minutes to get a new `access` token and a new `refresh` token.
+- We will store the refresh token in localStorage, but this is not 100% secure because malicious users can get the `access` token using some scripting, however, we can reduce the chances of this happening by reducing the absolute token `expiration` time of tokens.
 
+- We created a new dictionary in `settings.py`, in order to make every `refresh` token give us another `refresh` token and made the lifetime of the `access` token to 15 minutes:
+```
+from datetime import timedelta
 
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=15),
+    'ROTATE_REFRESH_TOKENS': True,
+}
+```
+- In `settings.py` we can see `SECRET_KEY = '...'`, this is a Django SECRET_KEY, and it's important to keep this key confidential for security reasons. If it got leaked people will be able to generate their own tokens using the `SECRET_KEY` value.
+- One way we can make the `SECRET_KEY` more secure is by loading it from an environment variable: (we didn't implement this as this website is not for production but read more about it if you have a website for production)
+```
+import os
 
+SECRET_KEY = os.environ["SECRET_KEY"]
+```
+- We are going to create a loop that will just execute every couple minutes to get a new `access` and `refresh` token. The loop executing time must be less than the `access` token expiration time.
+- In `App.js`, we are going to use a `useEffect()` hook, inside it we are going to use a `setIntervanl()` method on a function that will happen every 3 minutes (for testing purposes), the function will fetch the url and make a `POST` request, and will create a new refresh token every 3 minutes, then we store this in localStorage:
+```
+useEffect(() => {
+  function refreshTokens() {
+    if (localStorage.refresh) {
+      const url = baseUrl + "api/token/refresh/";
+
+      fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          refresh: localStorage.refresh,
+        }),
+      })
+        .then((response) => {
+          return response.json();
+        })
+        .then((data) => {
+          localStorage.access = data.access;
+          localStorage.refresh = data.refresh;
+          setLoggedIn(true);
+        });
+    }
+  }
+  const minute = 1000 * 60;
+  refreshTokens();
+  setInterval(refreshTokens, minute * 3);
+}, []);
+```
 # #########################################################################################
 # Part.43 - Create a Logout Button
 
