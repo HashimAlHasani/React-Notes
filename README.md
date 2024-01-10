@@ -221,7 +221,7 @@ const result = useFetch(url, "GET", {
   Authorization: "Bearer " + localStorage.getItem("access"),
 });
 ```
-- We can imporve the we are returing and passing data by using Destructuring in `UseFetch.js`.
+- We can improve the way we are returing and passing data by using Destructuring in `UseFetch.js`.
 - First we are going to return an object instead of array: `return { data, errorStatus };`
 - This will change the way inside of `Customers.js` that we are retrieving those values:
 ```
