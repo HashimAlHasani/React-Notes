@@ -1,7 +1,39 @@
 # #########################################################################################
 # Part.50 - TypeScript and Axios Intro
 
+We are going to start with a completely new app, and we will be adding 2 interesting things, which are TypeScript and Axios.
 
+- We are going now learn how to start a TypeScript React project
+- TypeScript is very similar to JavaScript but it adds static typing so our variables are going to have types.
+  - This will help prevent runtime errors during the execution of the software by moving those errors to compile time errors.
+
+ - To start a new Create React App project with TypeScripts we can run:
+```
+npx create-react-app cryptocurrencies --template typescript
+```
+- Then we can type this into the command to open our project code on vsc:
+```
+code cryptocurrencies
+```
+- On the left hand side we can see the files/folders of our project, we will notice a pretty similar structure with a couple of differencies such the `react-app-env.d.ts` file.
+
+- We are going to remove the files that we will not need in our `src` folder and our final `src` project directory should look like this:
+```
+>node_modules
+>public
+^src
+    App.css
+    App.tsx
+    index.css
+    index.tsx
+    react-app-env.d.ts
+.gitignore
+package-lock.json
+package.json
+README.md
+tsconfig.json
+```
+- We can see at the bottom the `tsconfig.json` file, this file is where we can config our TypeScript rules.
 
 
 # #########################################################################################
