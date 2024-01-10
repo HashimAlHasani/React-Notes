@@ -1,5 +1,85 @@
 # #########################################################################################
-# Part.47 - 
+# Part.47 - Destructuring Explained (Custom Hook Parameters and Return Data)
+
+We want to make our `useFetch()` hook more useable across our react application especially when we make a CRUD operation such as in `Customers.js`, or authorizing the user via authorization tokens such as in `Customer.js`.
+
+- We are going to edit our `UseFetch()` to achieve a more useable hook:
+```
+import { useState, useEffect } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+
+export default function useFetch(url, method, headers, body) {
+  const [data, setData] = useState();
+  const [errorStatus, setErrorStatus] = useState();
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    fetch(url, {
+      method: method,
+      headers: headers,
+      ...(method !== "GET" ? { body: JSON.stringify({ body }) } : {}),
+    })
+      .then((response) => {
+        if (response.status === 401) {
+          navigate("/login", {
+            state: {
+              previousUrl: location.pathname,
+            },
+          });
+        }
+        if (!response.ok) {
+          throw response.status;
+        }
+        return response.json();
+      })
+      .then((data) => {
+        setData(data);
+      })
+      .catch((e) => {
+        setErrorStatus(e);
+      });
+  }, []);
+
+  return [data, errorStatus];
+}
+```
+- In `Customer.js` we can call it in such a way: (Since it is a `GET` method then it won't have a body)
+```  
+const result = useFetch(url, "GET", {
+  "Content-Type": "application/json",
+  Authorization: "Bearer " + localStorage.getItem("access"),
+});
+```
+- We can imporve the we are returing and passing data by using Destructuring in `UseFetch.js`.
+- First we are going to return an object instead of array: `return { data, errorStatus };`
+- This will change the way inside of `Customers.js` that we are retrieving those values:
+```
+  const { data, errorStatus } = useFetch(url, "GET", {
+    "Content-Type": "application/json",
+    Authorization: "Bearer " + localStorage.getItem("access"),
+  });
+```
+- This will decrease the chance of typing things out incorrectly, so as you can notice the variable names in the return in `UseFetch.js` are the same as the variable names in `Customers.js`
+- We can also do the same for the `function useFetch(url, method, headers, body)` parameters:
+```
+export default function useFetch(url, { method, headers, body }) {...}
+```
+- So now when we put the arguments in our `useFetch()` call, the order won't really matter as long as we write the same parameter/argument name. So when we call our `useFetch()` in `Customers.js`:
+```
+const url = baseUrl + "api/customers/";
+const {
+  data: { customers } = {},
+  errorStatus,
+} = useFetch(url, {
+  method: "GET",
+  headers: {
+    "Content-Type": "application/json",
+    Authorization: "Bearer " + localStorage.getItem("access"),
+  },
+});
+```
+- We did the `data: {customers}` so that we don't have to everytime call `data.customers` which might be annoying, and we make it `= {}` to prevent any accessing of an undefined.
 
 # #########################################################################################
 # Part.46 - Create a Custom Hook (useFetch)
