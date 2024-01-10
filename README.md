@@ -1,4 +1,144 @@
 # #########################################################################################
+# Part.49 - Custom Hook on Button Click (onClick POST with useFetch)
+
+- So now we lost the ability to add customers to the customers list, and we can't do our normal `useFetch()` and pass `method: "POST"` this will not work. What we can do is make `UseFetch.js` return a function that can be invoked on button click. So what we need to do now is to create a function in `UseFetch.js`.
+
+- In `Customers.js` we changed the `newCustomers()` function:
+```
+function newCustomer(name, industry) {
+  appendData({ name: name, industry: industry });
+}
+```
+- The `appendData()` function is actually the function returned from `UseFetch.js`.
+- In `Customers.js`, we can do:
+```
+const {
+  request,
+  appendData,
+  data: { customers } = {},
+  errorStatus,
+} = useFetch(url, {
+  method: "GET",
+  headers: {
+    "Content-Type": "application/json",
+    Authorization: "Bearer " + localStorage.getItem("access"),
+  },
+});
+```
+- The `request` above is the returned function from `UseFetch.js`, and is the original function to get the data.
+- The `appendData` above is also a returned function from `UseFetch.js`, and is the function to apend our data.
+
+- In `UseFetch.js` we removed the `useEffect()` hook, and made a new function called `request()`:
+```
+function request() {
+  fetch(url, {
+    method: method,
+    headers: headers,
+    body: body,
+  })
+    .then((response) => {
+      if (response.status === 401) {
+        navigate("/login", {
+          state: {
+            previousUrl: location.pathname,
+          },
+        });
+      }
+      if (!response.ok) {
+        throw response.status;
+      }
+      return response.json();
+    })
+    .then((data) => {
+      setData(data);
+    })
+    .catch((e) => {
+      setErrorStatus(e);
+    });
+}
+```
+- In `UseFetch.js` we also created another function called `appendData()`:
+```
+function appendData(newData) {}
+```
+- In `UseFetch.js` we changed the return of our main function to return the call of both functions:
+```
+return { request, appendData, data, errorStatus };
+```
+- Now in `Customers.js` to get our customers data we just have to invoke the request function in a `useEffect()` once:
+```
+useEffect(() => {
+  request();
+}, []);
+```
+- We created the `appendData()` function in `UseFetch.js`:
+```
+function appendData(newData) {
+  fetch(url, {
+    method: "POST",
+    headers: headers,
+    body: JSON.stringify(newData),
+  })
+    .then((response) => {
+      if (response.status === 401) {
+        navigate("/login", {
+          state: {
+            previousUrl: location.pathname,
+          },
+        });
+      }
+
+      if (!response.ok) {
+        throw response.status;
+      }
+
+      return response.json();
+    })
+    .then((d) => {
+      const submitted = Object.values(d)[0];
+
+      const newState = { ...data };
+      Object.values(newState)[0].push(submitted);
+      setData(newState);
+    })
+    .catch((e) => {
+      setErrorStatus(e);
+    });
+}
+```
+- We need to focus on the `.then((d) => {...})` part really well since it might get confusing.
+  - First thing we grab the object that is being added to the array: `const submitted = Object.values(d)[0];`
+  - Then duplicate the existing state, which is going to be a new object in memory: `const newState = { ...data };`
+  - Then we push the new object onto that new state: `Object.values(newState)[0].push(submitted);`
+  - Then we replace the existing state with that new object: `setData(newState);`
+
+- We have done this in order to make it generic, so that if we want to use the same hook for another list it would also work. so what `Object.value(d)[0]` gets in our customers list, the new added customer, and `Object.values(newState)[0]` will get us the customers array.
+
+- Now in the `Customers.js` we just need to toggle show the pop model when we press the add button:
+```
+function newCustomer(name, industry) {
+  appendData({ name: name, industry: industry });
+
+  if (!errorStatus) {
+    toggleShow();
+  }
+}
+```
+- What we need to do now is to adjust the `Definition.js` since we might broke it with our new `UseFetch.js` edits.
+- We need to alter the things we care about:
+  - Added the request function while using our `useFetch()` hook:
+  ```
+  const { request, data: [{ meanings: word }] = [{}], errorStatus } = useFetch(
+    "https://api.dictionaryapi.dev/api/v2/entries/en/" + search
+  );
+  ```
+  - Added a new `useEffect()` hook to call our request function:
+  ```
+  useEffect(() => {
+    request();
+  }, []);
+  ```
+# #########################################################################################
 # Part.48 - Default Values and Nested Data with Destructuring
 
 If we try to destructure a property that doesn't exist on an object we might get runtime errors, or exception thrown.
