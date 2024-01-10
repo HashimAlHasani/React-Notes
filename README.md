@@ -1,4 +1,28 @@
 # #########################################################################################
+# Part.48 - Default Values and Nested Data with Destructuring
+
+If we try to destructure a property that doesn't exist on an object we might get runtime errors, or exception thrown.
+
+- We changed how we called our `useFetch()` hook in `Definition,js`:
+```
+const { data: word, errorStatus } = useFetch(
+  "https://api.dictionaryapi.dev/api/v2/entries/en/" + search
+);
+```
+- In `UseFetch.js` we did this change:
+```
+export default function useFetch(url, { method, headers, body } = {})
+```
+- Looking at the `= {}`, what this will do is assign an empty object if this `{ method, headers, body }` is undefined.
+- In `Definition.js` instead of `word[0].meanings` we can do at the top:
+```
+const { data: [{ meanings: word }] = [{}], errorStatus } = useFetch(
+    "https://api.dictionaryapi.dev/api/v2/entries/en/" + search
+);
+```
+- Then in the return we can change `word[0].meanings` to `word` and `word?.[0]?.meanings` to `word`.
+
+# #########################################################################################
 # Part.47 - Destructuring Explained (Custom Hook Parameters and Return Data)
 
 We want to make our `useFetch()` hook more useable across our react application especially when we make a CRUD operation such as in `Customers.js`, or authorizing the user via authorization tokens such as in `Customer.js`.
