@@ -1,4 +1,96 @@
 # #########################################################################################
+# Part.55 -  Calculate Crypto Values
+
+We want to compare between 2 Cryptocurrencies, so after when we select a coin we will be able to also select a different coin and add to a list.
+
+- To achieve this behaviour we would need to keep track of selected as an array, so lets change the state variable to:
+```
+const [selected, setSelected] = useState<Crypto[] | null>();
+```
+- What we are currently trying to do is when we choose 1 coin, and then choose another it will added to the first coin we chose as a list so for example `[...selected, newCoin]` and to make our `App.tsx` return like this:
+```
+return (
+  <>
+    <div className="App">
+      <select
+        onChange={(e) => {
+          const c = cryptos?.find((x) => x.id === e.target.value) as Crypto;
+          setSelected([...selected, c]);
+        }}
+        defaultValue={"default"}
+      >
+        <option value="default" disabled>
+          Choose a Crypto Currency
+        </option>
+        {cryptos
+          ? cryptos.map((crypto) => {
+              return (
+                <option key={crypto.id} value={crypto.id}>
+                  {crypto.name}
+                </option>
+              );
+            })
+          : null}
+      </select>
+    </div>
+
+    {selected.map((s) => {
+      return <CryptoSummary crypto={s} />;
+    })}
+
+    {/*selected ? <CryptoSummary crypto={selected} /> : null*/}
+    {/*data ? (
+      <div style={{ width: 600 }}>
+        <Line options={options} data={data} />
+      </div>
+    ) : null*/}
+  </>
+);
+```
+- We commented out the section where it actually draws the chart (we don't need it right now)
+- We also changed the `selected` ternary operator so that it will map through the list and return each crypto currency as `<CryptoSummary/>` element.
+- We can also see that `setSelected([...selected, c])` this will save whatever was in the list and add `c` to it.
+
+- Notes on the code so far:
+  - we commented out the `data` and `options` state.
+  - we commented out the `useEffect()` that would actually get the data for the line chart.
+  - we commented our `selected` ternary at the bottom.
+  - we commented out the `data` ternary at the bottom too.
+
+- We also changed the `CryptoSummary.tsx` file so that it would get an input from us for the number of coints we want to calculate their total price:
+```
+export default function CryptoSummary({ crypto }: AppProps): JSX.Element {
+  useEffect(() => {
+    console.log(crypto.name, amount, crypto.current_price * parseFloat(amount));
+  });
+
+  const [amount, setAmount] = useState<string>("0");
+
+  return (
+    <div>
+      <span>{crypto.name + " $" + crypto.current_price}</span>
+      <input
+        type="number"
+        style={{ margin: 10 }}
+        value={amount}
+        onChange={(e) => {
+          setAmount(e.target.value);
+        }}
+      ></input>
+      <p>
+        $
+        {(crypto.current_price * parseFloat(amount)).toLocaleString(undefined, {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        })}
+      </p>
+    </div>
+  );
+}
+```
+- As you can see we made a variable state called amount and set it equal to what is inputted, then at the bottom we can do our calculations so that it will show the amount of coins we inputted multiplied by the coin current price.
+
+# #########################################################################################
 # Part.54 - Dynamic Chart with Multiple Drop Downs (Chart.js)
 
 We will create another drop down list that will have the options: 30 days - 7 days - 1 day, based on the chosen option the timestamp of the chart shall change.
