@@ -1,6 +1,164 @@
 # #########################################################################################
-# Part.53 - Generate Drop Down List from API
+# Part.53 - Crypto Price Chart with Chart.js
 
+- We need to install `charts.js` and `react-chartjs-2`, to do so we should type in the terminal:
+```
+npm install chart.js react-chartjs-2
+```
+- There are good usage examples with `react-chartjs-2`, so if we go to their examples page `react-chartjs-2.js.org/examples`, we can see some chart examples code that we can import and a quick example.
+- We will use a line chart so you can get the code from `react-chartjs-2.js.org/examples/line-chart`, and go to file explorer from the online editor they have to see the code needed for the line chart.
+- We will copy:
+  - The imports
+  - The `options={...}` object which will say the should be on the chart such as `legend` or `title`
+  - The `labels=[...]` array which is going to show the x-axis values
+  - The `dataset: [...]` array where we will pass in our own data, in the `data:` property.
+  - Then we will use state for these `data` and for these `options`, so changing any of values will re-render the content on the page.
+- We are going to firstly paste the imports into `App.tsx`:
+```
+import {
+  Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend,
+} from "chart.js";
+import { Line } from "react-chartjs-2";
+
+ChartJS.register( CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
+```
+- We are going to create new state variabels in `App.tsx`:
+```
+const [data, setData] = useState();
+const [options, setOptions] = useState();
+```
+- The types for the state variables are going to get also imported inside `App.tsx`:
+```
+import type { ChartData, ChartOptions } from 'chart.js';
+```
+- We can assign the types to our state variables like so: 
+```
+const [data, setData] = useState<ChartData<"line">>();
+const [options, setOptions] = useState<ChartOptions<"line">>();
+```
+- Both `ChartData` and `ChartOptions` are generic types so we need to pass in a value inside of `<>`, and we did pass the value `"line"` above which is the chart type we want.
+- Now, we can render a line chart at the end of the return before the `</>` in `App.tsx`:
+```
+{data ? <Line options={options} data={data} /> : null}
+```
+- Now, in order to get this working we need to add a default value inside of the `options` state variable: (the default options are the ones we will get from the website in the `options = {...}`)
+```
+  const [options, setOptions] = useState<ChartOptions<"line">>({
+    responsive: true,
+    plugins: {
+      legend: {
+        position: "top" as const,
+      },
+      title: {
+        display: true,
+        text: "Chart.js Line Chart",
+      },
+    },
+  });
+```
+- Now what we want to do is when we select a drop down value, which is going to be in the `onChange()` event handler, we will get a new request and then update the data state.
+```
+onChange={(e) => {
+  const c = cryptos?.find((x) => x.id === e.target.value);
+  setSelected(c);
+  axios.get(url).then((response) => {
+    setData({...});
+  });
+}}
+```
+- The url to the api we are going to make a request to is: (from CoinGecko)
+```
+https://api.coingecko.com/api/v3/coins/bitcoin/market_chart?vs_currency=usd&days=30&interval=daily
+```
+- What we are going to pass in the `setData({...})` is the dataset we copied from the website:
+```
+setData({
+  labels: [1, 2, 3, 4],
+  datasets: [
+    {
+      label: "Dataset 1",
+      data: [4, 7, 10, 3],
+      borderColor: "rgb(255, 99, 132)",
+      backgroundColor: "rgba(255, 99, 132, 0.5)",
+    },
+  ],
+});
+```
+- We added some styling to our line chart:
+```
+<div style={{ width: 600 }}>
+  <Line options={options} data={data} />
+</div>
+```
+- We are then going to put our `labels` and `data` as follows:
+```
+setData({
+  labels: response.data.prices.map((price: number[]) => {
+    return price[0];
+  }),
+  datasets: [
+    {
+      label: c?.id.toUpperCase(),
+      data: response.data.prices.map((price: number[]) => {
+        return price[1];
+      }),
+      borderColor: "rgb(255, 99, 132)",
+      backgroundColor: "rgba(255, 99, 132, 0.5)",
+    },
+  ],
+});
+```
+- We also changed the `.get(url)` url to allow us to change based on the selected value:
+```
+.get(`https://api.coingecko.com/api/v3/coins/${c?.id}/market_chart?vs_currency=usd&days=30&interval=daily`)
+```
+- We need to update the timestamp values to be a more readable dates, we can do this `moment` package, we need to install it by typing:
+```
+npm install moment
+```
+- Then we are going to import it in `App.tsx`:
+```
+import moment from "moment";
+```
+- To use moment, we will go to where we are getting these dates value and change it to:
+```
+labels: response.data.prices.map((price: number[]) => {
+  return moment.unix(price[0] / 1000).format("MM-DD-YYYY");
+}...)
+```
+- We divided the timestamp by a 1000, because our timestamps data is in ms, and `.unix(...)` uses seconds.
+- Since I am using 2 different APIs, I got some 404 errors (Page not found) so I went back and used the original coingecko API:
+```
+https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=100&page=1&sparkline=false&locale=en
+```
+- Don't forget to change `response.data.data` to `response.data`
+- Don't forget to change `Types.tsx` to:
+```
+export type Crypto = {
+  circulating_supply: number;
+  current_price: number;
+  fully_diluted_valuation: number;
+  high_24h: number;
+  id: string;
+  image: string;
+  low_24h: number;
+  market_cap: number;
+  market_cap_change_24h: number;
+  market_cap_change_percentage_24h: number;
+  market_cap_rank: number;
+  max_supply: number;
+  name: string;
+  price_change_24h: number;
+  price_change_percentage_24h: number;
+  symbol: string;
+  total_supply: number;
+  total_volume: number;
+};
+```
+- Don't forget to change `CryptoSummary.tsx` return to:
+```
+return <p>{crypto.name + " $" + crypto.current_price}</p>;
+```
 # #########################################################################################
 # Part.52 - Generate Drop Down List from API
 
@@ -76,7 +234,7 @@ export type AppProps = {
 };
 
 export default function CryptoSummary({ crypto }: AppProps) {
-  return <p>{crypto.name + " $" + +crypto.priceUsd}</p>;
+  return <p>{crypto.name + " $" + crypto.current_price}</p>;
 }
 ```
 - The parameter is an object that will be passed so we won't need to do `props.`, in other words the `CryptoSummary` functional component is destructuring the crypto prop directly in its parameter list.
@@ -93,16 +251,24 @@ export default function CryptoSummary({ crypto }: AppProps): JSX.Element {...}
 - We can define the types we created such as `Crypto` and `AppProps` in a file called `Types.tsx`:
 ```
 export type Crypto = {
-  changePercent24Hr: string;
-  explorer: string;
+  circulating_supply: number;
+  current_price: number;
+  fully_diluted_valuation: number;
+  high_24h: number;
   id: string;
-  marketCapUsd: string;
-  maxSupply: string;
+  image: string;
+  low_24h: number;
+  market_cap: number;
+  market_cap_change_24h: number;
+  market_cap_change_percentage_24h: number;
+  market_cap_rank: number;
+  max_supply: number;
   name: string;
-  priceUsd: string;
-  rank: string;
+  price_change_24h: number;
+  price_change_percentage_24h: number;
   symbol: string;
-  volumeUsd24Hr: string;
+  total_supply: number;
+  total_volume: number;
 };
 ```
 - Then when we want to use it we can import it like so: `import { Crypto } from "./Types";`
@@ -198,11 +364,9 @@ import axios from "axios";
   - scroll down a bit and hit `Execute`
   - you'll see a `Request URL` copy it (`https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=100&page=1&sparkline=false&locale=en`)
 
-- If you face a limit problem with the `CoinGecko API` you use this API, that I'll also use throughout: `https://api.coincap.io/v2/assets`
-
 - Now in `App.tsx` we can assign it to a value:
 ```
-const url = 'https://api.coincap.io/v2/assets';
+const url = 'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=100&page=1&sparkline=false&locale=en';
 ```
 - `url` is a string so we don't have to worry about the type too much, because the type is inferred from the value we assigned to the variable `url`.
   - The type is automatically deiced for `url` because of what we assigned to it.
@@ -214,9 +378,9 @@ function App() {
   const [cryptos, setCryptos] = useState();
 
   useEffect(() => {
-    const url = "https://api.coincap.io/v2/assets";
+    const url = "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=100&page=1&sparkline=false&locale=en";
     axios.get(url).then((response) => {
-      setCryptos(response.data.data);
+      setCryptos(response.data);
     });
   }, []);
 
@@ -242,16 +406,24 @@ return <div className="App">{cryptos ? cryptos.map() : null}</div>;
 - We might get an error for `.map()`, we can say that the data being returned from the API should match some structure we define in our code, what this would look like is defining a type outside the `function App(){...}`:
 ```
 export type Crypto = {
-  changePercent24Hr: string;
-  explorer: string;
+  circulating_supply: number;
+  current_price: number;
+  fully_diluted_valuation: number;
+  high_24h: number;
   id: string;
-  marketCapUsd: string;
-  maxSupply: string;
+  image: string;
+  low_24h: number;
+  market_cap: number;
+  market_cap_change_24h: number;
+  market_cap_change_percentage_24h: number;
+  market_cap_rank: number;
+  max_supply: number;
   name: string;
-  priceUsd: string;
-  rank: string;
+  price_change_24h: number;
+  price_change_percentage_24h: number;
   symbol: string;
-  volumeUsd24Hr: string;
+  total_supply: number;
+  total_volume: number;
 };
 ```
 - Then we can change the call of our `useState()` hook by setting the type to `Crypto[]` and then we can use the `|` (or symbol) then say `null`. So this can either be null or it is going to be an array of `Crypto[]`:
@@ -264,14 +436,12 @@ const [cryptos, setCryptos] = useState<Crypto[] | null>();
     <div className="App">
       {cryptos
         ? cryptos.map((crypto) => {
-            return <p>{crypto.name + " $" + +crypto.priceUsd}</p>;
+            return <p>{crypto.name + " $" + crypto.current_price}</p>;
           })
         : null}
     </div>
   );
 ```
-- Note, since in our Crypto type we have `priceUsd: string;`, and this price is actually a number, so to convert it to a number we can use the `+` operator like above: `+crypto.priceUsd`, so that we can treat it as a number.
-
 - Reminder, `null` and `undefined` are not the same in JavaScript. `Undefined` is when a variable has no value where `null` is a value and this value is just nothing.
 
 - If you want to follow the code you can check this repository:
