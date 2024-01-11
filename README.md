@@ -1,7 +1,92 @@
 # #########################################################################################
 # Part.54 - Dynamic Chart with Multiple Drop Downs (Chart.js)
 
+We will create another drop down list that will have the options: 30 days - 7 days - 1 day, based on the chosen option the timestamp of the chart shall change.
 
+- We are going to create a new `<select>...</select>` after our first select.
+```
+<select>
+  <option>30 Days</option>
+  <option>7 Days</option>
+  <option>1 Day</option>
+</select>
+```
+- We added `onChange()` even handler to our second drop down:
+```
+onChange={() => {
+  axios.get(
+    `https://api.coingecko.com/api/v3/coins/${c?.id}/market_chart?vs_currency=usd&days=30&interval=daily`
+  );
+}}
+```
+- We will have a problem in here since `${c?.id}` is not passed down and vice versa in the first drop down the `days=30` is not passed down, so to fix this we need to create 2 state variables one for id (selected state) and one for range:
+```
+const [selected, setSelected] = useState<Crypto | null>();
+const [range, setRange] = useState<string>("30");
+```
+- What we need to do now is to find a way to pass the crypto name and the crypto range, so the best way is to use an `useEffect()` with an dependency array that would include a state for the name and a state for the range:
+```
+useEffect(() => {
+  if (selected) {
+    axios
+      .get(
+        `https://api.coingecko.com/api/v3/coins/${selected?.id}/market_chart?vs_currency=usd&days=${range}&interval=daily`
+      )
+      .then((response) => {
+        setData({
+          labels: response.data.prices.map((price: number[]) => {
+            return moment.unix(price[0] / 1000).format("MM-DD-YYYY");
+          }),
+          datasets: [
+            {
+              label: selected?.id.toUpperCase(),
+              data: response.data.prices.map((price: number[]) => {
+                return price[1];
+              }),
+              borderColor: "rgb(255, 99, 132)",
+              backgroundColor: "rgba(255, 99, 132, 0.5)",
+            },
+          ],
+        });
+      });
+  }
+}, [selected, range]);
+```
+- As you can see above we moved the axios code we have written in the first drop down in `onChange()` to the `useEffect()`
+we just created.
+- You can also see above that we have included the state of both the `selected` and `range` variables.
+- You can also see in the dependency array we have `[selected, range]`, and this will make the `useEffect()` re-render every time there will be a change to the `selected` and `range` states.
+- The `if (selected) {...}`, is used because we don't want the page to render with a default `range`, but not default `selected`, it might cause 404 errors if we don't include the `if (selected) {...}`
+
+- Our first `onChange()` for the first drop down look like this now:
+```
+onChange={(e) => {
+  const c = cryptos?.find((x) => x.id === e.target.value);
+  setSelected(c);
+}}
+```
+- Our second `onChange()` for the second drop down look like this now:
+```
+onChange={(e) => {
+  setRange(e.target.value);
+}}
+```
+- When we have the range equal to 1 day, the line chart won't look very informative, so what we need to do is to set the interval in the API url to hourly if the value of the second drop down is equal to 1 day. Unfortunalty CoinGecko requires a membership in order to access their hourly interval so this won't be possible for us.
+- We called the `setOptions()` in our `useEffect()` we just created, and also copied other options from the default options sate to the `useEffect()`:
+```
+setOptions({
+  responsive: true,
+  plugins: {
+    legend: {
+      position: "top" as const,
+    },
+    title: {
+      display: true,
+      text: "Price Over Last " + range + ` Day` + (range==="1"?"":"s"),
+    },
+  },
+});
+```
 
 # #########################################################################################
 # Part.53 - Crypto Price Chart with Chart.js
