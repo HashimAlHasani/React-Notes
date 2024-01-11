@@ -1,8 +1,70 @@
 # #########################################################################################
+# Part.52 - Generate Drop Down List from API
+
+
+
+# #########################################################################################
 # Part.51 - TypeScript Components
 
+We can use the following link as a cheat sheet if we want extra help regarding TypeScript:
+```
+https://react-typescript-cheatsheet.netlify.app/docs/basic/getting-started/function_components
+```
+- We are going now to create our first component. So inside of `src` folder we will create another folder called `components`, and inside the `components` folder, we are going to create a file called `CryptoSummary.tsx`
 
+- We are going to move the functionality of displaying a crypto name and price into that new `CryptoSummary.tsx` component.
+- We added this code to `CryptoSummary.tsx`:
+```
+export default function CryptoSummary(props: any) {
+  return <p>{props.crypto.name + " $" + +props.crypto.priceUsd}</p>;
+}
+```
+- We returned the `<CryptoSummary/>` component in `App.tsx`:
+```
+return <CryptoSummary crypto={crypto} />;
+```
+- As you can see above we can assign `props: any`, this means it will accept any type however this defeats the purpose of TypeScript, the whole point is to statically type our variables in order to avoid run-time errors.
+- What we should/will do is the following: 
+```
+import { Crypto } from "../App";
 
+export type AppProps = {
+  crypto: Crypto;
+};
+
+export default function CryptoSummary({ crypto }: AppProps) {
+  return <p>{crypto.name + " $" + +crypto.priceUsd}</p>;
+}
+```
+- The parameter is an object that will be passed so we won't need to do `props.`, in other words the `CryptoSummary` functional component is destructuring the crypto prop directly in its parameter list.
+- We assigned the `{crypto}` object a type we will create called `AppProps`
+- `AppProps` will assign the object passed down `crypto`, a type of `Crypto.`
+- We can import the type we created in `App.tsx`, as we will need to assign it to the crypto object `{crypto}`
+
+- We can also specify the return type which in our case is `JSX.Element`, and we do this in `CryptoSummary.tsx`:
+```
+export default function CryptoSummary({ crypto }: AppProps): JSX.Element {...}
+```
+- The `: JSX.Element` means that the return type of the function `CryptoSummary()` is `JSX.Element`, hence for example we can't return the number 5. Assigning the return type of a component might not be helpful but we can always do it to ensure our code is doing what we want it to do.
+
+- We can define the types we created such as `Crypto` and `AppProps` in a file called `Types.tsx`:
+```
+export type Crypto = {
+  changePercent24Hr: string;
+  explorer: string;
+  id: string;
+  marketCapUsd: string;
+  maxSupply: string;
+  name: string;
+  priceUsd: string;
+  rank: string;
+  symbol: string;
+  volumeUsd24Hr: string;
+};
+```
+- Then when we want to use it we can import it like so: `import { Crypto } from "./Types";`
+
+- You might also come with the phrase `interaces` instead of `types`, we can use either of them to type props and state, however we can consider using `type` for our React Component Props and State, for consistency and because it is more constrained.
 
 # #########################################################################################
 # Part.50 - TypeScript and Axios Intro
@@ -173,7 +235,6 @@ const [cryptos, setCryptos] = useState<Crypto[] | null>();
 ```
 https://github.com/HashimAlHasani/ts-axios
 ```
-
 # #########################################################################################
 # Part.49 - Custom Hook on Button Click (onClick POST with useFetch)
 
