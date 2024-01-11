@@ -34,7 +34,139 @@ README.md
 tsconfig.json
 ```
 - We can see at the bottom the `tsconfig.json` file, this file is where we can config our TypeScript rules.
+- You can notice now that the JavaScript files end with `.tsx`
 
+- We deleted everything inside of the `App.css` file.
+- We deleted everything inside of the `index.css` file.
+- We edited the `index.tsx` file and it should look like this now:
+```
+import React from "react";
+import ReactDOM from "react-dom/client";
+import "./index.css";
+import App from "./App";
+
+const root = ReactDOM.createRoot(
+  document.getElementById("root") as HTMLElement
+);
+root.render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
+);
+```
+- We edited the `App.tsx` file and it should look like this now:
+```
+import React from "react";
+import "./App.css";
+
+function App() {
+  return <div className="App">Hello</div>;
+}
+
+export default App;
+```
+- To run this application we can `cd` into `cryptocurrencies` file in the terminal and run:
+```
+npm run start
+```
+- The other thing we are going to use is `Axios` which is another way to make requests, pretty similar to `fetch()` but slightly different and a little bit cleaner.
+
+- Now we want to install `Axios`, so in the terminal we should type:
+```
+npm install axios
+```
+- Now we need to import it inside `App.tsx`:
+```
+import axios from "axios";
+```
+- We are going now to use an API for cryptocurrencies that doesn't use API key. We are going to use `CoinGecko API`.
+  - from `coingecko.com/en/api/documentation`
+  - under coins
+  - open the `Get /coins/markets`
+  - click the `Try it Out` button
+  - scroll down a bit and hit `Execute`
+  - you'll see a `Request URL` copy it (`https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=100&page=1&sparkline=false&locale=en`)
+
+- If you face a limit problem with the `CoinGecko API` you use this API, that I'll also use throughout: `https://api.coincap.io/v2/assets`
+
+- Now in `App.tsx` we can assign it to a value:
+```
+const url = 'https://api.coincap.io/v2/assets';
+```
+- `url` is a string so we don't have to worry about the type too much, because the type is inferred from the value we assigned to the variable `url`.
+  - The type is automatically deiced for `url` because of what we assigned to it.
+  - That's all done at compile time, because TypeScript is compiled down to regular JavaScript.
+
+- Now to actually get the data from the API, we can get the `url` inside a `useEffect()` hook:
+```
+function App() {
+  const [cryptos, setCryptos] = useState();
+
+  useEffect(() => {
+    const url = "https://api.coincap.io/v2/assets";
+    axios.get(url).then((response) => {
+      setCryptos(response.data.data);
+    });
+  }, []);
+
+  return <div className="App"></div>;
+}
+
+export default App;
+```
+- You can see it is pretty similar to the `fetch()` method we used to use.
+- The primary difference is that we do not need to a `return response.json();` and have an another `.then()`, instead we can just `return resposne.data;` which is going to have the actuall data from the request.
+- The `, []` will make it only execute once on initial page load. (Empty Dependency Array)
+
+- We create a state variable so we can store the `response.data`:
+```
+const [cryptos, setCryptos] = useState();
+```
+- In the `.then(response)` we do `setCryptos(response.data);`
+
+- We'll try to display the data now so in the return:
+```
+return <div className="App">{cryptos ? cryptos.map() : null}</div>;
+```
+- We might get an error for `.map()`, we can say that the data being returned from the API should match some structure we define in our code, what this would look like is defining a type outside the `function App(){...}`:
+```
+export type Crypto = {
+  changePercent24Hr: string;
+  explorer: string;
+  id: string;
+  marketCapUsd: string;
+  maxSupply: string;
+  name: string;
+  priceUsd: string;
+  rank: string;
+  symbol: string;
+  volumeUsd24Hr: string;
+};
+```
+- Then we can change the call of our `useState()` hook by setting the type to `Crypto[]` and then we can use the `|` (or symbol) then say `null`. So this can either be null or it is going to be an array of `Crypto[]`:
+```
+const [cryptos, setCryptos] = useState<Crypto[] | null>();
+```
+- Then what we have to do now is to create an arrow function inside the `.map()` method as an argument, that would just return the names of crypto and their prices:
+```
+  return (
+    <div className="App">
+      {cryptos
+        ? cryptos.map((crypto) => {
+            return <p>{crypto.name + " $" + +crypto.priceUsd}</p>;
+          })
+        : null}
+    </div>
+  );
+```
+- Note, since in our Crypto type we have `priceUsd: string;`, and this price is actually a number, so to convert it to a number we can use the `+` operator like above: `+crypto.priceUsd`, so that we can treat it as a number.
+
+- Reminder, `null` and `undefined` are not the same in JavaScript. `Undefined` is when a variable has no value where `null` is a value and this value is just nothing.
+
+- If you want to follow the code you can check this repository:
+```
+https://github.com/HashimAlHasani/ts-axios
+```
 
 # #########################################################################################
 # Part.49 - Custom Hook on Button Click (onClick POST with useFetch)
