@@ -1,4 +1,9 @@
 # #########################################################################################
+# Part.54 - Dynamic Chart with Multiple Drop Downs (Chart.js)
+
+
+
+# #########################################################################################
 # Part.53 - Crypto Price Chart with Chart.js
 
 - We need to install `charts.js` and `react-chartjs-2`, to do so we should type in the terminal:
@@ -217,7 +222,7 @@ https://react-typescript-cheatsheet.netlify.app/docs/basic/getting-started/funct
 - We added this code to `CryptoSummary.tsx`:
 ```
 export default function CryptoSummary(props: any) {
-  return <p>{props.crypto.name + " $" + +props.crypto.priceUsd}</p>;
+  return <p>{crypto.name + " $" + crypto.current_price}</p>;
 }
 ```
 - We returned the `<CryptoSummary/>` component in `App.tsx`:
