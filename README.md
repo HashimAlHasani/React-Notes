@@ -1,8 +1,51 @@
 # #########################################################################################
+# Part.53 - Generate Drop Down List from API
+
+# #########################################################################################
 # Part.52 - Generate Drop Down List from API
 
+We will return now a drop down list in `App.tsx`, which would make our website look more appealing:
+```
+return (
+  <div className="App">
+    <select>
+      {cryptos
+        ? cryptos.map((crypto) => {
+            return <option>{crypto.name}</option>;
+          })
+        : null}
+    </select>
+  </div>
+);
+```
+- We surround the ternary operator with a `<select>...</select>` tag and each option will be surrouned with an `<option>...</option>` tag.
+- We also added these attributes to the option tag `<option key={crypto.id} value={crypto.id}>`, the key is for the react errors we might get, and the value is to decide which one is clicked.
 
-
+- What we have to do now is to add the `onChange()` event handler in the select tag:
+```
+<select
+  onChange={(e) => {
+    const c = cryptos?.find((x) => x.id === e.target.value);
+  }}
+>
+```
+- What we are basically doing is we are trying to find (search through the list) the element with the id of the chosen input, then when it finds it, it will assign it to the variable `const c`.
+- We can display this information on page, and the best way to do that is to have a `selected` state variable.
+```
+const [selected, setSelected] = useState<Crypto | null>();
+```
+- Note the type is a single `Crypto` and not an array of type `Crypto`.
+- Now in the `onChange()` event handler, we can do `setSelected(c);`
+- We can also now render the selected value, by using the `selected` state variable: (after the `</div>` tag in the return of `App.tsx`, note we should also surround everything inisde of the return with an empty tag `<>...</>`)
+```
+{selected ? <CryptoSummary crypto={selected} /> : null}
+```
+- We can have a default value that would say something like `Select an Option`: (it should be above of the `.map()` and above the `cryptos` ternary)
+```
+<option selected disabled>
+  Choose a Crypto Currency
+</option>
+```
 # #########################################################################################
 # Part.51 - TypeScript Components
 
