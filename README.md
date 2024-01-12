@@ -1,7 +1,7 @@
 # #########################################################################################
 # Part.56 -  Aggregate Data with map and reduce
 
-What we want to do is when we for example choose the cryptocurrency Ethereum and input `500`, this will give a total of `$x`, after that we choose another coin for example Bitcoin and input `100`, this will give a total of `$y`, our main goal is to find the tota of `$x` and `$y` and display it, can look simple but it is not because each coin is a component so we need to figure out how to move their state to their parent.
+What we want to do is when we for example choose the cryptocurrency Ethereum and input `500`, this will give a total of `$x`, after that we choose another coin for example Bitcoin and input `100`, this will give a total of `$y`, our main goal is to find the total of `$x` and `$y` and display it, can look simple but it is not because each coin is a component so we need to figure out how to move their state to their parent.
 
 - What we are going to do first in `CryptoSummary.tsx` is we are going to store the values as in `number` not `string`, so we changed the `amount` state type:
 ```
