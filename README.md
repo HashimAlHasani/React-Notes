@@ -1,4 +1,116 @@
 # #########################################################################################
+# Part.56 -  Aggregate Data with map and reduce
+
+What we want to do is when we for example choose the cryptocurrency Ethereum and input `500`, this will give a total of `$x`, after that we choose another coin for example Bitcoin and input `100`, this will give a total of `$y`, our main goal is to find the tota of `$x` and `$y` and display it, can look simple but it is not because each coin is a component so we need to figure out how to move their state to their parent.
+
+- What we are going to do first in `CryptoSummary.tsx` is we are going to store the values as in `number` not `string`, so we changed the `amount` state type:
+```
+const [amount, setAmount] = useState<number>(0);
+```
+- We will now get some errors, to fix them we need to remove each of the `.parseFloat(amount)` and change it to just `amount`, then we are going to change the way we are doing `setAmount` to be: `setAmount(parseFloat(e.target.value))`
+
+- This `amount` is tied to a single component so how do we actual push that up to the parent?
+  - We'll want to pass down a function from the parent which is `App.tsx`
+  - Then take this in as a prop inside of the `CryptoSummary.tsx` component
+  - This will allow us to invoke that function whenever we want to make a change
+  - Inshort we want to set the parents state by calling a function passed in as a prop
+
+- First we need to define the function inside the `export type AppProps ={...}` in `CryptoSummary.tsx` that will take two parameters (to pass data to it):
+```
+export type AppProps = {
+  crypto: Crypto;
+  updateOwned: (crypto: Crypto, amount: number) => void;
+};
+```
+- We will retrieve this value using destructuring so we can do:
+```
+export default function CryptoSummary({crypto, updateOwned,}: AppProps): JSX.Element {...}
+```
+- We will call this function inside the `onChange()` in the `CryptoSummary.tsx` component:
+```
+updateOwned(crypto, parseFloat(e.target.value));
+```
+- We will then create the function `updateOwned()` in `App.tsx` right before the return:
+```
+function updateOwned(crypto: Crypto, amount: number): void {}
+```
+- Then we can pass to the child component in `App.tsx` where we map the selected cryptocurrencies:
+```
+return <CryptoSummary crypto={s} updateOwned={updateOwned}
+```
+- To keep track of the owned amount and aggregate all of the owned amounts across all of the different cryptocurrencies to get the total portfolio value, We are going to add a property to the cryptocurrency object to keep track how much is owned.
+
+- At first we need to add the property to `Crypto` type in `Types.tsx`: `owned: number;`
+- We added the logic to `updateOwned()` function in `App.tsx`:
+```
+function updateOwned(crypto: Crypto, amount: number): void {
+  let temp = [...selected];
+  let tempObj = temp.find((c) => c.id === crypto.id);
+  if (tempObj) {
+    tempObj.owned = amount;
+    setSelected(temp);
+  }
+}
+```
+- What will the function `updateOwned()` do is:
+  - save the selected state variable to a temporary array: `let temp = [...selected];`
+  - then we create a temporary object which will get the crypto: `let tempObj = temp.find((c) => c.id === crypto.id);`
+  - then we need to check if temporary object exists.
+  - if it does we will set the owned property of the temporary object to the value of amount: `tempObj.owned = amount;`
+  - then we set the new temporary selected array `temp`: `setSelected(temp);`
+
+- Now, we just have to go to the bottom of our html page, and aggregate the data and display a total value.
+- Right before the closing tag `</>` in the return in `App.tsx`:
+```
+{selected
+    ? selected
+        .map((s) => {
+          return s.current_price * s.owned;
+        })
+        .reduce((prev, current) => {
+          return prev + current;
+        }, 0)
+    : null}
+```
+- What we are doing above is as follows:
+  - we are checking if selected is there (selected ternary operator: `selected ? ... : null`)
+  - we are then calling `.map()` on the selected state, and returning the total of each selected state (cryptocurrency)
+  - then we are calling the method `.reduce()`, which is going to keep track of the prev state and the current state (parameters), and we are going to return the total of previous + current, and it takes another argument which is the start index, which is `0`.
+
+- What we want to deal with now is `NaN` (not a number),
+  - In `CryptoSummary.tsx`, we added a ternary operator to check if there is a `Nan`:
+  ```
+  {isNaN(amount)
+    ? "$0.00"
+    : "$" +
+      (crypto.current_price * amount).toLocaleString(undefined, {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      })}
+  ```
+  - In `App.tsx` we are going to check is `s.owned` is `NaN` if yes return 0:
+  ```
+  {selected
+    ? "Your portfolio is worth: $" +
+      selected
+        .map((s) => {
+          if (isNaN(s.owned)) {
+            return 0;
+          }
+
+          return s.current_price * s.owned;
+        })
+        .reduce((prev, current) => {
+          return prev + current;
+        }, 0)
+        .toLocaleString(undefined, {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        })
+    : null}
+  ```
+
+# #########################################################################################
 # Part.55 -  Calculate Crypto Values
 
 We want to compare between 2 Cryptocurrencies, so after when we select a coin we will be able to also select a different coin and add to a list.
