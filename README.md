@@ -1,8 +1,62 @@
 # #########################################################################################
 # Part.57 -  Pie Chart with Chart.js (react-chartjs-2)
 
+What we want to achieve now is to display a pie chart of our crypto currencies and fix the user-interface.
 
+- The Pie Chart we are going to get the code from `react-chartjs-2.js.org/examples/pie-chart/`.
+- We want the input default value to be empty (instead of having 0 and then deleting 0 to type your number), so in `CryptoSummary.tsx` we changed `0` to `NaN` in the `amount` state variable default value.
+```
+const [amount, setAmount] = useState<number>(NaN);
+```
+- In `react-chartjs-2.js.org/examples/pie-chart/` we are going to get the code in the website's `App.tsx`:
+  - We are going to get the `data = {}` object.
 
+- We deleted the `options` state in our `App.tsx` code, and we uncommented the `data` variable state.
+- We changed the import from `line` to `Pie`, in `App.tsx`
+- We changed the `ChartJs.register()` in `App.tsx` to: `ChartJS.register(ArcElement, Tooltip, Legend);`
+- We changed the `<ChartData<>>` type in the data variable state (The nested `<>`) to `<ChartData<pie>>`
+- We uncommented where we rendered the line chart at the end of `App.tsx` in the data ternary operator and changed it to:
+```
+{data ? (
+  <div style={{ width: 600 }}>
+    <Pie data={data} />
+  </div>
+) : null}
+```
+- Currently we are not setting anything to our data state variable, we want to set the data of the selected crypto currency and the best way to do this is to create a `useEffect()` that depends on the `selected` state:
+```
+useEffect(() => {
+  if (selected.length === 0) return;
+  setData({
+    labels: selected.map((s) => s.name),
+    datasets: [
+      {
+        label: "# of Votes",
+        data: selected.map((s) => s.owned * s.current_price),
+        backgroundColor: [
+          "rgba(255, 99, 132, 0.2)",
+          "rgba(54, 162, 235, 0.2)",
+          "rgba(255, 206, 86, 0.2)",
+          "rgba(75, 192, 192, 0.2)",
+          "rgba(153, 102, 255, 0.2)",
+          "rgba(255, 159, 64, 0.2)",
+        ],
+        borderColor: [
+          "rgba(255, 99, 132, 1)",
+          "rgba(54, 162, 235, 1)",
+          "rgba(255, 206, 86, 1)",
+          "rgba(75, 192, 192, 1)",
+          "rgba(153, 102, 255, 1)",
+          "rgba(255, 159, 64, 1)",
+        ],
+        borderWidth: 1,
+      },
+    ],
+  });
+}, [selected]);
+```
+- We don't the pie chart to be on our website without having any crypto currencies selected so we add the if statement at the top of the `useEffect()` to check if the length of the selected array is 0, we would return without passing/setting any data.
+- We then set the `labels` to equal to the name of the selected cryptocurrency by mapping over the selected array, and we also did the same for the `data`, we mapped over the selected array, and multiplied the amount of coins owned to the current price of the coin.
 
 # #########################################################################################
 # Part.56 -  Aggregate Data with map and reduce
