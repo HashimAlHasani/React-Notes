@@ -1,8 +1,101 @@
 # #########################################################################################
+# Part.60 - 
+
+# #########################################################################################
 # Part.59 - GraphQL in Django Backend (Graphene)
 
+We are going to work in this part mainly on the backend, we are going to setup graphQL on our backend using Django.
 
+- We are going to use a tool called Graphene, and you can follow the installation of it in this link:
+```
+https://docs.graphene-python.org/projects/django/en/latest/installation/
+```
+- We are going to follow the same procedure and customers api for settuing up our backend in Django, you can just download the files from this link and paste it into your directory (not inside the graphql folder, save everything in a file called `backend`):
+```
+https://github.com/HashimAlHasani/react-backend-django/tree/cb06d4c3a4d73228cb54f40f4f7d502ba01c3498
+```
+- After getting the backend folder to this new project, go to the backend directory:
+```
+cd backend
+```
+- Then remember when we want to install packages we need to be in the virtual environment, and to do so type:
+```
+.venv\Scripts\activate
+```
+- After activating the virtual environment, we can install our Graphene tool by typing:
+```
+pip install graphene-django
+```
+- After installing you can just open the backend project by typing: (might need to do `cd ..`)
+```
+code backend
+```
+- Now inside `settings.py` we will need some things:
+  - Inside `INSTALLED_APPS = [...]` add `graphene_django`
+  - Make sure that `django.cotrib.staticfiles` is also in the `INSTALLED_APPS = [...]`
+  - Now we need to define a `SCHEMA` (A `SCHEMA` basically describes the structure of our data):
+  ```
+  GRAPHENE = {
+    'SCHEMA': 'customers.schema.schema'
+  }
+  ```
+  - So our app is now the customers app, and we need now to create a schema file (`.schema`) with a schema object (`.schema`)
 
+- A SCHEMA file is going to be similar to how a `serializers.py` allows us to create a REST API but for GraphQL
+- We are going to create a new file in `customers` folder that is going to be called `schema.py`:
+```
+import graphene
+from graphene_django import DjangoObjectType
+
+from customers.models import Customer
+
+class CustomerType(DjangoObjectType):
+    class Meta:
+        model = Customer
+        fields = '__all__'
+
+class Query(graphene.ObjectType):
+    all_customers = graphene.List(CustomerType)
+
+    def resolve_all_customers(root, info):
+        return Customer.objects.all()
+    
+schema = graphene.Schema(query=Query)
+```
+- So the code above is basically:
+  - defining a type called `CustomerType` as a class
+  - creating the query we want where we are going to define the endpoint we want (`all_customers`)
+  - in the query we are going to create a function which will return all the customers
+  - we then created the schema object: `schema = graphene.Schema(query=Query)`
+
+- Off topic reminder when you install a new package you should update the `requirements.txt` by typing in the terminal:
+```
+pip freeze > requirements.txt
+```
+- Head over to `urls.py` and create a new path: `path('graphql', GraphQLView.as_view(graphiql=True))`, dont forget to also do the following import in `urls.py`: `from graphene_django.views import GraphQLView`
+
+- Now if we want to start our backend server we might face an error, to start the backend server:
+```
+py manage.py runserver
+```
+- Running the server now might not work and the problem is in `settings.py`, we need to do the following (simple naming problem):
+```
+import django
+from django.utils.encoding import force_str
+django.utils.encoding.force_text = force_str
+```
+- Now, you'll be able to open the server on the browser: `http://127.0.0.1:8000/graphql`, and you'll see the graphiql interface, you can press the docs button and this is going to show your different endpoints.
+
+- Now you can create the query in the text editor:
+```
+{
+  allCustomers {
+    name
+    industry
+  }
+}
+```
+- Then hit the run button and you'll get all of the customers data. (we created the customers database in the beginning of this repo)
 
 # #########################################################################################
 # Part.58 - GraphQL API and Apollo Intro
