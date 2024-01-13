@@ -1,5 +1,61 @@
 # #########################################################################################
-# Part.60 - 
+# Part.60 - Consume GraphQL API in Frontend
+
+- What we need to do now is go to `index.tsx` and change `uri` we defined in the `ApolloClient(...)`:
+```
+let client = new ApolloClient({
+  uri: "http://localhost:8000/graphql/",
+  cache: new InMemoryCache(),
+});
+```
+- We might get `403` error since we are still using Bearer JWT and we might need a CSRF token. Django forms will have a token that will be sent to the client that is required to be valid when sent back in a POST request.
+- We can do now is go to `urls.py` and edit our path:
+```
+path('graphql', csrf_exempt(GraphQLView.as_view(graphiql=True)))
+```
+- We will need to import: `path('graphql', csrf_exempt(GraphQLView.as_view(graphiql=True)))`
+- In `App.tsx` change the `GET_DATA` variable:
+```
+const GET_DATA = gql`
+  {
+    customers {
+      id
+      name
+      industry
+    }
+  }
+`;
+```
+- We also changed the type we defined in `App.tsx` to:
+```
+export type Customer = {
+  id: number;
+  name: string;
+  industry: string;
+};
+```
+- Now we can edit our return in `App.tsx` to:
+```
+return (
+  <div className="App">
+    {data
+      ? data.customers.map((customer: Customer) => {
+          return (
+            <p key={customer.id}>{customer.name + " " + customer.industry}</p>
+          );
+        })
+      : null}
+  </div>
+);
+```
+- We can also in `App.tsx` we check if there is an error and add a loader text:
+```
+<div className="App">
+      {error ? <p> Something went wrong </p> : null}
+      {loading ? <p> Loading... </p> : null}
+      ...
+</div>
+```
 
 # #########################################################################################
 # Part.59 - GraphQL in Django Backend (Graphene)
@@ -55,16 +111,16 @@ class CustomerType(DjangoObjectType):
         fields = '__all__'
 
 class Query(graphene.ObjectType):
-    all_customers = graphene.List(CustomerType)
+    customers = graphene.List(CustomerType)
 
-    def resolve_all_customers(root, info):
+    def resolve_customers(root, info):
         return Customer.objects.all()
     
 schema = graphene.Schema(query=Query)
 ```
 - So the code above is basically:
   - defining a type called `CustomerType` as a class
-  - creating the query we want where we are going to define the endpoint we want (`all_customers`)
+  - creating the query we want where we are going to define the endpoint we want (`customers`)
   - in the query we are going to create a function which will return all the customers
   - we then created the schema object: `schema = graphene.Schema(query=Query)`
 
@@ -72,7 +128,7 @@ schema = graphene.Schema(query=Query)
 ```
 pip freeze > requirements.txt
 ```
-- Head over to `urls.py` and create a new path: `path('graphql', GraphQLView.as_view(graphiql=True))`, dont forget to also do the following import in `urls.py`: `from graphene_django.views import GraphQLView`
+- Head over to `urls.py` and create a new path: `path('graphql/', GraphQLView.as_view(graphiql=True))`, dont forget to also do the following import in `urls.py`: `from graphene_django.views import GraphQLView`
 
 - Now if we want to start our backend server we might face an error, to start the backend server:
 ```
@@ -84,7 +140,7 @@ import django
 from django.utils.encoding import force_str
 django.utils.encoding.force_text = force_str
 ```
-- Now, you'll be able to open the server on the browser: `http://127.0.0.1:8000/graphql`, and you'll see the graphiql interface, you can press the docs button and this is going to show your different endpoints.
+- Now, you'll be able to open the server on the browser: `http://127.0.0.1:8000/graphql/`, and you'll see the graphiql interface, you can press the docs button and this is going to show your different endpoints.
 
 - Now you can create the query in the text editor:
 ```
