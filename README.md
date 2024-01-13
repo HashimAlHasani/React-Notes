@@ -1,9 +1,15 @@
 # #########################################################################################
+# Part.59 - GraphQL in Django Backend (Graphene)
+
+
+
+
+# #########################################################################################
 # Part.58 - GraphQL API and Apollo Intro
 
 GraphQL is an alternative to a REST API.
 - In the REST API we will make individual requests with different methods and get the appropriate data back.
-- With GraphQl we have a single endpoint and we can customize what we want on the frontend.
+- With GraphQL we have a single endpoint and we can customize what we want on the frontend.
 - GraphQL is query language for your API.
 - We can ask for what we want but we are going to do it from the client instead of structuring those query langauges in the backend to the database.
 - GraphQL can work very easily with relationships in our data; it will create those relationships in a graph like structure and we can grab the initial data and then grab the nested data which would be connected to the original data.
@@ -11,7 +17,7 @@ GraphQL is an alternative to a REST API.
 - The end result is that we are going to have one API endpoint which is typically `/GraphQL` and then we just modify the request that we are sending to that endpoint to get different data.
 - We can find GraphQL in a lot of different locations (front-end and back-end), also bunch of different languages support it, and bunch of different clients in each language (We want JavaScript and Apollo)
 - Notice we have 2 sections `Client` code and a `Server` code.
-- This is a connection where we have to setup GraphQl in a server environment if you were managing your own API, and you'll have GraphQL on the client to work with that backend.
+- This is a connection where we have to setup GraphQL in a server environment if you were managing your own API, and you'll have GraphQL on the client to work with that backend.
 - `graphql.org/code/#javascript`
 
 - Starting out we are just going to worry about the front-end and consume an already existing API thats out there.
@@ -46,7 +52,7 @@ tsconfig.json
 
 - The Apollo Client is a powerful and flexible GraphQL client library for building JavaScript applications.
 
-- Now we can our packages that we need by typing into the terminal:
+- Now we can install our packages that we need by typing into the terminal:
 ```
 npm install @apollo/client graphql
 ```
@@ -198,7 +204,7 @@ useEffect(() => {
   });
 }, [selected]);
 ```
-- We don't the pie chart to be on our website without having any crypto currencies selected so we add the if statement at the top of the `useEffect()` to check if the length of the selected array is 0, we would return without passing/setting any data.
+- We don't want the pie chart to be on our website without having any crypto currencies selected so we add the if statement at the top of the `useEffect()` to check if the length of the selected array is 0, we would return without passing/setting any data.
 - We then set the `labels` to equal to the name of the selected cryptocurrency by mapping over the selected array, and we also did the same for the `data`, we mapped over the selected array, and multiplied the amount of coins owned to the current price of the coin.
 
 # #########################################################################################
