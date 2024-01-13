@@ -1,7 +1,87 @@
 # #########################################################################################
 # Part.58 - GraphQL API and Apollo Intro
 
+GraphQL is an alternative to a REST API.
+- In the REST API we will make individual requests with different methods and get the appropriate data back.
+- With GraphQl we have a single endpoint and we can customize what we want on the frontend.
+- GraphQL is query language for your API.
+- We can ask for what we want but we are going to do it from the client instead of structuring those query langauges in the backend to the database.
+- GraphQL can work very easily with relationships in our data; it will create those relationships in a graph like structure and we can grab the initial data and then grab the nested data which would be connected to the original data.
+  - For example, not only we would be able to grab the customers in a single request, we can also grab all of the customers orders in a single request, and get that in a single structured back. (What attributes we want can be customizable)
+- The end result is that we are going to have one API endpoint which is typically `/GraphQL` and then we just modify the request that we are sending to that endpoint to get different data.
+- We can find GraphQL in a lot of different locations (front-end and back-end), also bunch of different languages support it, and bunch of different clients in each language (We want JavaScript and Apollo)
+- Notice we have 2 sections `Client` code and a `Server` code.
+- This is a connection where we have to setup GraphQl in a server environment if you were managing your own API, and you'll have GraphQL on the client to work with that backend.
+- `graphql.org/code/#javascript`
 
+- Starting out we are just going to worry about the front-end and consume an already existing API thats out there.
+- We are going to use the `Apollo client` which can be explained in `https://www.apollographql.com/docs/react/`
+- We are going to use an existing GraphQL endpoint: `https://spacex-production.up.railway.app/`
+  - In the api website we will see a tool called `GraphiQL`, this will basically make the query for us, we can edit the query as we like, and when we run it will give us a single JSON response (no need for many API requests, we can just make one), we can use the `GraphiQL` in this website `https://studio.apollographql.com/public/SpaceX-pxxbxen/variant/current/explorer`
+
+- We are going to create a react application to consume this GraphQL endpoint, type in the terminal:
+```
+npx create-react-app graphql --template typescript
+```
+- Then open our app by typing in the terminal: `code graphql`
+- We are going to remove the files that we will not need in our `src` folder and our final `src` project directory should look like this:
+```
+>node_modules
+>public
+^src
+    App.css
+    App.tsx
+    index.css
+    index.tsx
+    react-app-env.d.ts
+.gitignore
+package-lock.json
+package.json
+README.md
+tsconfig.json
+```
+- In `index.tsx` we removed anything related to `webvitals`
+- In `App.tsx` we removed unused stuff and removed everything inside the `<div className="APP>...</div>`
+- We removed all of the css in `App.css` and `index.css`
+
+- Now we can our packages that we need by typing into the terminal:
+```
+npm install @apollo/client graphql
+```
+- We are going to write some code in `index.tsx` that is going to surround our entire app. Add these imports in `index.tsx`:
+```
+import { ApolloClient, InMemoryCache, ApolloProvider, gql, } from "@apollo/client";
+```
+- Now we need to create an instance of a client in `index.tsx` after the imports:
+```
+let client = new ApolloClient({
+  uri: "",
+  cache: new InMemoryCache(),
+});
+```
+- The uri is going to come from the endpoint we've been using earlier which is `https://spacex-production.up.railway.app/`
+
+- We are going to make a query in `index.tsx` after our instance of a client, and to do so we can do:
+```
+client
+  .query({
+    query: gql`
+      {
+        launchesPast(limit: 10) {
+          mission_name
+          launch_date_local
+          launch_site {
+            site_name_long
+          }
+        }
+      }
+    `,
+  })
+  .then((result) => {
+    console.log(result);
+  });
+```
+- You can see the query we are making is prefixed with `gql` and then inside back ticks ` `...` `
 
 # #########################################################################################
 # Part.57 - Pie Chart with Chart.js (react-chartjs-2)
