@@ -44,6 +44,8 @@ tsconfig.json
 - In `App.tsx` we removed unused stuff and removed everything inside the `<div className="APP>...</div>`
 - We removed all of the css in `App.css` and `index.css`
 
+- The Apollo Client is a powerful and flexible GraphQL client library for building JavaScript applications.
+
 - Now we can our packages that we need by typing into the terminal:
 ```
 npm install @apollo/client graphql
@@ -81,8 +83,62 @@ client
     console.log(result);
   });
 ```
-- You can see the query we are making is prefixed with `gql` and then inside back ticks ` `...` `
+- You can see the query we are making is prefixed with `gql` and then inside back ticks we can put our query.
+- We then can start our surver by typing in the command `npm run start` then see in the command the data response.
 
+- We are not really doing this the react way, which is to use the `useQuery()` hook.
+
+- The `ApolloProvider` we imported will give us access to our client variable throughout our entire application by defining it in `index.tsx` around `<App/>`:
+```
+root.render(
+  <React.StrictMode>
+    <ApolloProvider client={client}>
+      <App />
+    </ApolloProvider>
+  </React.StrictMode>
+);
+```
+- Now in `App.tsx` we need to do some imports:
+```
+import { useQuery, gql } from "@apollo/client";
+```
+- Then we can move our query from `index.tsx` to `App.tsx`.
+- So in `index.tsx` we copied the ``` gql`...` ```, then removed the query, then in `App.tsx` outside the `App()` function:
+```
+const GET_DATA = gql`
+  {
+    launchesPast(limit: 10) {
+      mission_name
+      launch_date_local
+      launch_site {
+        site_name_long
+      }
+    }
+  }
+`;
+```
+- Then now we can use the `useQuery()` custom hook inside the `App()` function above the return:
+```
+const { loading, error, data } = useQuery(GET_DATA);
+```
+- We defind in `App.tsx` at the top a type called `Launch` (to get the benefits of TypeScript):
+```
+export type Launch = {
+  mission_name: string;
+  launch_date_local: string;
+  launch_site: {
+    site_name_long: string;
+  };
+};
+```
+- Then in the return, in `App.tsx`, inside the App `div` we can print some data on the screen by doing:
+```
+{data
+  ? data.launchesPast.map((launch: Launch) => {
+      return <p>{launch.mission_name}</p>;
+    })
+  : null}
+```
 # #########################################################################################
 # Part.57 - Pie Chart with Chart.js (react-chartjs-2)
 
