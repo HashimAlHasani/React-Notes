@@ -1,5 +1,10 @@
 # #########################################################################################
-# Part.57 -  Pie Chart with Chart.js (react-chartjs-2)
+# Part.58 - GraphQL API and Apollo Intro
+
+
+
+# #########################################################################################
+# Part.57 - Pie Chart with Chart.js (react-chartjs-2)
 
 What we want to achieve now is to display a pie chart of our crypto currencies and fix the user-interface.
 
@@ -59,7 +64,7 @@ useEffect(() => {
 - We then set the `labels` to equal to the name of the selected cryptocurrency by mapping over the selected array, and we also did the same for the `data`, we mapped over the selected array, and multiplied the amount of coins owned to the current price of the coin.
 
 # #########################################################################################
-# Part.56 -  Aggregate Data with map and reduce
+# Part.56 - Aggregate Data with map and reduce
 
 What we want to do is when we for example choose the cryptocurrency Ethereum and input `500`, this will give a total of `$x`, after that we choose another coin for example Bitcoin and input `100`, this will give a total of `$y`, our main goal is to find the total of `$x` and `$y` and display it, can look simple but it is not because each coin is a component so we need to figure out how to move their state to their parent.
 
@@ -171,7 +176,7 @@ function updateOwned(crypto: Crypto, amount: number): void {
   ```
 
 # #########################################################################################
-# Part.55 -  Calculate Crypto Values
+# Part.55 - Calculate Crypto Values
 
 We want to compare between 2 Cryptocurrencies, so after when we select a coin we will be able to also select a different coin and add to a list.
 
