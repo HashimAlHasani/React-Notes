@@ -9,11 +9,11 @@ let client = new ApolloClient({
 });
 ```
 - We might get `403` error since we are still using Bearer JWT and we might need a CSRF token. Django forms will have a token that will be sent to the client that is required to be valid when sent back in a POST request.
-- We can do now is go to `urls.py` and edit our path:
+- What we can do now is go to `urls.py` and edit our path:
 ```
 path('graphql', csrf_exempt(GraphQLView.as_view(graphiql=True)))
 ```
-- We will need to import: `path('graphql', csrf_exempt(GraphQLView.as_view(graphiql=True)))`
+- We will need to import: `from django.views.decorators.csrf import csrf_exempt`
 - In `App.tsx` change the `GET_DATA` variable:
 ```
 const GET_DATA = gql`
