@@ -1,8 +1,76 @@
 # #########################################################################################
+# Part.62 - Mutations with useMutation Apollo Client
+
+
+
+# #########################################################################################
 # Part.61 - GraphQL Mutations and Parameters in Graphene
 
+- We are going to talk about:
+1. arguments passed in to GraphQL to change what kind of data we are asking for.
 
+- So in `Schema.py` we added another field in our query:
+```
+Customer_by_name = graphene.List(CustomerType, name=graphene.String(required = True))
+```
+- The type of the field is `CustomerType`, and the actual argument passed in which is `name` with the type of `graphene.String`, and we made this field required by setting `(required = True)`
+- So now we have one query which is the class `Query` and 2 fields one is `customers` and one is `customer_by_name`
 
+- Now we are going to create a new function to resolve customer by name inside our `Query` class:
+```
+def resolve_customer_by_name(root, info, name):
+```
+- In the function `resolve_customer_by_name(root, info, name)` we are going to write the database to code to get single element by name: (we also check for a Do not exist error)
+```
+def resolve_customer_by_name(root, info, name):
+    try:
+        return Customer.objects.get(name=name)
+    except Customer.DoesNotExist:
+        return None
+```
+- We might have many elements with the same name so we can change the return to filter our elements to get only one array back wit all the elements:
+```
+return Customer.objects.filter(name=name)
+```
+2. mutations, which allows us to add/edit data in our dataset.
+
+- In `Schema.py` we will need to create a new class called `Mutations`, we need to pass it in our graphene schema: `schema = graphene.Schema(query=Query, mutation=Mutations)`.
+- Now our `class Mutations()` will look like:
+```
+class Mutations(graphene.ObjectType):
+    createCustomer = createCustomer.Field()
+```
+- Now we need to create a called `createCustomer` also in `Schema.py`:
+```
+class createCustomer(graphene.Mutation):
+    class Arguments:
+        name = graphene.String()
+        industry = graphene.String()
+    
+    customer = graphene.Field(CustomerType)
+
+    def mutate(root, info, name, industry):
+        customer = Customer(name=name, industry=industry)
+        customer.save()
+        return createCustomer(customer=customer)
+```
+- The class `createCustomer()` is similar to the `CustomerType()` class, inside it we create another class for arguments, which are `name` and `industry` and both are of type `graphene.String`. then we defined a field inside `createCustomer()` called `customer` which is a graphene field `graphene.Field` of type `CustomerType`.
+- We also defined a function called mutate where we are going to define a customer object and save it to database, in the `mutate()` function we defined a new customer object `Customer(name=name, industry=industry)`, and this will return a new `Customer` object which we can save in a variable called `customer`, then we should save the customer `customer.save()`, then we return a instance of this class `createCustomer()` passing in our custom customer object that we created `(customer=customer)`
+
+- Now we can create a new customer using our `GraphiQL` tool in `localhost:8000/graphql/` by typing in the text editor:
+```
+mutation {
+  createCustomer(name: "CoinBase", industry: "Crypto"){
+    customer {
+      id
+      name
+      industry
+    }
+  }
+}
+```
+- To use a mutation to create a new customer we must follow the order above, and we returned a customer with the fields id, name, industry.
+- When we hit run on `localhost:8000/graphql/` after writing our mutation we see a new customer in our database.
 
 # #########################################################################################
 # Part.60 - Consume GraphQL API in Frontend
