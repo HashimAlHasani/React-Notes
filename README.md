@@ -1,7 +1,127 @@
 # #########################################################################################
 # Part.62 - Mutations with useMutation Apollo Client
 
+We are going to learn how to use a mutation in GraphQL from a React front-end. We will be using the Apollo Client, and they make it easy for us to do by giving us a function to call, you can check their documentation too:
+```
+https://www.apollographql.com/docs/react/data/mutations/
+```
+- We are going to use `useMutation()` customer hook, however, this hook doesn't execute its operation atuomatically on render. Instead, you call this mutate function. Import it by typing: `import { useMutation } from "@apollo/client";`
+- In `App.tsx` we are going to invoke the `useMutation()` inside the `function App() {...}` function:
+```
+const [
+    createCustomer,
+    {
+      loading: createCustomerLoading,
+      error: createCustomerError,
+      data: createCustomerData,
+    },
+  ] = useMutation(MUTATE_DATA);
+```
+- So we will use destructuring, we will have an array the first element of the array is the function `createCustomer` that we are going to create, then second element of the array is an object with the `loading, error, data` attributes, we did some renaming so that it doesn't conflict with our `useQuery()`, we also create a `MUTATE_DATA`, which is a gql query:
+```
+const MUTATE_DATA = gql`
+  mutation MUTATE_DATA($name: String!, $industry: String!) {
+    createCustomer(name: $name, industry: $industry) {
+      customer {
+        id
+        name
+        industry
+      }
+    }
+  }
+`;
+```
+- We will now create a form in the `App()` function return which we ask for the user to input a name and an industry:
+```
+<form
+  onSubmit={(e) => {
+    e.preventDefault();
+    console.log("submitting...");
+  }}
+>
+  <div>
+    <label htmlFor="name">Name:</label>
+    <input id="name" type="text" />
+  </div>
+  <div>
+    <label htmlFor="industry">Industry:</label>
+    <input id="industry" type="text" />
+  </div>
+  <button>Add Customer</button>
+</form>
+```
+- Now in order to grab the values the easiest and best option is to use state variables, so in `App()`:
+```
+const [name, setName] = useState<string>('');
+const [industry, setIndustry] = useState<string>('');
+```
+- Now we need to tie these values to the inputs so to do so we change our code to:
+```
+<form
+  onSubmit={(e) => {
+    e.preventDefault();
+    createCustomer({ variables: { name: name, industry: industry } });
+  }}
+>
+  <div>
+    <label htmlFor="name">Name:</label>
+    <input
+      id="name"
+      type="text"
+      value={name}
+      onChange={(e) => {
+        setName(e.target.value);
+      }}
+    />
+  </div>
+  <div>
+    <label htmlFor="industry">Industry:</label>
+    <input
+      id="industry"
+      type="text"
+      value={industry}
+      onChange={(e) => {
+        setIndustry(e.target.value);
+      }}
+    />
+  </div>
+  <button>Add Customer</button>
+</form>
+```
+- You can see that in the `onSubmit()` we called the `createCustomer()` function, by passing an object with `variables` being also an object and inside the `variables` object we passed in the name and industry states as name and industry.
 
+- Now we successfully added a customer to our databaes, however, it doesn't show the new added customer automatically, so in order to do this we need to edit the folllowing in `App.tsx`
+```
+const [
+  createCustomer,
+  {
+    loading: createCustomerLoading,
+    error: createCustomerError,
+    data: createCustomerData,
+  },
+] = useMutation(MUTATE_DATA, {
+  refetchQueries: [{ query: GET_DATA }],
+});
+```
+- For a better user experience we can disable the add button while it is loading to add a customer by editting our button:
+```
+<button disabled={createCustomerLoading ? true : false}>
+  Add Customer
+</button>
+```
+- If you want to test your loaders you can in the backed in `Schema.py` import `import time` and in the mutation function for example call `time.sleep()` and pass in the number of seconds as an argument.
+- If we want to check for errors we can do at the end of the return:
+```
+{createCustomerError ? <p> Error Creating Customer </p> : null}
+```
+- We can also reset the input fields to an empty string when we press add so in the form `onSubmit()` event handler:
+```
+if (!createCustomerError) {
+  setName("");
+  setIndustry("");
+}
+```
+- I added some styling and installed and initialized some tailwind CSS, so if you want to check the styling code you can visit this repository: `https://github.com/HashimAlHasani/react-graphql` and check the commit named: `Mutations with useMutation Apollo Client`
 
 # #########################################################################################
 # Part.61 - GraphQL Mutations and Parameters in Graphene
