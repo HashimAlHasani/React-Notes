@@ -4019,7 +4019,8 @@ package.json
 README.md
 ```
 The commands we used in the terminal till now:
-- npm create-react-app hello (This creates a react app build files)
+- npm install -g create-react-app
+- npm create-react-app hello (This creates a react app build files) 
 - npm run start (This will open the localhost website and it will refresh everytime we save)
 - npm run build (This will create a build file, then when we call it, it will save new edits to the build file)
 
