@@ -4019,8 +4019,7 @@ package.json
 README.md
 ```
 The commands we used in the terminal till now:
-- npm install -g create-react-app
-- npm create-react-app hello (This creates a react app build files) 
+- npx create-react-app hello (This creates a react app build files) 
 - npm run start (This will open the localhost website and it will refresh everytime we save)
 - npm run build (This will create a build file, then when we call it, it will save new edits to the build file)
 
@@ -4028,7 +4027,7 @@ The commands we used in the terminal till now:
 
 - npm install (This will make sure we have all dependencies installed)
 
-- npm create-react-app created a repository so we can see on the left we have Source Control
+- npx create-react-app created a repository so we can see on the left we have Source Control
 - On the source control we can see changes and commit them to the repository
 - After we do so, we can check by using the command: 
     - git log
