@@ -1,4 +1,26 @@
 # #########################################################################################
+# Part.63 - Vite Setup (Faster React)
+
+- To setup Vite you need to `npm install -g vite` in a global directory.
+- To create a vite project you'll need to go to a directory where you want to create a new  project and then type `create-vite`, then it will give you an input prompt for the project name where we named the application `vite-app`
+- Then you'll get to choose the framework you want by navigating through the options and going to `React` then pressing `Enter`.
+- Then you'll get the option to choose:
+  - TypeScript
+  - TypeScript + SWC (Speedy Web Compiler)
+  - JavaScript
+  - JavaScript + SWC (Speedy Web Compiler)
+
+- After chosing the framework you want to use you can do the following to get started:
+  - `cd vite-app`
+  - `npm install`
+  - `vite dev`
+
+- It will show you the localhost address that you should use: `http://localhost:5173/`
+- Now if you open your `vite-app` code and do any change you'll notice how fast the change is going to happen in the browser when you click save, there is more stuff that it does that makes your project way faster if you are interested read more about it in: `https://vitejs.dev/`
+
+- We are still using the normal `create-react-app` method in our `graphql` project. We will start creating projects using vite from the next project that we'll work on.
+
+# #########################################################################################
 # Part.62 - Mutations with useMutation Apollo Client
 
 We are going to learn how to use a mutation in GraphQL from a React front-end. We will be using the Apollo Client, and they make it easy for us to do by giving us a function to call, you can check their documentation too:
