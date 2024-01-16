@@ -1,4 +1,9 @@
 # #########################################################################################
+# Part.64 - GraphQL Nested Data
+
+
+
+# #########################################################################################
 # Part.63 - Vite Setup (Faster React)
 
 - To setup Vite you need to `npm install -g vite` in a global directory.
@@ -27,7 +32,7 @@ We are going to learn how to use a mutation in GraphQL from a React front-end. W
 ```
 https://www.apollographql.com/docs/react/data/mutations/
 ```
-- We are going to use `useMutation()` customer hook, however, this hook doesn't execute its operation atuomatically on render. Instead, you call this mutate function. Import it by typing: `import { useMutation } from "@apollo/client";`
+- We are going to use `useMutation()` custom hook, however, this hook doesn't execute its operation atuomatically on render. Instead, you call this mutate function. Import it by typing: `import { useMutation } from "@apollo/client";`
 - In `App.tsx` we are going to invoke the `useMutation()` inside the `function App() {...}` function:
 ```
 const [
@@ -170,7 +175,7 @@ def resolve_customer_by_name(root, info, name):
     except Customer.DoesNotExist:
         return None
 ```
-- We might have many elements with the same name so we can change the return to filter our elements to get only one array back wit all the elements:
+- We might have many elements with the same name so we can change the return to filter our elements to get only one array back with all the elements:
 ```
 return Customer.objects.filter(name=name)
 ```
@@ -182,7 +187,7 @@ return Customer.objects.filter(name=name)
 class Mutations(graphene.ObjectType):
     createCustomer = createCustomer.Field()
 ```
-- Now we need to create a called `createCustomer` also in `Schema.py`:
+- Now we need to create a class called `createCustomer` also in `Schema.py`:
 ```
 class createCustomer(graphene.Mutation):
     class Arguments:
