@@ -1,4 +1,205 @@
 # #########################################################################################
+# Part.65 - Build a Nested Order From Component
+
+We will work on the front-end to show nested data coming from GraphQL endpoint.
+
+- Now in `App.tsx` we can update our `GET_DATA` graph query to include orders:
+```
+const GET_DATA = gql`
+  {
+    customers {
+      id
+      name
+      industry
+      orders {
+        id
+        description
+        totalInCents
+      }
+    }
+  }
+`;
+```
+- We also need to update the `type Customer` we have exported at the top of `App.tsx`:
+```
+export type Customer = {
+  id: number;
+  name: string;
+  industry: string;
+  orders: Order[];
+};
+```
+- The type of orders is an array of type `Order` so we need to create this type also in our `App.tsx`:
+```
+export type Order = {
+  id: number;
+  description: string;
+  totalInCents: number;
+};
+```
+- Now we need to have a nested loop in `App.tsx` in the `{data ? ... : ...}` inside the `data.customers.map()`:
+```
+{data
+  ? data.customers.map((customer: Customer) => {
+      return (
+        <div>
+          <h2
+            className="text-center font-bold text-4xl"
+            key={customer.id}
+          >
+            {customer.name + " (" + customer.industry + ")"}
+          </h2>
+          {customer.orders.map((order: Order) => {
+            return (
+              <div key={order.id}>
+                <p className="text-center">
+                  {order.description} ( $
+                  {(order.totalInCents / 100).toLocaleString(undefined, {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                  })}{" "}
+                  )
+                </p>
+              </div>
+            );
+          })}
+        </div>
+      );
+    })
+  : null}
+```
+- Now we need to talk about how to add an order for a specific customer.
+- We will be able to add an order for any customer, and we will do so by adding a button for every customer.
+- To do so in `App.tsx` we will create an element called `<AddOrder/>` outside the `customers.map()`:
+```
+<AddOrder customerId={customer.id} />
+```
+- We will create in our src a new folder called components, and inside our components folder we will create a file called `AddOrder.tsx`:
+```
+export default function AddOrder() {
+  return <button>+ New Order</button>;
+}
+```
+- Inside `App.tsx` import `import AddOrder from "./components/AddOrder";`
+- Now we need to deal with the props types in: `<AddOrder customerId={customer.id} />`, so in `AddOrder.tsx` we will:
+```
+export type AppProps = {
+  customerId: number;
+};
+
+export default function AddOrder({ customerId }: AppProps) {
+  return (
+    <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+      + New Order
+    </button>
+  );
+}
+```
+- Now we need to add the functionality of adding an order so in `AddOrder.tsx` we added a form and created some state variables so our `AddOrder.tsx` looks like:
+```
+import { useState } from "react";
+
+export type AppProps = {
+  customerId: number;
+};
+
+export default function AddOrder({ customerId }: AppProps) {
+  const [active, setActive] = useState(false);
+  const [description, setDescription] = useState("");
+  const [cost, setCost] = useState<number>(NaN);
+
+  return (
+    <div>
+      {active ? null : (
+        <button
+          onClick={() => {
+            setActive(true);
+          }}
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+        >
+          + New Order
+        </button>
+      )}
+      {active ? (
+        <div>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+            }}
+            className="max-w-md mx-auto bg-white p-8 rounded shadow-md mt-10 border border-black"
+          >
+            <h3 className=" text-3xl text-left mr-[10%] font-bold">
+              Add A Customer:
+            </h3>
+            <br />
+            <div className="mb-4">
+              <label
+                htmlFor="description"
+                className="block text-gray-700 text-sm font-bold mb-2"
+              >
+                Description:
+              </label>
+              <input
+                id="description"
+                type="text"
+                value={description}
+                onChange={(e) => {
+                  setDescription(e.target.value);
+                }}
+                className="w-full px-3 py-2 border rounded shadow appearance-none border-black"
+              />
+            </div>
+            <div className="mb-4">
+              <label
+                htmlFor="cost"
+                className="block text-gray-700 text-sm font-bold mb-2"
+              >
+                Cost:
+              </label>
+              <input
+                id="cost"
+                type="number"
+                value={isNaN(cost) ? "" : cost}
+                onChange={(e) => {
+                  setCost(parseFloat(e.target.value));
+                }}
+                className="w-full px-3 py-2 border rounded shadow appearance-none border-black"
+              />
+            </div>
+            {/*
+            <div className="flex items-center justify-center">
+              <button
+                disabled={createCustomerLoading ? true : false}
+                type="submit"
+                className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700 focus:outline-none focus:shadow-outline-blue active:bg-blue-800"
+              >
+                Submit
+              </button>
+              {createCustomerError ? <p> Error Creating Customer </p> : null}
+            </div>
+            */}
+            <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+              Add Order
+            </button>
+            <button
+              onClick={() => {
+                setActive(false);
+              }}
+              className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-10 rounded"
+            >
+              Close
+            </button>
+          </form>
+        </div>
+      ) : null}
+    </div>
+  );
+}
+```
+- We will have some errors at the end because of the returns from our mutation `createCustomerLoading` and such, we need to talk where we are going to use the `useMutation()` hook. This is intended to be a nested component it makes sense to define everything we need in the parent and then just give what it needs through props. So we will basically copy the mutation we had in `App.tsx` but instead of it being to create a customer it is going to be to update a customer, this is where we are not quite finished on the backend, so lets just pause there on the actuall query and get everything else working.
+- So for now we are just going to comment the mutation section in our `AddOrder.tsx` using `{/* ... */}`
+
+# #########################################################################################
 # Part.64 - GraphQL Nested Data
 
 - In GraphQL we can choose what nested data we want returned and if we want any properties returned from the data.
