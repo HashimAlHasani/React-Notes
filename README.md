@@ -1,8 +1,53 @@
 # #########################################################################################
 # Part.66 - Mutation for Nested Data (Backend)
 
+In this part we are going to build a new mutation which allows us to add a nested order for a customer through GraphQL.
 
+- We are going to mainly work with the backend now.
+- The mutation to create a new order should similar to the mutation to create new customer.
+- We fixed some naming convention errors we had so in `Schema.py` in the `Query` class we changed `createCustomer` to `create_customer`, and in `models.py` we changed `totalInCents` to `total_in_cents`, note we have to do the following commands in the terminal to fix the issues we get:
+```
+py manage.py makemigrations
+py manage.py migrate
+```
+- Now we need to create the mutation for the order, so inside `Schema.py` inside the `Mutations` class:
+```
+class Mutations(graphene.ObjectType):
+    create_Customer = createCustomer.Field()
+    create_Order = createOrder.Field()
+```
+- Now we need to create a new class in `Schema.py` called `createOrder()`:
+```
+class createOrder(graphene.Mutation):
+    class Arguments:
+        description = graphene.String()
+        total_in_cents = graphene.Int()
+        customer = graphene.ID()
 
+    order = graphene.Field(OrderType)
+
+    def mutate(root, info, description, total_in_cents, customer):
+        order = Order(description=description, total_in_cents=total_in_cents, customer_id=customer)
+        order.save()
+        return createOrder(order=order)
+```
+- As you can see it is pretty similar to the `createCustomer()` mutation class we created before.
+
+- Now we can open `localhost:8000/graphql` and write a mutation:
+```
+mutation{
+  createOrder(customer: 30, description: "baked cookies", totalInCents: 700000){
+    order{
+      id
+      customer{
+        id
+      }
+      description
+      totalInCents
+    }
+  }
+}
+```
 # #########################################################################################
 # Part.65 - Build a Nested Order From Component
 
