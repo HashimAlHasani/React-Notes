@@ -1,4 +1,10 @@
 # #########################################################################################
+# Part.68 - Intro to Next.js Static Site Generation + Server Side Rendering
+
+
+
+
+# #########################################################################################
 # Part.67 - Add to GraphQL List and refetchQueries
 
 We will work in this part about the front-end so we are going to submit our new order for a customer.
