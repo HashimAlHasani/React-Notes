@@ -1,8 +1,115 @@
 # #########################################################################################
 # Part.64 - GraphQL Nested Data
 
+- In GraphQL we can choose what nested data we want returned and if we want any properties returned from the data.
+- The cool part is we don't care about how this is setup in the backend, regardless of what backend we use the way we query this in graphql is going to be the same, and the data could be coming from multiple tables with JOIN or coming from 2 completely different databases and the information federated together doesn't really matter.
+- What we are going is to handle multiple tables in a relational database.
 
+- Now we want to create some nested data in our customer data.
+- Now in our `models.py` we are going to define a new class called `Order()`:
+```
+class Order(models.Model):
+    customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
+    description = models.CharField(max_length=500)
+    totalInCents = models.IntegerField()
+```
+- We created a foreign key for the `Customer` model or dataset, and we added that if the `customer` (parent) is deleted then the order should be deleted as well `on_delete=models.CASCADE`
+- We also created 2 fields for the Order database, which are the `description` of the order and the total cost/price of the order `totalInCents`
 
+- Now we can turn this into a table by creating a migration:
+```
+py manage.py makemigrations
+```
+- If we want to see the sql of the order table we can type: (0002 is the migration number)
+```
+py manage.py sqlmigrate customers 0002
+```
+- Now we need to apply this sql to our database by typing:
+```
+py manage.py migrate
+```
+- Now we need to put data inside of it, and to do this we can add the data to the admin site and type in the data manually using the CRUD capabilities.
+- Now we can register it from the `admin.py` file: ( we added `admin.site.register(Order)`)
+```
+from django.contrib import admin
+from customers.models import Customer, Order
+
+admin.site.register(Customer) 
+admin.site.register(Order)
+```
+- Now if we look at our `localhost:8000/admin` we will see our app with 2 tables one for `Customers` and one for `Orders`.
+- Now we deleted all of our created customers, and created a new one from `localhost:8000/admin` from the customer table.
+- Now we want when we look for a customer inside the order table to see the names of the customers and this can be done in the `models.py` inside the `class Customer()`: we can define a function:
+```
+def __str__(self):
+    return self.name
+```
+- Also, in the `models.py` we want the order table to show as the description of order instead of having order1/2/3, so we can write in `models.py` in `class Order()`: we can define a function:
+```
+def __str__(self):
+    return self.description
+```
+- Now, in our `localhost:8000/admin` we can add an order to the orders table and select which customer does this order belong to.
+- Now we need to query in `localhost:8000/grahpql` just to see how our query will look like:
+```
+{
+  customers {
+    id
+    name
+    industry
+  	orders
+  }
+}
+```
+- We will get an error as we still didn't implement the graphene code, to do so in `Schema.py` we created a new class called `OrderType` (similar to `CustomerType`):
+```
+class OrderType(DjangoObjectType):
+    class Meta:
+        model = Order
+        fields = '__all__'
+```
+- Also in `Schema.py` head to the `Query` class we need to add:
+```
+orders = graphene.List(OrderType)
+```
+- Still in the `Query` class we need to define a function `resolve_orders()`:
+```
+def resolve_orders(root, info):
+    return Order.objects.select_related('customer').all()
+```
+- So now in `localhost:8000/graphql` in the query section we will that we can get now the orders field by using the nested data: (note the name here is `orderSet` not `orders`)
+```
+{
+  customers {
+    id
+    name
+    industry
+  	orderSet {
+      description
+      totalInCents
+    }
+  }
+}
+```
+- If we want to rename the `orderSet` to `orders` in the backend, we can do so in the `models.py` while getting the customers foreign key we can add an attribute:
+```
+customer = models.ForeignKey(Customer, related_name="orders", on_delete=models.CASCADE)
+```
+- Now we can write our query like:
+```
+{
+  customers {
+    id
+    name
+    industry
+  	orders {
+      id
+      description
+      totalInCents
+    }
+  }
+}
+```
 # #########################################################################################
 # Part.63 - Vite Setup (Faster React)
 
