@@ -1,7 +1,99 @@
 # #########################################################################################
 # Part.67 - Add to GraphQL List and refetchQueries
 
+We will work in this part about the front-end so we are going to submit our new order for a customer.
 
+- We are going to use the custom `useMutation()` hook in our `AddOrder.tsx` and do similar stuff to what we did last time.
+
+- What we will basically do in `AddOrder.tsx`:
+  - use the `useMutation()`:
+  ```
+  const [createOrder, { loading, error, data }] = useMutation(MUTATE_DATA);
+  ```
+  - use the mutation query:
+  ```
+  const MUTATE_DATA = gql`
+  mutation MUTATE_DATA(
+    $description: String!
+    $totalInCents: Int!
+    $customer: ID
+  ) {
+    createOrder(
+      customer: $customer
+      description: $description
+      totalInCents: $totalInCents
+    ) {
+      order {
+        id
+        customer {
+          id
+        }
+        description
+        totalInCents
+      }
+    }
+  }
+  `;
+  ```
+  - called the `createOrder` inside the form `onSubmit` event handler:
+  ```
+  onSubmit={(e) => {
+    e.preventDefault();
+    createOrder({
+      variables: {
+        customer: customerId,
+        description: description,
+        totalInCents: cost * 100,
+      },
+    });
+    setActive(false);
+  }}
+  ```
+- We need now to improve the overall experience of the our form, specifically dealing with error and loading states.
+  - Outside the form we added:
+  ```
+  {error ? <p>Something Went Wrong</p> : null}
+  ```
+  - On our add order buttons we added:
+  ```
+  disabled={loading ? true : false}
+  ```
+
+- So the way we can check if the query was successfull is to monitor the data variable which was returned from the `useMutation()` so we can setup a `useEffect()` if data has a value then we know something was returned and the query was good:
+```
+useEffect(() => {
+  if (data) {
+    console.log(data);
+    setDescription("");
+    setCost(NaN);
+  }
+}, [data]);
+```
+- Now we need the information to update automatically when we add a new order, especially when the original query to get all of the orders is in the parent component, to do so we need to do the following:
+  - use refetch queries in our mutation hook:
+  ```
+    const [createOrder, { loading, error, data }] = useMutation(MUTATE_DATA, {
+    refetchQueries: [{ query: GET_DATA }],
+  });
+  ```
+  - get the GET_DATA query we have in `App.tsx` copy and paste it in `AppOrder.tsx`:
+  ```
+  const GET_DATA = gql`
+    {
+      customers {
+        id
+        name
+        industry
+        orders {
+          id
+          description
+          totalInCents
+        }
+      }
+    }
+  `;
+  ```
+- How the second point is actually going to work is that because graphql apollo client has an internal cash for our application, this will update the data and actually cause it to be re-rendered without having any reference to the parent component.
 
 # #########################################################################################
 # Part.66 - Mutation for Nested Data (Backend)
