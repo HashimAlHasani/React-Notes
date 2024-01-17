@@ -1,5 +1,5 @@
 # #########################################################################################
-# Part.69 - Static Site Generation with getStaticProps - Next.js
+# Part.70 - Static Site Generation with getStaticProps - Next.js
 
 
 
