@@ -1,8 +1,27 @@
 # #########################################################################################
 # Part.68 - Intro to Next.js Static Site Generation + Server Side Rendering
 
+- Next.js enables you to create full-stack Web applications by extending the latest React features, and integrating powerful Rust-based JavaScript tooling for the fastest builds.
+- Next.js is an open-source web development framework created by the private company Vercel providing React-based web applications with server-side rendering and static website generation.
+- Check their website as you can truly understand how powerful is Next.js: `https://nextjs.org/`
 
+- To install a Next.JS application:
+  - `npx create-next-app@latest --typescript`
+  - input your project name in the terminal, eg: `customers`
+  - it will give you some yes or no questions about how to create the project folders answer them as it best suits you. (My options below:)
+    - npx create-next-app@latest 
+    - What is your project named? … nextjs-project
+    - Would you like to use ESLint? … Yes
+    - Would you like to use Tailwind CSS? … Yes
+    - Would you like to use `src/` directory? … No
+    - Would you like to use App Router? (recommended) … No
+    - Would you like to customize the default import alias (@/*)? … No
+  - thats it, now you can open the project by typing `code customers`
 
+- To open the application you can type:
+```
+npm run dev
+```
 
 # #########################################################################################
 # Part.67 - Add to GraphQL List and refetchQueries
