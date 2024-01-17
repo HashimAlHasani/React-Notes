@@ -1,9 +1,95 @@
 # #########################################################################################
+# Part.69 - Static Site Generation with getStaticProps - Next.js
+
+
+
+# #########################################################################################
 # Part.69 - Routing and Parameters - Next.js
 
 - Next.js is going to use a naming conventions and folder structure to automatically route different urls to pages.
 
-- Following with the code I created a new github repository called `react-next`: [Github-Repository](https://github.com/HashimAlHasani/react-next)
+- To follow the code I created a new github repository called `react-next`: [Github-Repository](https://github.com/HashimAlHasani/react-next)
+
+- We are going to create customers page, it will be all dependent on the `pages` folder:
+- pages (folder)
+  - api (folder)
+    - `hello.ts` - this is how an API endpoint is created in Next.js. (we can build the API right in this application)
+  - `_app.tsx` can be considered as a root component that is going to surround everything else.
+  - `_index.tsx` is the homepage.
+
+- Folders are going to be paths in the url, so we can visit `localhost:3000/api/hello`
+
+- We created a new folder inside the pages folder called `customers` so this automatically will build a path to:
+```
+localhost:3000/api/customers
+```
+- So if anyone tries to open the url above, they will get a `404 Page Not Found` error, so if you want a default file to be ran whenever we visit a path such as `/customers` with no parameters passed in, that is going to be `index.tsx`.
+- So in our `customers` folder we are going to create a new file called `index.tsx`:
+```
+export default function Customers() {
+  return <h1 className="text-4xl">Customers</h1>;
+}
+```
+- So now if we open `localhost:3000/customers` we are going to see the text `Customers`
+- The url now is case sensitive so `/Customers` is not the same as `/customers`
+- We now created a new file inside `pages` folder called `employees.tsx`:
+```
+export default function Employees() {
+  return <h1 className="text-4xl">Employees</h1>;
+}
+```
+- We can directly access the file above from the browser using `localhost:3000/employees`
+- Using the second option might be helpful for small websites that might not require too much routing, however, the first option of creating a folder and then creating an `index.tsx` inside it is better, and here is way:
+  - it has to do with when you create a component that you parameterize so you can pass a value to it.
+  - so if we want to access a specific customer using `localhost:3000/customers/50`, we can go inside the customers folder, then create a new file and name it with `[].tsx` and whatever we put inside the `[]` is what the parameters is going to be called, so for example `[id].tsx`:
+  ```
+  export default function Customer() {
+  return <h1 className="text-4xl">Customer</h1>;
+  }
+  ```
+  - and when we visit `localhost:3000/customers/50` we will see the `Customer` text.
+
+- We deleted the `employees.tsx` as we don't actually need it.
+
+- Now the question is how we actually get the value of `id` on the page:
+```
+import { useRouter } from "next/router";
+
+export default function Customer() {
+  const router = useRouter();
+  const { id } = router.query;
+  return <h1 className="text-4xl">Customer {id}</h1>;
+}
+```
+- We are going to use a new hook called `useRouter` and set it to a variable called `router`, now `router` is an object and inside it there is a `query` property which is an object, which has the property `id`, and this `id` is whatever we named the parameter here in the `[].tsx` file. To get the id we can do `router.query.id` or using destructuring as we did above and do `const { id } = router.query;` and now we can use id in our `<h1>.../<h1>` tag.
+- Opening `localhost:3000/customers/50` now will show use the the text `Customer 50`
+
+- We can do deeper nested content, so we can do multiple layers of parametrization.
+  - We can create a folder inside of customers and name it `[id]` and inside of this folder we can create a new folder called `orders`, and inside the `orders` folder we can create a new file called `index.tsx`:
+  ```
+  export default function Orders() {
+  return <h1 className="text-4xl">All orders</h1>;
+  }
+  ```
+  - So the path to access this is going to be `localhost:3000/customers/` + customer id + `/orders`
+  - We can also get a specific order for a specific customer.
+  - inside of `orders` folder we are going to create a new file and parameterize it - `[orderId].tsx`:
+  ```
+  import { useRouter } from "next/router";
+
+  export default function Order() {
+    const router = useRouter();
+    const { orderId, id } = router.query;
+    return (
+      <h1 className="text-4xl">
+        Order {orderId} from customer {id}
+      </h1>
+    );
+  }
+  ```
+  - now we can access a specific order for a specific customer by opening the following url:
+  - url: `localhost:3000/customers/` + customer id + `/orders/` + order id
+  - We can also get the `id` of the customer as you can see above.
 
 # #########################################################################################
 # Part.68 - Intro to Next.js Static Site Generation + Server Side Rendering
@@ -654,7 +740,7 @@ if (!createCustomerError) {
   setIndustry("");
 }
 ```
-- I added some styling and installed and initialized some tailwind CSS, so if you want to check the styling code you can visit this repository: `https://github.com/HashimAlHasani/react-graphql` and check the commit named: `Mutations with useMutation Apollo Client`
+- I added some styling and installed and initialized some tailwind CSS, so if you want to check the styling code you can visit this repository: [Github-Repository](https://github.com/HashimAlHasani/react-graphql) and check the commit named: `Mutations with useMutation Apollo Client`
 
 # #########################################################################################
 # Part.61 - GraphQL Mutations and Parameters in Graphene
@@ -1021,7 +1107,7 @@ export type Launch = {
     })
   : null}
 ```
-- You can find the code for this application at: `https://github.com/HashimAlHasani/react-graphql`
+- You can find the code for this application at: [Github-Repository](https://github.com/HashimAlHasani/react-graphql)
 
 # #########################################################################################
 # Part.57 - Pie Chart with Chart.js (react-chartjs-2)
@@ -1823,10 +1909,8 @@ const [cryptos, setCryptos] = useState<Crypto[] | null>();
 ```
 - Reminder, `null` and `undefined` are not the same in JavaScript. `Undefined` is when a variable has no value where `null` is a value and this value is just nothing.
 
-- If you want to follow the code you can check this repository:
-```
-https://github.com/HashimAlHasani/ts-axios
-```
+- If you want to follow the code you can check this repository: [Github-Repository](https://github.com/HashimAlHasani/ts-axios)
+
 # #########################################################################################
 # Part.49 - Custom Hook on Button Click (onClick POST with useFetch)
 
@@ -2721,7 +2805,7 @@ from rest_framework.permissions import IsAuthenticated
 # #########################################################################################
 # Part.37 - Tailwind CSS Form and Button Styling
 
-- I'll push the new CSS styling to `https://github.com/HashimAlHasani/react` repository (it is public), so feel free to see what styling I have done.
+- I'll push the new CSS styling to [Github-Repository](https://github.com/HashimAlHasani/react) repository (it is public), so feel free to see what styling I have done.
 
 - The commit name is going to be `Tailwind CSS Form and Button Styling`.
 
@@ -3358,7 +3442,7 @@ CORS_ALLOWED_ORIGINS = ['http://localhost:3000']
   - `git branch -M main`
   - `git push -u origin main`
 
-- Note: the link for the backend repository is - `https://github.com/HashimAlHasani/react-backend-django.git`
+- Note: the link for the backend repository is - [Github-Repository](https://github.com/HashimAlHasani/react-backend-django.git)
 
 - We want now to install the framework by typing: `pip install django-rest-framework`
 - We can also upgrade our pip if needed by typing: `python.exe -m pip install --upgrade pip`
