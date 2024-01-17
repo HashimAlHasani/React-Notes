@@ -1,4 +1,9 @@
 # #########################################################################################
+# Part.69 - Routing and Parameters - Next.js
+
+
+
+# #########################################################################################
 # Part.68 - Intro to Next.js Static Site Generation + Server Side Rendering
 
 - Next.js enables you to create full-stack Web applications by extending the latest React features, and integrating powerful Rust-based JavaScript tooling for the fastest builds.
@@ -16,12 +21,31 @@
     - Would you like to use `src/` directory? … No
     - Would you like to use App Router? (recommended) … No
     - Would you like to customize the default import alias (@/*)? … No
-  - thats it, now you can open the project by typing `code customers`
+  - thats it, now you can open the project by typing `code project_name`
 
 - To open the application you can type:
 ```
 npm run dev
 ```
+- You'll see in `index.tsx` the way the component is defined might be different `const Home: NextPage = () => {}`
+  - it is defined as an arrow function
+  - The type of Home is `NextPage`
+- You can use either the arrow function as above and then `export default Home` at the bottom or the usual `export default function Home(){}`
+
+- We deleted everything inside of our `<main>...</main>` tag in `index.tsx`
+  - We added a temporary `Hello` inside the main tag.
+  - If we open our `localhost:3000` and go to the source code of our project we can see that `Hello` is there.
+  - Unlike our previous react application, if we open them and do the same and check the source code we won't actually see the string.
+
+- we have 2 different types of static processing:
+  - Static Generating (Recommended): if our rendereing depends on some data (such as data from an API endpoint), for this we are going to use some different functionalities specifically this function `getStaticProps()` which will be used to do any of the fetching ahead of time on the server.
+  - Server-Side Rendering: in this type of static processing the HTML is generated on each request. This will be common if you have frequently updated data, or for some reason you are unable to produce static content ahead of time.
+
+- Static means unchanging (The value is decided). Server-Side Rendering is similar but the difference is that it doesn't have a static file already made instead you make a request to the server, the server then calculates what that page should be on the fly and then sends it to the client. At every single request this process will happen and you still get the benefit of not having the loading flash up inside of a regular react application, but you are not going to have the benefit static files and static content which could be distributed to content distribution networks (CDNs) which keep a copy of this files and deliver them very quickly to people who request things from your webpages.
+
+- A quick summary:
+  - Static Generation (Recommended): The HTML is generated at build time and will be reused on each request. To make a page use Static Generation, either export the page component or export `getStaticProps` (and `getStaticPaths` if necessary). It's great for pages that can be pre-rendered ahead of a user's request. You can also use it with Client-Side Rendering to bring in additional data.
+  - Server-Side Rendering: The HTML is generated on each request. To make a page use Server-Side Rendering, export `getServerSideProps`. Because Server-Side Rendering results in slower performance than Static Generation, use this only if absolutely necessary.
 
 # #########################################################################################
 # Part.67 - Add to GraphQL List and refetchQueries
