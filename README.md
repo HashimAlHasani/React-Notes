@@ -1,7 +1,9 @@
 # #########################################################################################
 # Part.69 - Routing and Parameters - Next.js
 
+- Next.js is going to use a naming conventions and folder structure to automatically route different urls to pages.
 
+- Following with the code I created a new github repository called `react-next`: [Github-Repository](https://github.com/HashimAlHasani/react-next)
 
 # #########################################################################################
 # Part.68 - Intro to Next.js Static Site Generation + Server Side Rendering
