@@ -376,7 +376,7 @@ export default function AddOrder({ customerId }: AppProps) {
 
 - In GraphQL we can choose what nested data we want returned and if we want any properties returned from the data.
 - The cool part is we don't care about how this is setup in the backend, regardless of what backend we use the way we query this in graphql is going to be the same, and the data could be coming from multiple tables with JOIN or coming from 2 completely different databases and the information federated together doesn't really matter.
-- What we are going is to handle multiple tables in a relational database.
+- What we are going to do is to handle multiple tables in a relational database.
 
 - Now we want to create some nested data in our customer data.
 - Now in our `models.py` we are going to define a new class called `Order()`:
