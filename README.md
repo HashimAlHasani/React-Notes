@@ -39,7 +39,9 @@ export const getStaticProps: GetStaticProps = async (context) => {
   - `redirect` which allows us to redirect to internal or external resources.
 
 - There are 5 ways of Data Fetching in Next.js and we can see everything about them [here](https://nextjs.org/docs/pages/building-your-application/data-fetching).
-
+  - If we have something that we want the data to be in the HTML for SEO purposes, but you needed to always make that request every single time for the new updated data, that is when `Server-Side rendering` would come in. As `getServerSideProps()` runs at request time, and the page will be pre-rendered with the returned props. 
+    - We should use this only if we need to render a page whose data must be fetched at request time. This could be due to the nature of the data or properties of the request (such as `authorization` headers or geo location).
+    - A potential good alternative if the page contains frequently updated data, and we don't need to pre-render the data for SEO purposes, we can just fetch the data on the client side. An example of this would be a dashboard page which would require a log-in is totally irrelevant for SEO purposes as it will not going to be seen by any search engines, and the data is frequently updated, which requires request-time data fetching.
 
 # #########################################################################################
 # Part.71 - Call an API with Axios in getStaticProps - Next.js
