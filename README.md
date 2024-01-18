@@ -1,4 +1,7 @@
 # #########################################################################################
+# Part.72 - Incremental Static Regeneration - Next.js
+
+# #########################################################################################
 # Part.71 - Call an API with Axios in getStaticProps - Next.js
 
 - We need to remember that certain functions inside our Next.js are not send to the client, so we can do anything we want inside those server functions such as connecting to an API, using secret keys, connecting to a database using a connection string, or anything we need to keep private.
