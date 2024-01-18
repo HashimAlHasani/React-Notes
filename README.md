@@ -1,4 +1,50 @@
 # #########################################################################################
+# Part.71 - Call an API with Axios in getStaticProps - Next.js
+
+- We need to remember that certain functions inside our Next.js are not send to the client, so we can do anything we want inside those server functions such as connecting to an API, using secret keys, connecting to a database using a connection string, or anything we need to keep private.
+- Since this is going to be running on a server we can create our own API inside Next.js - eg: `hello.ts` file.
+
+- We are going to make a request to an existing API that we build earlier on in older parts, and you can download it from this [Github-Repository](https://github.com/HashimAlHasani/react-backend-django). So after downloading or copy and paste our backend folder that created before into our current directory we will have a virtual environment and all packages available, and we can open virtual environment (`.venv`) and applied our migrations (`makemigrations` + `migrate`) and run our backend server (`py manage.py runserver`).
+
+- We can now see that the API is available at `http://127.0.0.1:8000/`, so lets make a request in our front-end inside `index.tsx` that is inside the `customers` folder:
+  - we are going to download and import axios, so in the terminal write `npm install axios`
+  - then we are going to import it `import axios from 'axios';`
+  - we then use it inside the `getStaticProps` above the return call:
+  ```
+  const result = await axios.get("http://127.0.0.1:8000/api/customers/");
+  http: console.log(result);
+  ```
+  - Since we are inside an `async` function we need to say `await` before our `axios.get()` and sign the result to a variable called `const result`, and then we can `console.log(result)`, so what this would do is that it will wait for the response assign it to `result` and then `console.log()`
+  - We can access our django application using this url: `http://127.0.0.1:8000/api/customers/`
+
+- When we visit our django application we will get `Authentication credentials were not provided.`, we are not going to worry about authentication in this video, so what we will do is just remove the authentication requirements on the backend.
+- We can see our problem and the details inside the server terminal since `getStaticProps` is executed on our server. Same with the `console.log(results)` it is not going to show on the browser console but it will be on the server terminal.
+- So to remove the authentication we can go to `views.py` and remove: all `@permission_classes([IsAuthenticated])` that we created. Now we will be able to access our API, so if you want to access `http://127.0.0.1:8000/api/customers/` you will see some data.
+- Now we can assign to our `customers:` parameter inside the props our API customers data by changing our `getStaticProps` to:
+```
+export const getStaticProps: GetStaticProps = async (context) => {
+  const result = await axios.get("http://127.0.0.1:8000/api/customers/");
+  http: console.log(result);
+
+  return {
+    props: {
+      customers: result.data.customers,
+    },
+  };
+};
+```
+- However, we might want to type this with TypeScript, so we can create a new type above in `index.tsx` inside the customers folder:
+```
+type GetCustomerResponse = { customers: Customer[] };
+```
+- We made this type based on what is in the server terminal as we can see `data: { customers: [object], [object] }`, and then in our `axios.get()` we can assign the type to it by doing: 
+```const result = await axios.get<GetCustomerResponse>("http://127.0.0.1:8000/api/customers/");```
+
+- There is a difference when we do `npm run dev` and with doing `npm run build` followed after with `npm run start`, so with the second option the changes won't be shown on the screen since this is the build edition unlike donig the normal `npm run dev`, now since the build files is the files that we are going to publish/host, when we add more data into our API, and refresh the page, the new data won't be added to our build, and this is the problem with static site generation, which basically causes the site to go out dated, because the data is not updated when the database changes.
+
+- In the upcoming parts we are going to talk about how to fix the problem mentioned above.
+
+# #########################################################################################
 # Part.70 - Static Site Generation with getStaticProps - Next.js
 
 - We want to request information from a database but we also want to use a static site for speed and caching.
@@ -95,7 +141,7 @@ export default Customers;
 
 - We created a new folder inside the pages folder called `customers` so this automatically will build a path to:
 ```
-localhost:3000/api/customers
+localhost:3000/customers
 ```
 - So if anyone tries to open the url above, they will get a `404 Page Not Found` error, so if you want a default file to be ran whenever we visit a path such as `/customers` with no parameters passed in, that is going to be `index.tsx`.
 - So in our `customers` folder we are going to create a new file called `index.tsx`:
