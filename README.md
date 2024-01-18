@@ -1,6 +1,46 @@
 # #########################################################################################
 # Part.72 - Incremental Static Regeneration - Next.js
 
+- Incremental Static Regeneration means that we can cache our data and we can occasionally updated that cache so that the data on the page is not out of date.
+
+- The problem we had in the previous part basically is that when we do `npm run build` then `npm run start` so our website that is showing is from the build files, and when we add data into `localhost:8000/admin` and refresh our website, we will not see the data updated. A good practice is that when we are testing `getStaticProps` don't test it in `npm run dev` mode. Another tip is that if we do change our code, we will need to do `npm run build` and `npm run start` again otherwise we will be running the old build code. So we will need to do that anytime we need to test a change, or do it inside `npm run dev` mode, just knowing that we are not going to be able to test that cache quite like we would expect.
+
+- Caching is wildly done to improve performance but there are some challenges such as a stale cache.
+
+- That cache we are talking about is not the cache that is in a browser, rather this is the cache on a backend. So Next.js will gather the data from the database/API, build that static webpage, and that static webpage is going to continually be used until something triggers a refresh on that static content. So to trigger a refresh we can do (in `index.tsx` in `customers` folder):
+```
+export const getStaticProps: GetStaticProps = async (context) => {
+  const result = await axios.get<GetCustomerResponse>(
+    "http://127.0.0.1:8000/api/customers/"
+  );
+  http: console.log(result);
+
+  return {
+    props: {
+      customers: result.data.customers,
+    },
+    revalidate: 60,
+  };
+};
+```
+- As you can see we are using another property called `revalidate: ` in our `getStaticProps()` and this takes a number of seconds, which is how often the page should refreshed.
+- There are three different cache response header possibilities:
+  - `MISS` - the path is not in the cache (occurs at most once, on the first visit).
+  - `STALE` - the path is in the cache but exceeded the revalidate time so it will be updated in the background.
+  - `HIT` - the path is in the cache and has not exceeded the revalidate time.
+
+- We are going to be dealing with `HIT` and `STALE`, so at first we will get `HIT` and that will last about a minute (60s), when the cache has not exceeded the revalidate time, then on that last request we will get `STALE` which will then update in the background creating a new page in the cache, and then the next time around we will get a `HIT`.
+
+- First do `npm run build` then `npm run start`, then look into `Network` click on the `customers` name, then go to `Headers`, you will see that `x-nextjs-cache: HIT`, now if we go in and add some data in `localhost:8000/admin`, and go back to our website, and do a refresh (note we still don't have the data on the website) and this still says: `x-nextjs-cache: HIT`, so we are still being given the cached page, once the revalidate 60 seconds expires, our page will be out dated and it will fetch the new data in the background, so what we will do is we'll just do a couple of refreshes and look at the value of `x-nextjs-cache: ` and just wait until we a value of: `x-nextjs-cache: STALE`, so on the next refresh the data will be displayed on the website, then the `x-nextjs-cache: HIT` will have a value of `HIT` again for the cache.
+- So what this means is that we can set the revalidate value to how often we need the to refresh for users, so if our page is pretty not real time we can keep it on the higher side, but if we have for example a comment feed on some social media network we will want that feed to update every couple of seconds, so that way our revalidate value should be on the lower side.
+
+- The other 2 property options:
+  - `notFound` which we can use to set `notFound` to true and redirect to a 404 page.
+  - `redirect` which allows us to redirect to internal or external resources.
+
+- There are 5 ways of Data Fetching in Next.js and we can see everything about them [here](https://nextjs.org/docs/pages/building-your-application/data-fetching).
+
+
 # #########################################################################################
 # Part.71 - Call an API with Axios in getStaticProps - Next.js
 
