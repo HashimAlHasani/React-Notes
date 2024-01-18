@@ -1,7 +1,81 @@
 # #########################################################################################
 # Part.70 - Static Site Generation with getStaticProps - Next.js
 
+- We want to request information from a database but we also want to use a static site for speed and caching.
+- So with Next.js static Site Generation we are going to use the function `getStaticProps`, which will request the data at build time, ahead of a users request, then those values that are retrieved from a database or an API they are going to be hard-coded in the HTML that is sent to the client, this is known as a Static Site and it is fast and can be easily cached by CDNs and by browsers.
+- We can do various things to make the site have up to date data. To do this we'll have to build up to that over the next parts. So step one is to get the information from a data source and have it displayed in the HTML which will be sent as a Static Site, and this is the goal of this part.
 
+- For a typical React application, the structure of a page will render and then the information will be requested from a database, once we have that information we can then loop through that data, but as you can remember we had conditions to check if the customers for example even exist `{customers ? ... : ...}`, because on that initial page load the customers have not yet been loaded in.
+- With a Next.js application it is going to look a little bit different where we have this `getStaticProps` which will make the request and then in our HTML we can map through that data very similar to a plain React application, a couple of key differencies is that the data is going to be assigned to this `props: { posts, }` object, and we will also be guaranteed that the posts that are already inside of that array are page load time, so we won't need to do a ternary checking against the value of `posts`.
+
+- We deleted the `orders` folder, and we'll open `index.tsx` that is inside the `customers` folder.
+- We added the function `getStaticProps()` in our `index.tsx` inside `customers` folder, outside our `Customers` component:
+```
+export const getStaticProps: GetStaticProps = async (context) => {
+  return {
+    props: {},
+  };
+}
+```
+- We can put our data inside the `props` property object, now this will be an appropriate time to make a request to an API or we can actually query a database directly because this `getStaticProps` function is only going to exist on the server, so we don't have to worry about any of this code getting leaked to that client any kind of keys or access tokens are going to stay on the server code, this means that you don't have to work through an API you can access a database directly using a connection string.
+
+- We are going to start with some mock data to get an understanding of how this page works, which we can easily then replace with a query to the database.
+
+- Our `index.tsx` inside `customers` folder:
+```
+import { GetStaticProps, NextPage, InferGetStaticPropsType } from "next";
+
+type Customer = {
+  id: number;
+  name: string;
+  industry: string;
+};
+
+export const getStaticProps: GetStaticProps = async (context) => {
+  return {
+    props: {
+      customers: [
+        {
+          id: 1,
+          name: "John Smith",
+          industry: "Restaurant",
+        },
+        {
+          id: 2,
+          name: "Sal Brown",
+          industry: "Tech",
+        },
+      ] as Customer[],
+    },
+  };
+};
+
+const Customers: NextPage = ({ customers, }: InferGetStaticPropsType<typeof getStaticProps>) => {
+  console.log(customers);
+  return (
+    <>
+      <h1 className="text-4xl">Customers</h1>
+      {customers.map((customer: Customer) => {
+        return (
+          <div key={customer.id}>
+            <p>{customer.name}</p>
+            <p>{customer.industry}</p>
+            <p>{customer.id}</p>
+          </div>
+        );
+      })}
+    </>
+  );
+};
+
+export default Customers;
+```
+- What we basically did above:
+  - we are going to use the arrow function in order to infer a `NextPage` type on `Customers` and we will do `export default Customers;` at the bottom
+  - we created the `getStaticProps` function with type `GetStaticProps` and we created some mock data inside, this mock data will have a type of Customer array `as Customer[]`
+  - we created the type `Customer ={...}` at the top
+  - on our main component function we did some destructuring so that we don't always do `props.customers` so as you can see `{customers, }` is in the parameter of the function `Customers` and its type is going to be `InferGetStaticPropsType<typeof getStaticProps>` which what will basically do is set the type of the props passed in, so now typescript know that `customers` we passed in is of type customer array `Customer[]`
+  - We also mapped through our customers array and made the customer name/industry/id show on the website.
 
 # #########################################################################################
 # Part.69 - Routing and Parameters - Next.js
