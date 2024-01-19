@@ -1,4 +1,97 @@
 # #########################################################################################
+# Part.73 - getStaticPaths Static Data Fetching (Parameterized Pages) - Next.js
+
+We are going to build the page that allows us to get a specific customer. So the end goal is to able to get a specific customer's information show up on the page, but we want to do this with static content; when we check the source code we should be able to see the value of customer.
+
+- `getStaticPaths` is going to define exactly which id(s) you want to be statically processed. So Next.js will statically pre-render all the paths specified by `getStaticPaths`
+
+- If we have a large website with very large amount of products, customers or etc. instead of making every single page static ahead of time, we can just have it so that it becomes a static page whenever a certain customer or product is visited.
+
+- So we are currently in our `[id].tsx` that is inside `customers` folder, where we can open it by using the following url in the browser: (`localhost:3000/customers` + customer id), but this has no connection to the database yet. We need to set type `Customer` in `index.tsx` to be exported so we can make it `export type Customer = {...}`. What we will do now in `[id].tsx`:
+```
+import { GetStaticPaths, GetStaticProps, NextPage } from "next";
+import { useRouter } from "next/router";
+import { Customer } from "./index";
+import axios from "axios";
+import { ParsedUrlQuery } from "querystring";
+
+type Props = {
+  customer: Customer;
+};
+
+interface Params extends ParsedUrlQuery {
+  id: string;
+}
+
+export const getStaticPaths: GetStaticPaths = () => {
+  return {
+    paths: [
+      {
+        params: { id: "30" },
+      },
+      {
+        params: { id: "34" },
+      },
+    ],
+    fallback: false,
+  };
+};
+
+export const getStaticProps: GetStaticProps<Props, Params> = async (
+  context
+) => {
+  const params = context.params!;
+
+  const result = await axios.get<{ customer: Customer }>(
+    `http://127.0.0.1:8000/api/customers/${params.id}`
+  );
+  return {
+    props: {
+      customer: result.data.customer,
+    },
+  };
+};
+
+const Customer: NextPage<Props> = (props) => {
+  return <h1 className="text-4xl">Customer {props.customer.name}</h1>;
+};
+
+export default Customer;
+```
+- What we basically did above in `[id].tsx`:
+  - We first created the `getStaicProps` function, and passed in `context` as a parameter. Inside of this function we are going to get our static props.
+  - Inside `getStaticProps` we also used `axios` to get the customer with the parameterized id as can be seen in the url type between brackets:`${context?.params?.id}` - changed to `${params.id}`
+  - Then we in `getStaticProps` we return the `props` object, which itself contains the `customer` object, where we also set the `customer` object to have the value of `result.data.customer`, which would basically get the customers data.
+  - We then changed our component function to have the type of `NextPage` and infer into `NextPage` another generic type which is `Props`, where we `type Props ={...}` has a customer object that is set to have the type of `Customer` we imported from `index.tsx`
+  - We then created the `getStaticPaths` function with the type `GetStaticPaths`, this function will return the `paths: [...]` as an array.
+  - `paths: [...]` should take 2 objects, the first one is the paths that will be static specified such as `{ params: {id: "30"} }`, and it will also take `fallback` where we set into `false` which will basically navigate users with parameterized id(s) that are not in the `paths: [...]` array to a `404 Page Not Found`
+  - If we try to access `localhost:3000/customers/15` (where we don't have 15 in the paths) we will go to a `404` page.
+  - If we try to access `localhost:3000/customers/30` (We have `id: "30"` in the paths) we will see the customer with id equal to 30 on the website.
+  - We also made the type `GetStaticProps` have 2 generic types which are `Props` and `Params`, where `Params` is an interface created at the top, so we did this so that we can know that `.id` is a valid value on `params` for TypeScript.
+  - We also set `params` to equal `context.params!;` the `!` actually says that it is `not-null`
+  - The stuff we do when we want to take care about `Types` is that in TypeScript if we have the correct type inferred on a function or a variable it will make get sure that we are not typing something wrong that doesn't exist, so we can't type `params.hello` as it doesn't actually exists, so now are 100% sure that id exists in params in this code section: `${params.id}` 
+
+- To explain more about `fallback`. `fallback` is what behaviour we want to happen if an id is not listed in the potential available id(s), right now we only allow for ids 30 and 34. A potential fix for this is instead of harding each of these `params` we can get all of our ids from the database, so we can change the `getStaticPaths()` function to:
+```
+export const getStaticPaths: GetStaticPaths = async () => {
+  const result = await axios.get(`http://127.0.0.1:8000/api/customers/`);
+  const paths = result.data.customers.map((customer: Customer) => {
+    return {
+      params: { id: customer.id.toString() },
+    };
+  });
+
+  return {
+    paths: paths,
+    fallback: false,
+  };
+};
+```
+- We saved the result of our `axios.get` to a variable called `result`, then we created a new variable called `paths` that will have all the paths where there is an id available. We achieved this by mapping through our customers as can be seen in `result.data.customers.map()` then we `return` inside our map's arrow function the string version of the id of all customers into an object `params: {...}`, then in the `getStaticPaths()` function return we can just set `Paths: paths`, so our customer with any id that is in the database will be available and it will static so you can go to the source code and search for the customer's information inside the source code (for SEO)
+
+- However, we are currently in `npm run dev` mode, so what that means is that it will always do the static compilation. So what we need to do is figure out how things are going to work when we are running in production with `npm run build` -> `npm run start`, and we need to take a deeper look on the `fallback` property in the next part.
+
+# #########################################################################################
 # Part.72 - Incremental Static Regeneration - Next.js
 
 - Incremental Static Regeneration means that we can cache our data and we can occasionally updated that cache so that the data on the page is not out of date.
