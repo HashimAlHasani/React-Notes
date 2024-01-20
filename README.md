@@ -1,13 +1,99 @@
 # #########################################################################################
 # Part.74 - fallback with getStaticPaths - Next.js
 
+- When we have `fallback: false` means is that when we request data and it doesn't exist in the Next.js cache we just get a `404`, which is the most simple way to get started, however, it is not really ideal, because we could be requesting data that has been added to the database.
+  - We can request data that is in the database.
+  - We can request data thats been added to the database after build time.
+  - We can request data thats actually is not in the database at all, and it wasn't added after build time.
+  - There are more, because we can set Next.js up so that it will check for new data on some interval.
 
+- When we are in `npm run dev` the `getStaticPaths` function inside `[id].tsx`, is going to execute on every single request, so what this means is that when we do a refresh it is going to get the latest data from the database. This is different when we do `npm run build` followed by `npm run start`, now when we refresh we can see in the terminal that we are not requesting any new data, what this means is that if we add something new to the database in `localhost:8000/admin` such as a new customer and we try to see it in `localhost:3000/customers` we will not see it, and if we try to access the new customer by id in `localhost:3000/customers/38` we will get a `404`.
 
+- So where we pass in the id directly, this is associated with the page that we are working on now (`[id].tsx`) and the problem is at build time, that id is not part of the `return { params: {id: customer.id.toString() } }`, so when we request that data later which id(s) to select from was already determined and thats why we get a `404`.
+
+- If we set `fallback` to `true` instead of `false` will allow us to fix this problem. 
+
+- If we test this inside `npm run dev` mode and add another customer from `localhost:8000/admin`, and go back to our `localhost:3000/customers/39` (39 is the id of the recently added customer) we are going to see the information, however, we are not going to get the same behaviour in `npm run build` followed by `npm run start` mode what we will get in the production mode when we try to `npm run build` is an error, and the summary of this error is that when we have `fallback` set to `true` in production mode, what will happen is instead of getting `getStaticPaths` executed on each request it will get executed just in build and then if we request some id that has not been added to that path list, it will then make a request dynamically to see if that information is in the database. The problem though is that is not going to be static and ready to go, so for example when we try to execute `{props.customer.name}` on initial page load this information is not going to be there and it is going to cause a run time error.
+
+- So Next.js realizes this and requires you to build a case of what if the customer is not found while the `fallback` is set to `true`.
+- So in `[id].tsx` we can check to see if a customer is found:
+```
+const Customer: NextPage<Props> = (props) => {
+  const router = useRouter();
+  if (router.isFallback) {
+    return <p>Loading...</p>;
+  }
+  return <h1 className="text-4xl">Customer {props.customer.name}</h1>;
+};
+```
+- Now if we open our website in production mode using `npm run build` followed by `npm run start` we should be able to compile our code, and get our application running.
+- Now if we visit `localhost:3000/customers` we will see the list of customers correctly, now we need to go through the process of adding a new customer while being in the production mode and visit `localhost:3000/customers/40` (40 is the id of the newly added customer from `localhost:8000/admin`) we will see a very quick flash saying `Loading...` then once the data is retrieved it will display the `{props.customer.name}`
+
+- So what we currently did was the first possibility which is adding data after the code have been built.
+
+- What if we are requesting data that could have been added after build time, but actually isn't, so we will just request some bogus id such as id 200.
+- So if we try to open `localhost:3000/customers/200` we will see on the application a client error. (run time error)
+
+- So now the problem is with our `getStaticPorps` because we are now using an id in `${params.id}` to access a customer that doesn't exist and we are not able to access `result.data.customer`, to fix this we can do in `getStaicProps`:
+```
+export const getStaticProps: GetStaticProps<Props, Params> = async (
+  context
+) => {
+  const params = context.params!;
+
+  try {
+    const result = await axios.get<{ customer: Customer }>(
+      `http://127.0.0.1:8000/api/customers/${params.id}`
+    );
+
+    return {
+      props: {
+        customer: result.data.customer,
+      },
+    };
+  } catch (err) {
+    if (err instanceof AxiosError) {
+      if (err.response?.status == 404) {
+        return {
+          notFound: true,
+        };
+      }
+    }
+    return {
+      props: {},
+    };
+  }
+};
+```
+- As you can see we will do a `try-catch`, if the id exists we will return the customers data, if it does not exists we will return `notFound: true`.
+- We also check inside our catch block if the error is because of the `axios.get()` and then check if it is a `404` we do `notFound: true`, if the error is because of something else we just return an empty `props` object - `props: {}`
+- We now need to change the type at the top to allow having an undefined customer:
+```
+type Props = {
+  customer?: Customer;
+};
+``` 
+- Then we will need to add a ternary operator in the `{props.customer.name}` to check if it is defined or not:
+```
+const Customer: NextPage<Props> = (props) => {
+  const router = useRouter();
+  if (router.isFallback) {
+    return <p>Loading...</p>;
+  }
+  return (
+    <h1 className="text-4xl">
+      Customer {props.customer ? props.customer.name : null}
+    </h1>
+  );
+};
+```
+
+- Now, if we try to access an id that doesn't exist such as `localhost:3000/customers/200` we will get the `loading...` briefly and then get the `404` page.
 
 # #########################################################################################
 # Part.73 - getStaticPaths Static Data Fetching (Parameterized Pages) - Next.js
 
-We are going to build the page that allows us to get a specific customer. So the end goal is to able to get a specific customer's information show up on the page, but we want to do this with static content; when we check the source code we should be able to see the value of customer.
+We are going to build the page that allows us to get a specific customer. So the end goal is to be able to get a specific customer's information show up on the page, but we want to do this with static content; when we check the source code we should be able to see the value of customer.
 
 - `getStaticPaths` is going to define exactly which id(s) you want to be statically processed. So Next.js will statically pre-render all the paths specified by `getStaticPaths`
 
@@ -67,7 +153,7 @@ export default Customer;
 - What we basically did above in `[id].tsx`:
   - We first created the `getStaicProps` function, and passed in `context` as a parameter. Inside of this function we are going to get our static props.
   - Inside `getStaticProps` we also used `axios` to get the customer with the parameterized id as can be seen in the url type between brackets:`${context?.params?.id}` - changed to `${params.id}`
-  - Then we in `getStaticProps` we return the `props` object, which itself contains the `customer` object, where we also set the `customer` object to have the value of `result.data.customer`, which would basically get the customers data.
+  - Then in `getStaticProps` we return the `props` object, which itself contains the `customer` object, where we also set the `customer` object to have the value of `result.data.customer`, which would basically get the customers data.
   - We then changed our component function to have the type of `NextPage` and infer into `NextPage` another generic type which is `Props`, where we `type Props ={...}` has a customer object that is set to have the type of `Customer` we imported from `index.tsx`
   - We then created the `getStaticPaths` function with the type `GetStaticPaths`, this function will return the `paths: [...]` as an array.
   - `paths: [...]` should take 2 objects, the first one is the paths that will be static specified such as `{ params: {id: "30"} }`, and it will also take `fallback` where we set into `false` which will basically navigate users with parameterized id(s) that are not in the `paths: [...]` array to a `404 Page Not Found`
