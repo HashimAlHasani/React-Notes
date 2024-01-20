@@ -1,4 +1,10 @@
 # #########################################################################################
+# Part.74 - fallback with getStaticPaths - Next.js
+
+
+
+
+# #########################################################################################
 # Part.73 - getStaticPaths Static Data Fetching (Parameterized Pages) - Next.js
 
 We are going to build the page that allows us to get a specific customer. So the end goal is to able to get a specific customer's information show up on the page, but we want to do this with static content; when we check the source code we should be able to see the value of customer.
