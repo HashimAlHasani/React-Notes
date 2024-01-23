@@ -1,4 +1,10 @@
 # #########################################################################################
+# Part.75 - Lazy Caching with getStaticPaths - Next.js
+
+
+
+
+# #########################################################################################
 # Part.74 - fallback with getStaticPaths - Next.js
 
 - When we have `fallback: false` means is that when we request data and it doesn't exist in the Next.js cache we just get a `404`, which is the most simple way to get started, however, it is not really ideal, because we could be requesting data that has been added to the database.
@@ -13,7 +19,7 @@
 
 - If we set `fallback` to `true` instead of `false` will allow us to fix this problem. 
 
-- If we test this inside `npm run dev` mode and add another customer from `localhost:8000/admin`, and go back to our `localhost:3000/customers/39` (39 is the id of the recently added customer) we are going to see the information, however, we are not going to get the same behaviour in `npm run build` followed by `npm run start` mode what we will get in the production mode when we try to `npm run build` is an error, and the summary of this error is that when we have `fallback` set to `true` in production mode, what will happen is instead of getting `getStaticPaths` executed on each request it will get executed just in build and then if we request some id that has not been added to that path list, it will then make a request dynamically to see if that information is in the database. The problem though is that is not going to be static and ready to go, so for example when we try to execute `{props.customer.name}` on initial page load this information is not going to be there and it is going to cause a run time error.
+- If we test this inside `npm run dev` mode and add another customer from `localhost:8000/admin`, and go back to our `localhost:3000/customers/39` (39 is the id of the recently added customer) we are going to see the information, however, we are not going to get the same behaviour in `npm run build` followed by `npm run start` mode what we will get in the production mode when we try to `npm run build` is an error, and the summary of this error is that when we have `fallback` set to `true` in production mode, what will happen is instead of getting `getStaticPaths` executed on each request it will get executed just in build and then if we request some id that has not been added to that path list, it will then make a request dynamically to see if that information is in the database. The problem though is that it is not going to be static and ready to go, so for example when we try to execute `{props.customer.name}` on initial page load this information is not going to be there and it is going to cause a run time error.
 
 - So Next.js realizes this and requires you to build a case of what if the customer is not found while the `fallback` is set to `true`.
 - So in `[id].tsx` we can check to see if a customer is found:
