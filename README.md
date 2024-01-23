@@ -1,8 +1,84 @@
 # #########################################################################################
 # Part.75 - Lazy Caching with getStaticPaths - Next.js
 
+- A note about the last part, if we have a very large API for example, it is not very reasonable to get the id for every customer and statically generate every single page, when we have `fallback: true` it will request that data from the database and then that data will be cached, we can just pre-cach zero customers instead, or just cache the most popular customers if we can have such information.
 
+- Lazy Caching - No data is going to be cached for a parameterized page, until it is requested for the first time.
 
+- In `[id].tsx` we can edit our `getStaticPaths` function to achieve lazy caching:
+```
+export const getStaticPaths: GetStaticPaths = async () => {
+  // const result = await axios.get(`http://127.0.0.1:8000/api/customers/`);
+  // const paths = result.data.customers.map((customer: Customer) => {
+  //   return {
+  //     params: { id: customer.id.toString() },
+  //   };
+  // });
+
+  return {
+    paths: [],
+    fallback: true,
+  };
+};
+```
+- If you want to not pre-cache anything on build time we can have it so that `paths: []` is an empty array.
+
+- as a result of the data getting retrieved after the page load, when we view the page source we will not see our customer name or information inside the page source instead we will see the `Loading...`. So if we don't cache any information it is going to affect SEO.
+
+- We can have `fallback: "blocking"`. What this will do is that new paths that are not retured by `getStaticPaths` will wait for the `HTML` to be generated, identical to SSR (Server Side Rendering), and then be cached for future requestse so it only happens once per path - this make it so that there will be no flash of loading or a fallback state:
+```
+return {
+  paths: [],
+  fallback: "blocking",
+};
+```
+- Make sure to rebuild the Next.js-server from the terminal by `npm run build` followed by `npm run start` after you exit the old build version.
+- We will get a cache `MISS`, however, if we now open the page source we will be able to see the customer name in the page source code. So this is what the webcrawler would recieve when we are using `fallback: true`, we can use `fallback: "blocking"` ourself, but there are not a lot of benefits to using blocking over the true value, as it is just going to slow the time, the only potential benefit is that we are not going to see the quick `Loading...` flash.
+- If we are looking for a visual benefit we can just use `fallback: blocking`. I prefer using `fallback: true`.
+
+- If we retrieved data from the database and it is cached and then that data is updated, how does Next.js know to update that data?
+  - This is called incremental static regeneration, and we talked about it briefly in previous parts. This was before we used parameterized pages but it is going to be very similar.
+  - In `[id].tsx` we added revalidate for our try-catch blocks:
+  ```
+  export const getStaticProps: GetStaticProps<Props, Params> = async (
+    context
+  ) => {
+    const params = context.params!;
+
+    try {
+      const result = await axios.get<{ customer: Customer }>(
+        `http://127.0.0.1:8000/api/customers/${params.id}`
+      );
+
+      return {
+        props: {
+          customer: result.data.customer,
+        },
+        revalidate: 60,
+      };
+    } catch (err) {
+      if (err instanceof AxiosError) {
+        if (err.response?.status == 404) {
+          return {
+            notFound: true,
+            revalidate: 60,
+          };
+        }
+      }
+      return {
+        props: {},
+      };
+    }
+  };
+  ```
+  - So now we have all the behaviour that we would expect with fallback rendering `404` pages, but it will in the background check for new data on new requests after that time period has elapsed.
+
+- If we go to build mode and add a new customer and try to access it by using the parameterized id url, we will see a quick loading then the customer information, however, if we edit this customer and visit the same page it is going to keep the out-dated data (this is cached) until the `revalidate` 60 seconds has elapsed.
+- After the 60 seconds has passed when we refresh we will get a `STALE` cache hit, and we refresh one more time, we will git a `HIT` cache hit.
+- The cache won't be replaced until we get the `STATE` request, which is a request thats been after those 60 seconds.
+- This prevents constantly refreshing files that haven't been requesting for ages.
+
+- Try reading more about `On-Demand Revalidation`, this will allow you to force a refresh for particular pages. With the forced revalidation we can cause a cache refresh on demand whenver some data is changes, this insures that people are getting the most up to date data, and it is all being served from static files.
 
 # #########################################################################################
 # Part.74 - fallback with getStaticPaths - Next.js
